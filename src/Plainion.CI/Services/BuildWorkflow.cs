@@ -37,7 +37,10 @@ namespace Plainion.CI.Services
                 && ( !myDefinition.CheckIn || Execute( "checkin", CheckIn, progress ) )
                 && ( !myDefinition.Push || Execute( "push", Push, progress ) )
                 && ( !myDefinition.CreatePackage || Execute( "create pacakge", ExecuteMsbuildScript( myDefinition.CreatePackageScript,
-                    myDefinition.CreatePackageArguments.Split( new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ) ), progress ) ) );
+                    myDefinition.CreatePackageArguments.Split( new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ) ), progress ) )
+                && ( !myDefinition.CreatePackage || Execute( "deploy pacakge", ExecuteMsbuildScript( myDefinition.DeployPackageScript,
+                    myDefinition.DeployPackageArguments.Split( new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ) ), progress ) )
+            );
         }
 
         private bool ClearOutputDirectory( IProgress<string> progress )

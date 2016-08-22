@@ -15,12 +15,15 @@ namespace Plainion.CI.Model
         private bool myCreatePackage;
         private bool myCheckIn;
         private bool myPush;
+        private bool myDeploy;
         private string myConfiguration;
         private string myPlatform;
         private string myTestRunnerExecutable;
         private string myTestAssemblyPattern;
         private string myCreatePackageScript;
         private string myCreatePackageArguments;
+        private string myDeployPackageScript;
+        private string myDeployPackageArguments;
         private User myUser;
         private string myDiffTool;
         private string myNuGetExecutable;
@@ -72,6 +75,13 @@ namespace Plainion.CI.Model
         }
 
         [DataMember]
+        public bool DeployPackage
+        {
+            get { return myDeploy; }
+            set { SetProperty( ref myDeploy, value ); }
+        }
+
+        [DataMember]
         public string Configuration
         {
             get { return myConfiguration; }
@@ -111,6 +121,20 @@ namespace Plainion.CI.Model
         {
             get { return myCreatePackageArguments; }
             set { SetProperty( ref myCreatePackageArguments, value ); }
+        }
+
+        [DataMember]
+        public string DeployPackageScript
+        {
+            get { return myDeployPackageScript; }
+            set { SetProperty( ref myDeployPackageScript, value ); }
+        }
+
+        [DataMember]
+        public string DeployPackageArguments
+        {
+            get { return myDeployPackageArguments; }
+            set { SetProperty( ref myDeployPackageArguments, value ); }
         }
 
         /// <summary/>
