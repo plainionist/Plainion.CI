@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     
-    <UsingTask TaskName="Plainion.GatedCheckIn.Services.Msbuild.NUnit" AssemblyFile="../../Plainion.GatedCheckIn.exe"/>
+    <UsingTask TaskName="Plainion.CI.Services.Msbuild.NUnit" AssemblyFile="../../Plainion.CI.exe"/>
 
     <Target Name="NUnit">
       <NUnit NUnitConsole="$(NUnitConsole)" AssembliesPattern="$(AssembliesPattern)" WorkingDirectory="$(OutputPath)"/>
