@@ -107,6 +107,9 @@ namespace Plainion.CI.Services
         {
             Contract.Invariant( BuildDefinition != null, "BuildDefinition not loaded" );
 
+            // save settings before running workflow to ensure that such changes get checked in as well
+            SaveBuildDefinitionOnDemand();
+
             return new BuildWorkflow( mySourceControl, BuildDefinition, request )
                 .ExecuteAsync( progress );
         }
