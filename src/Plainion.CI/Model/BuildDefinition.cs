@@ -23,6 +23,7 @@ namespace Plainion.CI.Model
         private string myCreatePackageArguments;
         private User myUser;
         private string myDiffTool;
+        private string myNuGetExecutable;
 
         public BuildDefinition()
         {
@@ -127,6 +128,13 @@ namespace Plainion.CI.Model
         {
             get { return myDiffTool; }
             set { SetProperty( ref myDiffTool, value ); }
+        }
+
+        [DataMember]
+        public string NuGetExecutable
+        {
+            get { return myNuGetExecutable; }
+            set { SetProperty( ref myNuGetExecutable, value ); }
         }
     }
 }

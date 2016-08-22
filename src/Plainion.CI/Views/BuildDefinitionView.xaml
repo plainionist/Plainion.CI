@@ -130,12 +130,23 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Diff tool" VerticalAlignment="Center"/>
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
+                        <TextBlock Text="Compare"/>
+                        <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Specify executable including arguments"/>
+                    </StackPanel>
                     <TextBox Grid.Row="0" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.DiffTool}"/>
+
                     <TextBlock Grid.Row="1" Grid.Column="1" Margin="5,2,0,0"
                                Text="Use %base for the base and %mine for the locally modified file"/>
+
+                    <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
+                        <TextBlock Text="NuGet"/>
+                        <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Executable only"/>
+                    </StackPanel>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.NuGetExecutable}"/>
                 </Grid>
             </GroupBox>
         </Grid>

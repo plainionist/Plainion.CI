@@ -1,13 +1,4 @@
 <Project DefaultTargets="All" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
-
-    <PropertyGroup>
-        <ProjectName>Plainion.CI</ProjectName>
-        
-        <Solution>$(ProjectRoot)/$(ProjectName).sln</Solution>
-
-        <NuGet>/bin/nuget.exe</NuGet>
-    </PropertyGroup>
-
     <ItemGroup Label="TestFiles">
         <TestFile Include="$(OutputPath)\*.*Tests.*"/>
         <TestFile Include="$(OutputPath)\*Moq*"/>
@@ -20,13 +11,7 @@
         <TestFolder Include="$(OutputPath)/TestData"/>
     </ItemGroup>
 
-    <Target Name="UpdatePackages">
-        <Error Condition="!Exists('$(NuGet)')" Text="NuGet.exe not found at $(NuGet)" />
-
-        <Exec Command="$(NuGet) restore $(Solution)" WorkingDirectory="$(PackageRoot)"/>
-    </Target>
-
-    <Target Name="All" DependsOnTargets="UpdatePackages">
+    <Target Name="All">
         <Delete Files="@(TestFile)"/>
         <RemoveDir Directories="@(TestFolder)"/>
     </Target>

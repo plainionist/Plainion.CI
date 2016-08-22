@@ -31,6 +31,7 @@ namespace Plainion.CI.Services
 
             return Task<bool>.Run( () =>
                 Execute( "Clean", ClearOutputDirectory, progress )
+                && Execute( "update nuget packages", UpdateNugetPackages(solution), progress )
                 && Execute( "build", ExecuteMsbuildScript( solution ), progress )
                 && ( !myDefinition.RunTests || RunTests( builtInMsBuildScript, progress ) )
                 && ( !myDefinition.CheckIn || Execute( "checkin", CheckIn, progress ) )
@@ -43,6 +44,29 @@ namespace Plainion.CI.Services
         {
             Directory.Delete( GetOutputPath(), true );
             return true;
+        }
+
+        private Func<IProgress<string>, bool> UpdateNugetPackages( string solution )
+        {
+            return progress =>
+                {
+                    if( string.IsNullOrWhiteSpace( myDefinition.NuGetExecutable ) )
+                    {
+                        progress.Report( ">> NUGET.exe not configured" );
+                        return true;
+                    }
+
+                    if( !File.Exists( myDefinition.NuGetExecutable ) )
+                    {
+                        progress.Report( "!! Nuget.exe not found at: " + myDefinition.NuGetExecutable );
+                        return false;
+                    }
+
+                    var process = new UiShellCommand( myDefinition.NuGetExecutable, progress );
+                    process.Execute( "restore", solution );
+
+                    return true;
+                };
         }
 
         private bool Execute( string activity, Func<IProgress<string>, bool> action, IProgress<string> progress )
