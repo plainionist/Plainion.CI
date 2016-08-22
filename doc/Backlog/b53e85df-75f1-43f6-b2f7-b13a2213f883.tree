@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Tree>
+  <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
+    <Caption><![CDATA[Planning]]></Caption>
+    <Node Id="14080835-27b9-407b-ac8a-a65a1df6cb19">
+      <Caption><![CDATA[Migrate internaly to FAKE]]></Caption>
+    </Node>
+    <Node Id="9fca6e77-5d6c-4e8a-a902-3a8578cb3967">
+      <Caption><![CDATA[Can we get rid of own NUnit msbuild task?]]></Caption>
+    </Node>
+    <Node Id="188a2c34-e2c9-4b98-8eaf-450b4afd9788">
+      <Caption><![CDATA[add "create release"]]></Caption>
+    </Node>
+    <Node Id="450a87c0-dddd-4c4e-b7d2-21c118a61032">
+      <Caption><![CDATA[add "deploy release"]]></Caption>
+    </Node>
+  </Node>
+</Tree>

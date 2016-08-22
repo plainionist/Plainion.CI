@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="Plainion.CI.Views.BuildDefinitionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:l="clr-namespace:Plainion.CI.Views"
+             mc:Ignorable="d" d:DesignWidth="700">
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <GroupBox Header="Repository" Grid.Row="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Root" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding BuildDefinition.RepositoryRoot}" Margin="5,0,0,0"/>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Build" Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Solution" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding BuildDefinition.Solution}" Margin="5,2,0,0"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Configuration" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1" Margin="5,2,0,0" ItemsSource="{Binding Configurations}" 
+                              SelectedItem="{Binding BuildDefinition.Configuration}" Width="100" HorizontalAlignment="Left"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Platform" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Row="2" Grid.Column="1" Margin="5,2,0,0" ItemsSource="{Binding Platforms}" 
+                              SelectedItem="{Binding BuildDefinition.Platform}" Width="100" HorizontalAlignment="Left"/>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Test" Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Test assembly pattern" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.TestAssemblyPattern}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Runner executable" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.TestRunnerExecutable}"/>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="User" Grid.Row="3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.User.Login}" Width="150" HorizontalAlignment="Left"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="E-Mail" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.User.EMail}" Width="200" HorizontalAlignment="Left"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Password" VerticalAlignment="Center"/>
+                    <PasswordBox Grid.Row="2" Grid.Column="1" Margin="5,2,0,0" Width="200" HorizontalAlignment="Left" 
+                                 l:PasswordBinder.Attach="True" l:PasswordBinder.Password="{Binding BuildDefinition.User.Password, Mode=TwoWay}" />
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Tools" Grid.Row="4">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Diff tool" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.DiffTool}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Margin="5,2,0,0"
+                               Text="Use %base for the base and %mine for the locally modified file"/>
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

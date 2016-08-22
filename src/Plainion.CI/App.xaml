@@ -1,0 +1,17 @@
+﻿<Application x:Class="Plainion.CI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModels="clr-namespace:Plainion.CI.ViewModels"
+             xmlns:views="clr-namespace:Plainion.CI.Views">
+    <Application.Resources>
+        <DataTemplate DataType="{x:Type viewModels:BuildLogViewModel}">
+            <views:BuildLogView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:CheckInViewModel}">
+            <views:CheckInView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:BuildDefinitionViewModel}">
+            <views:BuildDefinitionView/>
+        </DataTemplate>
+    </Application.Resources>
+</Application>

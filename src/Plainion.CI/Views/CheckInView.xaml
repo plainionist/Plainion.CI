@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="Plainion.CI.Views.CheckInView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pn="http://github.com/ronin4net/plainion"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:sc="clr-namespace:Plainion.CI.Services.SourceControl"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="1000">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Button Content="Refresh" Command="{Binding RefreshCommand}" Margin="0" HorizontalAlignment="Left"/>
+        </Grid>
+
+        <ListBox Grid.Row="1" ItemsSource="{Binding Files}" Margin="0,3,0,0" SelectedItem="{Binding SelectedFile}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding DiffToPreviousCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <ListBox.Resources>
+                <pn:BindingProxy Data="{Binding}" x:Key="RootDataContext"/>
+            </ListBox.Resources>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsChecked}"  VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding File}" Margin="5,0,0,0" VerticalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Foreground" Value="Black" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding State}" Value="{x:Static sc:ChangeType.Missing}">
+                                            <Setter Property="Foreground" Value="Red" />
+                                            <Setter Property="ToolTip" Value="Removed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding State}" Value="{x:Static sc:ChangeType.Untracked}">
+                                            <Setter Property="Foreground" Value="Green" />
+                                            <Setter Property="ToolTip" Value="Added"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                            <TextBlock.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Revert" Command="{Binding Data.RevertCommand, Source={StaticResource RootDataContext}}" CommandParameter="{Binding File}"/>
+                                </ContextMenu>
+                            </TextBlock.ContextMenu>
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <CheckBox Grid.Row="3" Margin="0,3,0,0" Content="Run tests" IsChecked="{Binding BuildDefinition.RunTests}" VerticalAlignment="Center"/>
+
+        <Grid Grid.Row="4" Margin="0,3,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <CheckBox Grid.Row="0" Grid.Column="0" Content="Check In" IsChecked="{Binding BuildDefinition.CheckIn}" VerticalAlignment="Top" Margin="0,2,0,0"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,3,0,0" Text="Comment" VerticalAlignment="Top"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Margin="5,3,0,0" Text="{Binding CheckInComment}" AcceptsReturn="True" Height="50"/>
+        </Grid>
+
+        <Grid Grid.Row="5" Margin="0,3,0,0">
+            <CheckBox Content="Push" IsChecked="{Binding BuildDefinition.Push}" VerticalAlignment="Center"/>
+        </Grid>
+    </Grid>
+</UserControl>

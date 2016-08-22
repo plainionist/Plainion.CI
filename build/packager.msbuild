@@ -1,0 +1,68 @@
+<Project DefaultTargets="All" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+
+    <PropertyGroup>
+        <ProjectName>Plainion.CI</ProjectName>
+
+        <BuildMode>Release</BuildMode>
+        <BuildPlatform>Any CPU</BuildPlatform>
+
+        <TestAssemblyPattern>*Tests.dll</TestAssemblyPattern>
+
+        <ProjectRoot>$([System.IO.Path]::GetFullPath('..'))</ProjectRoot>
+        <BuildRoot>$(ProjectRoot)\build</BuildRoot>
+        <ExternRoot>$(ProjectRoot)\extern</ExternRoot>
+        <PackageRoot>$(ProjectRoot)\bin\$(ProjectName)</PackageRoot>
+        <NugetPackageRoot>$(ProjectRoot)\pkg</NugetPackageRoot>
+        
+        <Solution>$(ProjectRoot)/$(ProjectName).sln</Solution>
+
+        <NuGet>/bin/nuget.exe</NuGet>
+    </PropertyGroup>
+
+    <ItemGroup Label="TestFiles">
+        <TestFile Include="$(PackageRoot)\*.*Tests.*"/>
+        <TestFile Include="$(PackageRoot)\*Moq*"/>
+        <TestFile Include="$(PackageRoot)\*Nunit*"/>
+        <TestFile Include="$(PackageRoot)\*.nunit"/>
+        <TestFile Include="$(PackageRoot)\TestResult.xml"/>
+    </ItemGroup>
+
+    <ItemGroup Label="TestFolders">
+        <TestFolder Include="$(PackageRoot)/TestData"/>
+    </ItemGroup>
+
+    <ItemGroup Label="Redist">
+        <Redist Include="$(ExternRoot)\license.*"/>
+    </ItemGroup>
+
+    <Target Name="Clean">
+        <RemoveDir Directories="$(PackageRoot)"/>
+        <MakeDir Directories="$(PackageRoot)"/>
+    </Target>
+
+    <Target Name="UpdatePackages">
+        <Error Condition="!Exists('$(NuGet)')" Text="NuGet.exe not found at $(NuGet)" />
+
+        <Exec Command="$(NuGet) restore $(Solution)" WorkingDirectory="$(PackageRoot)"/>
+    </Target>
+
+    <Target Name="Build" DependsOnTargets="UpdatePackages">
+        <MSBuild Projects="$(Solution)"
+                 Properties="Configuration=$(BuildMode);Platform=$(BuildPlatform);OutputPath=$(PackageRoot)"
+                 Targets="Rebuild"
+                  BuildInParallel="true"/>
+    </Target>
+
+    <Target Name="Tests">
+        <Exec Command="$(PackageRoot)\Plainion.Starter.exe -TestIt -a $(TestAssemblyPattern)"
+              WorkingDirectory="$(PackageRoot)"
+              CustomErrorRegularExpression="^\s*\d+\) Test Failure : .*$"/>
+    </Target>
+
+    <Target Name="All" DependsOnTargets="Clean;Build">
+        <Copy SourceFiles="@(Redist)" DestinationFolder="$(PackageRoot)"/>
+
+        <Delete Files="@(TestFile)"/>
+        <RemoveDir Directories="@(TestFolder)"/>
+    </Target>
+</Project>

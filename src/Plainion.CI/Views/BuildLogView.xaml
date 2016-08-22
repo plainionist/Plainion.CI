@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="Plainion.CI.Views.BuildLogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:views="clr-namespace:Plainion.CI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <ListBox ItemsSource="{Binding Log}" views:TextBoxBehaviour.ScrollOnTextChanged="True" views:ListBoxExtensions.AutoScrollToEnd="True"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+            <ListBox.Style>
+                <Style TargetType="{x:Type ListBox}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Succeeded, Mode=OneWay}" Value="True">
+                            <Setter Property="BorderBrush" Value="Green"/>
+                            <Setter Property="BorderThickness" Value="3"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Succeeded, Mode=OneWay}" Value="False">
+                            <Setter Property="BorderBrush" Value="Red"/>
+                            <Setter Property="BorderThickness" Value="3"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Succeeded, Mode=OneWay}" Value="null">
+                            <Setter Property="BorderBrush" Value="Black"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Style>
+        </ListBox>
+    </Grid>
+</UserControl>
