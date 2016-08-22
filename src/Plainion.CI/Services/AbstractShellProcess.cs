@@ -20,6 +20,11 @@ namespace Plainion.CI.Services
             myWorkingDirectory = workingDirectory;
         }
 
+        protected string Executable
+        {
+            get { return myExecutable; }
+        }
+
         public virtual void Dispose()
         {
             if (myProcess == null)

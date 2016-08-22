@@ -12,12 +12,15 @@ namespace Plainion.CI.Model
         private string myRepositoryRoot;
         private string mySolution;
         private bool myRunTests;
+        private bool myCreatePackage;
         private bool myCheckIn;
         private bool myPush;
         private string myConfiguration;
         private string myPlatform;
         private string myTestRunnerExecutable;
         private string myTestAssemblyPattern;
+        private string myCreatePackageScript;
+        private string myCreatePackageArguments;
         private User myUser;
         private string myDiffTool;
 
@@ -44,6 +47,13 @@ namespace Plainion.CI.Model
         {
             get { return myRunTests; }
             set { SetProperty( ref myRunTests, value ); }
+        }
+
+        [DataMember]
+        public bool CreatePackage
+        {
+            get { return myCreatePackage; }
+            set { SetProperty( ref myCreatePackage, value ); }
         }
 
         [DataMember]
@@ -86,6 +96,20 @@ namespace Plainion.CI.Model
         {
             get { return myTestAssemblyPattern; }
             set { SetProperty( ref myTestAssemblyPattern, value ); }
+        }
+
+        [DataMember]
+        public string CreatePackageScript
+        {
+            get { return myCreatePackageScript; }
+            set { SetProperty( ref myCreatePackageScript, value ); }
+        }
+
+        [DataMember]
+        public string CreatePackageArguments
+        {
+            get { return myCreatePackageArguments; }
+            set { SetProperty( ref myCreatePackageArguments, value ); }
         }
 
         /// <summary/>

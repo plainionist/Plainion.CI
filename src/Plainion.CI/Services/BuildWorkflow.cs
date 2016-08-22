@@ -30,10 +30,19 @@ namespace Plainion.CI.Services
             var builtInMsBuildScript = Path.Combine( Path.GetDirectoryName( GetType().Assembly.Location ), "Services", "Msbuild", "Plainion.CI.targets" );
 
             return Task<bool>.Run( () =>
-                Execute( "build", ExecuteMsbuildScript( solution ), progress )
+                Execute( "Clean", ClearOutputDirectory, progress )
+                && Execute( "build", ExecuteMsbuildScript( solution ), progress )
                 && ( !myDefinition.RunTests || RunTests( builtInMsBuildScript, progress ) )
                 && ( !myDefinition.CheckIn || Execute( "checkin", CheckIn, progress ) )
-                && ( !myDefinition.Push || Execute( "push", Push, progress ) ) );
+                && ( !myDefinition.Push || Execute( "push", Push, progress ) )
+                && ( !myDefinition.CreatePackage || Execute( "create pacakge", ExecuteMsbuildScript( myDefinition.CreatePackageScript,
+                    myDefinition.CreatePackageArguments.Split( new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ) ), progress ) ) );
+        }
+
+        private bool ClearOutputDirectory( IProgress<string> progress )
+        {
+            Directory.Delete( GetOutputPath(), true );
+            return true;
         }
 
         private bool Execute( string activity, Func<IProgress<string>, bool> action, IProgress<string> progress )
@@ -42,7 +51,7 @@ namespace Plainion.CI.Services
             {
                 var success = action( progress );
 
-                if ( success )
+                if( success )
                 {
                     progress.Report( "--- " + activity.ToUpper() + " SUCCEEDED ---" );
                 }
@@ -53,7 +62,7 @@ namespace Plainion.CI.Services
 
                 return success;
             }
-            catch ( Exception ex )
+            catch( Exception ex )
             {
                 progress.Report( "ERROR: " + ex.Message );
                 progress.Report( "--- " + activity.ToUpper() + " FAILED ---" );
@@ -63,15 +72,23 @@ namespace Plainion.CI.Services
 
         private Func<IProgress<string>, bool> ExecuteMsbuildScript( string script, params string[] args )
         {
+            Contract.Requires( !string.IsNullOrWhiteSpace( script ), "No MsBuild script given" );
+
             return p =>
                 {
+                    if( !Path.IsPathRooted( script ) )
+                    {
+                        script = Path.Combine( myDefinition.RepositoryRoot, script );
+                    }
+
                     var process = new UiShellCommand( @"C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe", p );
 
                     var allArgs = new[]{
                         "/m",
                         "/p:Configuration=" + myDefinition.Configuration,
                         "/p:Platform=\"" + myDefinition.Platform + "\"",
-                        "/p:OutputPath=\"" + Path.Combine( myDefinition.RepositoryRoot, "bin", "gc" ) + "\""
+                        "/p:OutputPath=\"" + GetOutputPath() + "\"",
+                        "/p:ProjectRoot=\"" + myDefinition.RepositoryRoot + "\""
                     }
                     .Concat( args )
                     .Concat( new[] { script } )
@@ -83,6 +100,11 @@ namespace Plainion.CI.Services
                 };
         }
 
+        private string GetOutputPath()
+        {
+            return Path.Combine( myDefinition.RepositoryRoot, "bin", "gc" );
+        }
+
         private bool RunTests( string builtInMsBuildScript, IProgress<string> progress )
         {
             return Execute( "test", ExecuteMsbuildScript( builtInMsBuildScript,
@@ -91,10 +113,10 @@ namespace Plainion.CI.Services
                 "/p:AssembliesPattern=" + myDefinition.TestAssemblyPattern
                 ), progress );
         }
-        
+
         private bool CheckIn( IProgress<string> progress )
         {
-            if ( string.IsNullOrEmpty( myRequest.CheckInComment ) )
+            if( string.IsNullOrEmpty( myRequest.CheckInComment ) )
             {
                 progress.Report( "!! NO CHECKIN COMMENT PROVIDED !!" );
                 return false;
@@ -107,7 +129,7 @@ namespace Plainion.CI.Services
 
         private bool Push( IProgress<string> progress )
         {
-            if ( myDefinition.User.Password == null )
+            if( myDefinition.User.Password == null )
             {
                 progress.Report( "!! NO PASSWORD PROVIDED !!" );
                 return false;

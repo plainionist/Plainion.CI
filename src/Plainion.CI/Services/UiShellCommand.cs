@@ -20,6 +20,7 @@ namespace Plainion.CI.Services
 
         public void Execute(params string[] arguments)
         {
+            myProgress.Report( "Executing: " + Executable + " " + string.Join( " ", arguments ) );
             base.Execute(string.Join(" ", arguments));
         }
 

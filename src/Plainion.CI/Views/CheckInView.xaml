@@ -16,6 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
@@ -82,6 +83,10 @@
 
         <Grid Grid.Row="5" Margin="0,3,0,0">
             <CheckBox Content="Push" IsChecked="{Binding BuildDefinition.Push}" VerticalAlignment="Center"/>
+        </Grid>
+
+        <Grid Grid.Row="6" Margin="0,3,0,0">
+            <CheckBox Content="Create package" IsChecked="{Binding BuildDefinition.CreatePackage}" VerticalAlignment="Center"/>
         </Grid>
     </Grid>
 </UserControl>

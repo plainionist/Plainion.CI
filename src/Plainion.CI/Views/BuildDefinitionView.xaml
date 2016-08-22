@@ -13,6 +13,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <GroupBox Header="Repository" Grid.Row="0">
@@ -74,7 +75,29 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="User" Grid.Row="3">
+            <GroupBox Header="Create package" Grid.Row="3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
+                        <TextBlock Text="Script"/>
+                        <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Currently only Msbuild scripts are supported. The file may end with .msbuild or .targets"/>
+                    </StackPanel>
+                    <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageScript}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Arguments" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageArguments}"/>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="User" Grid.Row="4">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -98,7 +121,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Tools" Grid.Row="4">
+            <GroupBox Header="Tools" Grid.Row="5">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
