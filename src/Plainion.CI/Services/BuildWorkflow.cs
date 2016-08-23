@@ -28,9 +28,10 @@ namespace Plainion.CI.Services
 
             var solution = Path.Combine( myDefinition.RepositoryRoot, myDefinition.Solution );
             var builtInMsBuildScript = Path.Combine( Path.GetDirectoryName( GetType().Assembly.Location ), "Services", "Msbuild", "Plainion.CI.targets" );
+            var commonFsx = Path.Combine( Path.GetDirectoryName( GetType().Assembly.Location ), "bits", "Common.fsx" );
 
             return Task<bool>.Run( () =>
-                Execute( "Clean", ClearOutputDirectory, progress )
+                Execute( "Clean", ExecuteFakeScript( commonFsx, "Clean" ), progress )
                 && Execute( "update nuget packages", UpdateNugetPackages( solution ), progress )
                 && Execute( "build", ExecuteMsbuildScript( solution ), progress )
                 && ( !myDefinition.RunTests || RunTests( builtInMsBuildScript, progress ) )
@@ -41,18 +42,6 @@ namespace Plainion.CI.Services
                 && ( !myDefinition.CreatePackage || Execute( "deploy pacakge", ExecuteMsbuildScript( myDefinition.DeployPackageScript,
                     myDefinition.DeployPackageArguments.Split( new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ) ), progress ) )
             );
-        }
-
-        private bool ClearOutputDirectory( IProgress<string> progress )
-        {
-            var outputPath = GetOutputPath();
-
-            if( Directory.Exists( outputPath ) )
-            {
-                Directory.Delete( outputPath, true );
-            }
-
-            return true;
         }
 
         private Func<IProgress<string>, bool> UpdateNugetPackages( string solution )
@@ -107,30 +96,69 @@ namespace Plainion.CI.Services
         {
             Contract.Requires( !string.IsNullOrWhiteSpace( script ), "No MsBuild script given" );
 
+            var fileExtension = Path.GetExtension( script );
+            var validExtensions = new[] { ".msbuild", ".targets", ".sln" };
+            Contract.Requires( validExtensions.Any( x => x.Equals( fileExtension, StringComparison.OrdinalIgnoreCase ) )
+                , "{0} is not a valid MsBuild script. Valid file extensions are: {1}", script, string.Join( ",", validExtensions ) );
+
             return p =>
+            {
+                if( !Path.IsPathRooted( script ) )
                 {
-                    if( !Path.IsPathRooted( script ) )
-                    {
-                        script = Path.Combine( myDefinition.RepositoryRoot, script );
-                    }
+                    script = Path.Combine( myDefinition.RepositoryRoot, script );
+                }
 
-                    var process = new UiShellCommand( @"C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe", p );
+                var process = new UiShellCommand( @"C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe", p );
 
-                    var allArgs = new[]{
+                var allArgs = new[]{
                         "/m",
                         "/p:Configuration=" + myDefinition.Configuration,
                         "/p:Platform=\"" + myDefinition.Platform + "\"",
                         "/p:OutputPath=\"" + GetOutputPath() + "\"",
                         "/p:ProjectRoot=\"" + myDefinition.RepositoryRoot + "\""
                     }
+                .Concat( args )
+                .Concat( new[] { script } )
+                .ToArray();
+
+                process.Execute( allArgs );
+
+                return process.ExitCode == 0;
+            };
+        }
+
+        private Func<IProgress<string>, bool> ExecuteFakeScript( string script, string target, params string[] args )
+        {
+            Contract.Requires( !string.IsNullOrWhiteSpace( script ), "No FAKE script given" );
+
+            var fileExtension = Path.GetExtension( script );
+            var validExtensions = new[] { ".fsx" };
+            Contract.Requires( validExtensions.Any( x => x.Equals( fileExtension, StringComparison.OrdinalIgnoreCase ) )
+                , "{0} is not a valid FAKE script. Valid file extensions are: {1}", script, string.Join( ",", validExtensions ) );
+
+            return p =>
+            {
+                if( !Path.IsPathRooted( script ) )
+                {
+                    script = Path.Combine( myDefinition.RepositoryRoot, script );
+                }
+
+                var home = Path.GetDirectoryName( GetType().Assembly.Location );
+                var process = new UiShellCommand( Path.Combine( home, "FAKE", "fake.exe" ), p );
+
+                var allArgs = new[] { script, target }
+                    .Concat( new[]{
+                        "OutputPath=\"" + GetOutputPath() + "\"",
+                        "ProjectRoot=\"" + myDefinition.RepositoryRoot + "\"",
+                        "--printdetails"
+                    } )
                     .Concat( args )
-                    .Concat( new[] { script } )
                     .ToArray();
 
-                    process.Execute( allArgs );
+                process.Execute( allArgs );
 
-                    return process.ExitCode == 0;
-                };
+                return process.ExitCode == 0;
+            };
         }
 
         private string GetOutputPath()
