@@ -26,45 +26,27 @@ namespace Plainion.CI.Services
             myDefinition = Objects.Clone( myDefinition );
             myRequest = Objects.Clone( myRequest );
 
-            var solution = Path.Combine( myDefinition.RepositoryRoot, myDefinition.Solution );
+            var solution = GetSolutionFile();
             var builtInMsBuildScript = Path.Combine( Path.GetDirectoryName( GetType().Assembly.Location ), "Services", "Msbuild", "Plainion.CI.targets" );
             var commonFsx = Path.Combine( Path.GetDirectoryName( GetType().Assembly.Location ), "bits", "Common.fsx" );
 
             return Task<bool>.Run( () =>
                 Execute( "Clean", ExecuteFakeScript( commonFsx, "Clean" ), progress )
-                && Execute( "update nuget packages", UpdateNugetPackages( solution ), progress )
+                && Execute( "update nuget packages", ExecuteFakeScript( commonFsx, "RestoreNugetPackages" ), progress )
                 && Execute( "build", ExecuteMsbuildScript( solution ), progress )
                 && ( !myDefinition.RunTests || RunTests( builtInMsBuildScript, progress ) )
                 && ( !myDefinition.CheckIn || Execute( "checkin", CheckIn, progress ) )
                 && ( !myDefinition.Push || Execute( "push", Push, progress ) )
                 && ( !myDefinition.CreatePackage || Execute( "create pacakge", ExecuteMsbuildScript( myDefinition.CreatePackageScript,
                     myDefinition.CreatePackageArguments.Split( new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ) ), progress ) )
-                && ( !myDefinition.CreatePackage || Execute( "deploy pacakge", ExecuteMsbuildScript( myDefinition.DeployPackageScript,
+                && ( !myDefinition.DeployPackage || Execute( "deploy pacakge", ExecuteMsbuildScript( myDefinition.DeployPackageScript,
                     myDefinition.DeployPackageArguments.Split( new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ) ), progress ) )
             );
         }
 
-        private Func<IProgress<string>, bool> UpdateNugetPackages( string solution )
+        private string GetSolutionFile()
         {
-            return progress =>
-                {
-                    if( string.IsNullOrWhiteSpace( myDefinition.NuGetExecutable ) )
-                    {
-                        progress.Report( ">> NUGET.exe not configured" );
-                        return true;
-                    }
-
-                    if( !File.Exists( myDefinition.NuGetExecutable ) )
-                    {
-                        progress.Report( "!! Nuget.exe not found at: " + myDefinition.NuGetExecutable );
-                        return false;
-                    }
-
-                    var process = new UiShellCommand( myDefinition.NuGetExecutable, progress );
-                    process.Execute( "restore", solution );
-
-                    return true;
-                };
+            return Path.Combine( myDefinition.RepositoryRoot, myDefinition.Solution );
         }
 
         private bool Execute( string activity, Func<IProgress<string>, bool> action, IProgress<string> progress )
@@ -150,6 +132,7 @@ namespace Plainion.CI.Services
                     .Concat( new[]{
                         "OutputPath=\"" + GetOutputPath() + "\"",
                         "ProjectRoot=\"" + myDefinition.RepositoryRoot + "\"",
+                        "SolutionFile=\"" + GetSolutionFile() + "\"",
                         "--printdetails"
                     } )
                     .Concat( args )

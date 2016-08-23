@@ -12,7 +12,12 @@
       <TestFolder Include="$(OutputPath)/TestData"/>
     </ItemGroup>
 
+    <ItemGroup Label="NonPackage">
+      <NonPackage Include="$(OutputPath)/Plainion.CI.Redist.*"/>
+    </ItemGroup>
+
     <Delete Files="@(TestFile)"/>
+    <Delete Files="@(NonPackage)"/>
     <RemoveDir Directories="@(TestFolder)"/>
   </Target>
 
