@@ -34,7 +34,7 @@ namespace Plainion.CI.Services
                 Execute( "Clean", ExecuteFakeScript( commonFsx, "Clean" ), progress )
                 && Execute( "update nuget packages", ExecuteFakeScript( commonFsx, "RestoreNugetPackages" ), progress )
                 && Execute( "build", ExecuteMsbuildScript( solution ), progress )
-                && ( !myDefinition.RunTests || RunTests( builtInMsBuildScript, progress ) )
+                && ( !myDefinition.RunTests || RunTests( commonFsx, progress ) )
                 && ( !myDefinition.CheckIn || Execute( "checkin", CheckIn, progress ) )
                 && ( !myDefinition.Push || Execute( "push", Push, progress ) )
                 && ( !myDefinition.CreatePackage || Execute( "create pacakge", ExecuteMsbuildScript( myDefinition.CreatePackageScript,
@@ -149,12 +149,12 @@ namespace Plainion.CI.Services
             return Path.Combine( myDefinition.RepositoryRoot, "bin", "gc" );
         }
 
-        private bool RunTests( string builtInMsBuildScript, IProgress<string> progress )
+        private bool RunTests( string builtInScript, IProgress<string> progress )
         {
-            return Execute( "test", ExecuteMsbuildScript( builtInMsBuildScript,
-                "/t:Nunit",
-                "/p:NUnitConsole=" + myDefinition.TestRunnerExecutable,
-                "/p:AssembliesPattern=" + myDefinition.TestAssemblyPattern
+            return Execute( "test", ExecuteFakeScript( builtInScript,
+                "RunNUnitTests",
+                "NUnitPath=" + Path.GetDirectoryName( myDefinition.TestRunnerExecutable ),
+                "TestAssemblyPattern=" + myDefinition.TestAssemblyPattern
                 ), progress );
         }
 

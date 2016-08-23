@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.CI", "src\Plainion
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.CI.Redist", "src\Plainion.CI.Redist\Plainion.CI.Redist.csproj", "{24C2DF25-B953-4CA3-B9FE-B958D7B6685D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.CI.Tests", "src\Plainion.CI.Tests\Plainion.CI.Tests.csproj", "{72FFCC77-96EE-4067-BAF7-246DD065620A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{24C2DF25-B953-4CA3-B9FE-B958D7B6685D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24C2DF25-B953-4CA3-B9FE-B958D7B6685D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24C2DF25-B953-4CA3-B9FE-B958D7B6685D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72FFCC77-96EE-4067-BAF7-246DD065620A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72FFCC77-96EE-4067-BAF7-246DD065620A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72FFCC77-96EE-4067-BAF7-246DD065620A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72FFCC77-96EE-4067-BAF7-246DD065620A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
