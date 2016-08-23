@@ -31,7 +31,7 @@ namespace Plainion.CI.Services
 
             return Task<bool>.Run( () =>
                 Execute( "Clean", ClearOutputDirectory, progress )
-                && Execute( "update nuget packages", UpdateNugetPackages(solution), progress )
+                && Execute( "update nuget packages", UpdateNugetPackages( solution ), progress )
                 && Execute( "build", ExecuteMsbuildScript( solution ), progress )
                 && ( !myDefinition.RunTests || RunTests( builtInMsBuildScript, progress ) )
                 && ( !myDefinition.CheckIn || Execute( "checkin", CheckIn, progress ) )
@@ -45,7 +45,13 @@ namespace Plainion.CI.Services
 
         private bool ClearOutputDirectory( IProgress<string> progress )
         {
-            Directory.Delete( GetOutputPath(), true );
+            var outputPath = GetOutputPath();
+
+            if( Directory.Exists( outputPath ) )
+            {
+                Directory.Delete( outputPath, true );
+            }
+
             return true;
         }
 
