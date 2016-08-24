@@ -42,22 +42,23 @@ namespace Plainion.CI.Services
                 script = Path.Combine( BuildDefinition.RepositoryRoot, script );
             }
 
-            var commonProperties = new Dictionary<string, string>{
-                { "Configuration", BuildDefinition.Configuration },
-                { "Platform","\"" + BuildDefinition.Platform + "\""},
-                { "OutputPath","\"" + BuildDefinition.GetOutputPath() + "\""},
-                { "ProjectRoot","\"" + BuildDefinition.RepositoryRoot + "\""},
-                { "SolutionFile","\""  + BuildDefinition.GetSolutionPath() + "\""}
-            };
-
-            var compiledArguments = CompileScriptArgumentsInternal( script, target, commonProperties, args ).ToArray();
-
             var process = new UiShellCommand( Interpreter, Progress );
+
+            process.Environment[ "Configuration" ] = BuildDefinition.Configuration;
+            process.Environment[ "Platform" ] = BuildDefinition.Platform;
+            process.Environment[ "OutputPath" ] = BuildDefinition.GetOutputPath();
+            process.Environment[ "ProjectRoot" ] = BuildDefinition.RepositoryRoot;
+            process.Environment[ "SolutionFile" ] = BuildDefinition.GetSolutionPath();
+            process.Environment[ "NUnitPath" ] = Path.GetDirectoryName( BuildDefinition.TestRunnerExecutable );
+            process.Environment[ "TestAssemblyPattern" ] =  BuildDefinition.TestAssemblyPattern;
+
+            var compiledArguments = CompileScriptArgumentsInternal( script, target, args ).ToArray();
+
             process.Execute( compiledArguments );
 
             return process.ExitCode == 0;
         }
 
-        protected abstract IEnumerable<string> CompileScriptArgumentsInternal( string script, string target, Dictionary<string, string> commonProperties, string[] args );
+        protected abstract IEnumerable<string> CompileScriptArgumentsInternal( string script, string target, string[] args );
     }
 }

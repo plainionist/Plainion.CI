@@ -26,16 +26,11 @@ namespace Plainion.CI.Services
             get { yield return ".fsx"; }
         }
 
-        protected override IEnumerable<string> CompileScriptArgumentsInternal( string script, string target, Dictionary<string, string> commonProperties, string[] args )
+        protected override IEnumerable<string> CompileScriptArgumentsInternal( string script, string target, string[] args )
         {
             yield return script;
 
             yield return target;
-
-            foreach( var prop in commonProperties )
-            {
-                yield return string.Format( "{0}={1}", prop.Key, prop.Value );
-            }
 
             foreach( var arg in args )
             {

@@ -27,7 +27,7 @@ namespace Plainion.CI.Services
             }
         }
 
-        protected override IEnumerable<string> CompileScriptArgumentsInternal( string script, string target, Dictionary<string, string> commonProperties, string[] args )
+        protected override IEnumerable<string> CompileScriptArgumentsInternal( string script, string target, string[] args )
         {
             yield return "/m";
 
@@ -36,10 +36,8 @@ namespace Plainion.CI.Services
                 yield return "/t:" + target;
             }
 
-            foreach( var prop in commonProperties )
-            {
-                yield return string.Format( "/p:{0}={1}", prop.Key, prop.Value );
-            }
+            // "OutputPath" has to be overwritten on command line
+            yield return "/p:OutputPath=" + BuildDefinition.GetOutputPath();
 
             foreach( var arg in args )
             {

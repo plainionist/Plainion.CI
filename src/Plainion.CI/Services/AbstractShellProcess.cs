@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Plainion.CI.Services
@@ -9,15 +10,17 @@ namespace Plainion.CI.Services
         private readonly string myExecutable;
         private readonly string myWorkingDirectory;
 
-        protected AbstractShellProcess(string executable)
-            : this(executable, null)
+        protected AbstractShellProcess( string executable )
+            : this( executable, null )
         {
         }
 
-        protected AbstractShellProcess(string executable, string workingDirectory)
+        protected AbstractShellProcess( string executable, string workingDirectory )
         {
             myExecutable = executable;
             myWorkingDirectory = workingDirectory;
+
+            Environment = new Dictionary<string, string>();
         }
 
         protected string Executable
@@ -27,7 +30,7 @@ namespace Plainion.CI.Services
 
         public virtual void Dispose()
         {
-            if (myProcess == null)
+            if( myProcess == null )
             {
                 return;
             }
@@ -44,7 +47,9 @@ namespace Plainion.CI.Services
             myProcess = null;
         }
 
-        protected void Execute(string arguments)
+        public IDictionary<string, string> Environment { get; private set; }
+
+        protected void Execute( string arguments )
         {
             try
             {
@@ -52,7 +57,12 @@ namespace Plainion.CI.Services
                 myProcess.StartInfo.FileName = myExecutable;
                 myProcess.StartInfo.Arguments = arguments;
 
-                if (myWorkingDirectory != null)
+                foreach( var entry in Environment )
+                {
+                    myProcess.StartInfo.EnvironmentVariables[ entry.Key ] = entry.Value;
+                }
+
+                if( myWorkingDirectory != null )
                 {
                     myProcess.StartInfo.WorkingDirectory = myWorkingDirectory;
                 }
@@ -84,19 +94,19 @@ namespace Plainion.CI.Services
             }
         }
 
-        private void ParseStdOut(object sender, DataReceivedEventArgs e)
+        private void ParseStdOut( object sender, DataReceivedEventArgs e )
         {
-            OnOutputDataReceived(e.Data);
+            OnOutputDataReceived( e.Data );
         }
 
-        protected abstract void OnOutputDataReceived(string line);
+        protected abstract void OnOutputDataReceived( string line );
 
-        private void ParseStdErr(object sender, DataReceivedEventArgs e)
+        private void ParseStdErr( object sender, DataReceivedEventArgs e )
         {
-            OnErrorDataReceived(e.Data);
+            OnErrorDataReceived( e.Data );
         }
 
-        protected abstract void OnErrorDataReceived(string line);
+        protected abstract void OnErrorDataReceived( string line );
 
         public int ExitCode { get; private set; }
     }

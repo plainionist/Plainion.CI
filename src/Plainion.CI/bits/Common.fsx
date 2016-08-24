@@ -3,8 +3,21 @@
 open Fake
 open System.IO
 
-let outputPath = getBuildParam "OutputPath" 
-let projectRoot = getBuildParam "ProjectRoot" 
+let getProperty name =
+   match getBuildParamOrDefault name null with
+   | null -> 
+        match environVarOrNone name with
+        | Some x -> x
+        | None -> failwith "Property not found: " + name
+   | x -> x
+
+let getPropertyAndTrace name =
+    let value = getProperty name
+    name + "=" + value |> trace 
+    value
+
+let outputPath = getPropertyAndTrace "OutputPath"
+let projectRoot = getPropertyAndTrace "ProjectRoot" 
 
 Target "Default" (fun _ ->
     trace "This script does not have default target. Explicitly choose one!"
@@ -15,7 +28,7 @@ Target "Clean" (fun _ ->
 )
 
 Target "RestoreNugetPackages" (fun _ ->
-    getBuildParam "SolutionFile" 
+    getPropertyAndTrace "SolutionFile" 
     |> RestoreMSSolutionPackages (fun p ->
          { p with
              OutputPath = Path.Combine( projectRoot, "packages" )
@@ -23,10 +36,10 @@ Target "RestoreNugetPackages" (fun _ ->
 )
 
 Target "RunNUnitTests" (fun _ ->
-    !! ( outputPath + "/" + getBuildParam "TestAssemblyPattern" )
+    !! ( outputPath + "/" + getPropertyAndTrace "TestAssemblyPattern" )
     |> NUnit (fun p -> 
         { p with
-            ToolPath = getBuildParam "NUnitPath"
+            ToolPath = getPropertyAndTrace "NUnitPath"
             DisableShadowCopy = true })
 )
 
