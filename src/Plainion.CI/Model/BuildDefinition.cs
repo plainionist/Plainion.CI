@@ -160,5 +160,15 @@ namespace Plainion.CI.Model
             get { return myNuGetExecutable; }
             set { SetProperty( ref myNuGetExecutable, value ); }
         }
+    
+        public string GetOutputPath()
+        {
+            return Path.Combine( RepositoryRoot, "bin", "gc" );
+        }
+    
+        public string GetSolutionPath()
+        {
+            return Path.Combine( RepositoryRoot, Solution );
+        }
     }
 }
