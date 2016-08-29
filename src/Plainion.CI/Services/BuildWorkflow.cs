@@ -25,12 +25,13 @@ namespace Plainion.CI.Services
             myDefinition = Objects.Clone( myDefinition );
             myRequest = Objects.Clone( myRequest );
 
-            var builtInMsBuildScript = Path.Combine( Path.GetDirectoryName( GetType().Assembly.Location ), "Services", "Msbuild", "Plainion.CI.targets" );
-            var commonFsx = Path.Combine( Path.GetDirectoryName( GetType().Assembly.Location ), "bits", "Common.fsx" );
-            var apiDocFsx = Path.Combine( Path.GetDirectoryName( GetType().Assembly.Location ), "bits", "ApiDoc.fsx" );
+            var toolsHome = Path.GetDirectoryName( GetType().Assembly.Location );
+            var commonFsx = Path.Combine( toolsHome, "bits", "Common.fsx" );
+            var apiDocFsx = Path.Combine( toolsHome, "bits", "ApiDoc.fsx" );
 
             return Task<bool>.Run( () =>
                 Try( "Clean", Run( commonFsx, "Clean" ), progress )
+                && ( myDefinition.Solution != "Plainion.CI.sln" || Try( "bootstrap", Run( Path.Combine( myDefinition.RepositoryRoot, "src", "Plainion.CI.Redist", "Plainion.CI.Redist.csproj" ) ), progress ) )
                 && Try( "update nuget packages", Run( commonFsx, "RestoreNugetPackages" ), progress )
                 && Try( "build", Run( myDefinition.GetSolutionPath() ), progress )
                 && ( !myDefinition.GenerateAPIDoc || Try( "api-doc", Run( apiDocFsx, "GenerateApiDoc" ), progress ) )
@@ -48,7 +49,7 @@ namespace Plainion.CI.Services
             {
                 var success = action( progress );
 
-                if( success )
+                if ( success )
                 {
                     progress.Report( "--- " + activity.ToUpper() + " SUCCEEDED ---" );
                 }
@@ -59,7 +60,7 @@ namespace Plainion.CI.Services
 
                 return success;
             }
-            catch( Exception ex )
+            catch ( Exception ex )
             {
                 progress.Report( "ERROR: " + ex.Message );
                 progress.Report( "--- " + activity.ToUpper() + " FAILED ---" );
@@ -91,13 +92,13 @@ namespace Plainion.CI.Services
             var fakeScriptExecutor = new FakeScriptExecutor( myDefinition, progress );
 
             return fakeScriptExecutor.CanExecute( script )
-                ? ( AbstractScriptExecutor )fakeScriptExecutor
-                : ( AbstractScriptExecutor )new MsBuildScriptExecutor( myDefinition, progress );
+                ? (AbstractScriptExecutor)fakeScriptExecutor
+                : (AbstractScriptExecutor)new MsBuildScriptExecutor( myDefinition, progress );
         }
 
         private bool CheckIn( IProgress<string> progress )
         {
-            if( string.IsNullOrEmpty( myRequest.CheckInComment ) )
+            if ( string.IsNullOrEmpty( myRequest.CheckInComment ) )
             {
                 progress.Report( "!! NO CHECKIN COMMENT PROVIDED !!" );
                 return false;
@@ -110,7 +111,7 @@ namespace Plainion.CI.Services
 
         private bool Push( IProgress<string> progress )
         {
-            if( myDefinition.User.Password == null )
+            if ( myDefinition.User.Password == null )
             {
                 progress.Report( "!! NO PASSWORD PROVIDED !!" );
                 return false;

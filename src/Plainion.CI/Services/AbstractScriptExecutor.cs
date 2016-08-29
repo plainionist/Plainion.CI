@@ -44,6 +44,7 @@ namespace Plainion.CI.Services
 
             var process = new UiShellCommand( Interpreter, Progress );
 
+            process.Environment[ "ToolsHome" ] = Path.GetDirectoryName( GetType().Assembly.Location );
             process.Environment[ "Configuration" ] = BuildDefinition.Configuration;
             process.Environment[ "Platform" ] = BuildDefinition.Platform;
             process.Environment[ "OutputPath" ] = BuildDefinition.GetOutputPath();

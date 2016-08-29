@@ -1,45 +1,30 @@
 ﻿#I "../../../bin/Debug/FAKE"
+#load "Settings.fsx"
 #r "FakeLib.dll"
 open Fake
 open System.IO
-
-let getProperty name =
-   match getBuildParamOrDefault name null with
-   | null -> 
-        match environVarOrNone name with
-        | Some x -> x
-        | None -> failwith "Property not found: " + name
-   | x -> x
-
-let getPropertyAndTrace name =
-    let value = getProperty name
-    name + "=" + value |> trace 
-    value
-
-let outputPath = getPropertyAndTrace "OutputPath"
-let projectRoot = getPropertyAndTrace "ProjectRoot" 
 
 Target "Default" (fun _ ->
     trace "This script does not have default target. Explicitly choose one!"
 )
 
 Target "Clean" (fun _ ->
-    CleanDir outputPath
+    CleanDir Settings.outputPath
 )
 
 Target "RestoreNugetPackages" (fun _ ->
-    getPropertyAndTrace "SolutionFile" 
+    Settings.getPropertyAndTrace "SolutionFile" 
     |> RestoreMSSolutionPackages (fun p ->
          { p with
-             OutputPath = Path.Combine( projectRoot, "packages" )
-             Retries = 2 })
+             OutputPath = Path.Combine( Settings.projectRoot, "packages" )
+             Retries = 1 })
 )
 
 Target "RunNUnitTests" (fun _ ->
-    !! ( outputPath + "/" + getPropertyAndTrace "TestAssemblyPattern" )
+    !! ( Settings.outputPath + "/" + Settings.getPropertyAndTrace "TestAssemblyPattern" )
     |> NUnitParallel (fun p -> 
         { p with
-            ToolPath = getPropertyAndTrace "NUnitPath"
+            ToolPath = Settings.getPropertyAndTrace "NUnitPath"
             DisableShadowCopy = true })
 )
 

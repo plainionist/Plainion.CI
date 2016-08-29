@@ -1,5 +1,6 @@
 ﻿#I "../../../bin/Debug/FAKE"
 #I "../../../bin/Debug/FSharp.Formatting"
+#load "Settings.fsx"
 #load "FSharp.Formatting.fsx"
 #r "FakeLib.dll"
 
@@ -16,21 +17,19 @@ let githubLink = "https://github.com/ronin4net/Plainion/ronin4net/Plainion"
 
 // Specify more information about your project
 let info =
-  [ "project-name", "Plainion"
-    "project-author", "ronin4net"
-    "project-summary", "Provides .Net libraries to simplify development of software engineering tools"
-    "project-github", githubLink
-    "project-nuget", "http://nuget.org/packages/Plainion" ]
+    [ "project-name", "Plainion"
+      "project-author", "ronin4net"
+      "project-summary", "Provides .Net libraries to simplify development of software engineering tools"
+      "project-github", githubLink
+      "project-nuget", "http://nuget.org/packages/Plainion" ]
 
 let root = website
 
-// Paths with template/source/output locations
-let bin        = __SOURCE_DIRECTORY__ @@ "../../bin"
-let content    = __SOURCE_DIRECTORY__ @@ "../content"
-let output     = __SOURCE_DIRECTORY__ @@ "../output"
-let files      = __SOURCE_DIRECTORY__ @@ "../files"
-let templates  = __SOURCE_DIRECTORY__ @@ "templates"
-let formatting = __SOURCE_DIRECTORY__ @@ "../../packages/build/FSharp.Formatting/"
+let output     = Settings.outputPath @@ "doc"
+let content    = Settings.projectRoot @@ "doc/content"
+let files      = Settings.projectRoot @@ "doc/files"
+let templates  = Settings.toolsHome @@ "bits/templates"
+let formatting = Settings.toolsHome @@ "FSharp.Formatting/"
 let docTemplate = "docpage.cshtml"
 
 // Where to look for *.csproj templates (in this order)
@@ -49,14 +48,13 @@ subDirectories (directoryInfo templates)
 
 // Copy static files and CSS + JS from F# Formatting
 let copyFiles () =
-  CopyRecursive files output true |> Log "Copying file: "
-  ensureDirectory (output @@ "content")
-  CopyRecursive (formatting @@ "styles") (output @@ "content") true 
-    |> Log "Copying styles and scripts: "
+    if directoryExists files then CopyRecursive files output true |> Log "Copying file: "
+    ensureDirectory (output @@ "content")
+    CopyRecursive (formatting @@ "styles") (output @@ "content") true |> Log "Copying styles and scripts: "
 
 let binaries =
     let conventionBased = 
-        directoryInfo bin 
+        directoryInfo Settings.outputPath 
         |> subDirectories
         |> Array.map (fun d -> d.FullName @@ (sprintf "%s.dll" d.Name))
         |> List.ofArray
@@ -65,57 +63,60 @@ let binaries =
 
 let libDirs =
     let conventionBasedbinDirs =
-        directoryInfo bin 
+        directoryInfo Settings.outputPath 
         |> subDirectories
         |> Array.map (fun d -> d.FullName)
         |> List.ofArray
 
-    conventionBasedbinDirs @ [bin]
+    conventionBasedbinDirs @ [Settings.outputPath]
 
 // Build API reference from XML comments
 let buildReference () =
-  CleanDir (output @@ "reference")
-  MetadataFormat.Generate
-    ( binaries, output @@ "reference", layoutRootsAll.["en"],
-      parameters = ("root", root)::info,
-      sourceRepo = githubLink @@ "tree/master",
-      sourceFolder = __SOURCE_DIRECTORY__ @@ ".." @@ "..",
-      publicOnly = true,libDirs = libDirs )
+    CleanDir (output @@ "reference")
+    MetadataFormat.Generate
+      ( binaries, output @@ "reference", layoutRootsAll.["en"],
+        parameters = ("root", root)::info,
+        sourceRepo = githubLink @@ "tree/master",
+        sourceFolder = Settings.projectRoot @@ "src",
+        publicOnly = true,libDirs = libDirs )
 
 // Build documentation from `fsx` and `md` files in `docs/content`
 let buildDocumentation () =
 
-  // First, process files which are placed in the content root directory.
-
-  Literate.ProcessDirectory
-    ( content, docTemplate, output, replacements = ("root", root)::info,
-      layoutRoots = layoutRootsAll.["en"],
-      generateAnchors = true,
-      processRecursive = false)
-
-  // And then process files which are placed in the sub directories
-  // (some sub directories might be for specific language).
-
-  let subdirs = Directory.EnumerateDirectories(content, "*", SearchOption.TopDirectoryOnly)
-  for dir in subdirs do
-    let dirname = (new DirectoryInfo(dir)).Name
-    let layoutRoots =
-        // Check whether this directory name is for specific language
-        let key = layoutRootsAll.Keys
-                  |> Seq.tryFind (fun i -> i = dirname)
-        match key with
-        | Some lang -> layoutRootsAll.[lang]
-        | None -> layoutRootsAll.["en"] // "en" is the default language
+    // First, process files which are placed in the content root directory.
 
     Literate.ProcessDirectory
-      ( dir, docTemplate, output @@ dirname, replacements = ("root", root)::info,
-        layoutRoots = layoutRoots,
-        generateAnchors = true )
+        ( content, docTemplate, output, replacements = ("root", root)::info,
+          layoutRoots = layoutRootsAll.["en"],
+          generateAnchors = true,
+          processRecursive = false)
+
+    // And then process files which are placed in the sub directories
+    // (some sub directories might be for specific language).
+
+    let subdirs = Directory.EnumerateDirectories(content, "*", SearchOption.TopDirectoryOnly)
+    for dir in subdirs do
+        let dirname = (new DirectoryInfo(dir)).Name
+        let layoutRoots =
+            // Check whether this directory name is for specific language
+            let key = layoutRootsAll.Keys
+                      |> Seq.tryFind (fun i -> i = dirname)
+            match key with
+            | Some lang -> layoutRootsAll.[lang]
+            | None -> layoutRootsAll.["en"] // "en" is the default language
+
+        Literate.ProcessDirectory
+          ( dir, docTemplate, output @@ dirname, replacements = ("root", root)::info,
+            layoutRoots = layoutRoots,
+            generateAnchors = true )
 
 
 Target "GenerateApiDoc" (fun _ ->
     copyFiles()
-    buildDocumentation()
+
+    if directoryExists content then 
+        buildDocumentation() 
+
     buildReference()
 )
 

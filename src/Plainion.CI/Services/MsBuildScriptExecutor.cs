@@ -24,6 +24,7 @@ namespace Plainion.CI.Services
                 yield return ".msbuild";
                 yield return ".targets";
                 yield return ".sln";
+                yield return ".csproj";
             }
         }
 
