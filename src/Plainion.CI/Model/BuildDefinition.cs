@@ -12,6 +12,7 @@ namespace Plainion.CI.Model
         private string myRepositoryRoot;
         private string mySolution;
         private bool myRunTests;
+        private bool myGenerateAPIDoc;
         private bool myCreatePackage;
         private bool myCheckIn;
         private bool myPush;
@@ -51,6 +52,13 @@ namespace Plainion.CI.Model
         {
             get { return myRunTests; }
             set { SetProperty( ref myRunTests, value ); }
+        }
+
+        [DataMember]
+        public bool GenerateAPIDoc
+        {
+            get { return myGenerateAPIDoc; }
+            set { SetProperty( ref myGenerateAPIDoc, value ); }
         }
 
         [DataMember]

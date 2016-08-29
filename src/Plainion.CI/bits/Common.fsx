@@ -37,10 +37,16 @@ Target "RestoreNugetPackages" (fun _ ->
 
 Target "RunNUnitTests" (fun _ ->
     !! ( outputPath + "/" + getPropertyAndTrace "TestAssemblyPattern" )
-    |> NUnit (fun p -> 
+    |> NUnitParallel (fun p -> 
         { p with
             ToolPath = getPropertyAndTrace "NUnitPath"
             DisableShadowCopy = true })
+)
+
+#load "ApiDoc.fsx"
+
+Target "GenerateApiDoc" (fun _ ->
+    ApiDoc.generateApiDoc()
 )
 
 

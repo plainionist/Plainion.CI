@@ -18,6 +18,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
@@ -64,9 +65,11 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <CheckBox Grid.Row="3" Margin="0,3,0,0" Content="Run tests" IsChecked="{Binding BuildDefinition.RunTests}" VerticalAlignment="Center"/>
+        <CheckBox Grid.Row="3" Margin="0,3,0,0" Content="Generate API documentation" IsChecked="{Binding BuildDefinition.GenerateAPIDoc}" VerticalAlignment="Center"/>
 
-        <Grid Grid.Row="4" Margin="0,3,0,0">
+        <CheckBox Grid.Row="4" Margin="0,3,0,0" Content="Run tests" IsChecked="{Binding BuildDefinition.RunTests}" VerticalAlignment="Center"/>
+
+        <Grid Grid.Row="5" Margin="0,3,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -82,15 +85,15 @@
             <TextBox Grid.Row="1" Grid.Column="1" Margin="5,3,0,0" Text="{Binding CheckInComment}" AcceptsReturn="True" Height="50"/>
         </Grid>
 
-        <Grid Grid.Row="5" Margin="0,3,0,0">
+        <Grid Grid.Row="6" Margin="0,3,0,0">
             <CheckBox Content="Push" IsChecked="{Binding BuildDefinition.Push}" VerticalAlignment="Center"/>
         </Grid>
 
-        <Grid Grid.Row="6" Margin="0,3,0,0">
+        <Grid Grid.Row="7" Margin="0,3,0,0">
             <CheckBox Content="Create package" IsChecked="{Binding BuildDefinition.CreatePackage}" VerticalAlignment="Center"/>
         </Grid>
 
-        <Grid Grid.Row="7" Margin="0,3,0,0">
+        <Grid Grid.Row="8" Margin="0,3,0,0">
             <CheckBox Content="Deploy package" IsChecked="{Binding BuildDefinition.DeployPackage}" VerticalAlignment="Center"/>
         </Grid>
     </Grid>

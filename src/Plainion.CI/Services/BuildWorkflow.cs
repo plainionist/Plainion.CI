@@ -32,6 +32,7 @@ namespace Plainion.CI.Services
                 Try( "Clean", Run( commonFsx, "Clean" ), progress )
                 && Try( "update nuget packages", Run( commonFsx, "RestoreNugetPackages" ), progress )
                 && Try( "build", Run( myDefinition.GetSolutionPath() ), progress )
+                && ( !myDefinition.GenerateAPIDoc || Try( "api-doc", Run( commonFsx, "GenerateApiDoc" ), progress ) )
                 && ( !myDefinition.RunTests || Try( "test", Run( commonFsx, "RunNUnitTests" ), progress ) )
                 && ( !myDefinition.CheckIn || Try( "checkin", CheckIn, progress ) )
                 && ( !myDefinition.Push || Try( "push", Push, progress ) )
