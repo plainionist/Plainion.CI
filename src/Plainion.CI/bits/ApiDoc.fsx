@@ -16,8 +16,9 @@ let website = "/Plainion"
 let githubLink = "https://github.com/ronin4net/Plainion/ronin4net/Plainion"
 
 // Specify more information about your project
+let projectName = "Plainion"
 let info =
-    [ "project-name", "Plainion"
+    [ "project-name", projectName
       "project-author", "ronin4net"
       "project-summary", "Provides .Net libraries to simplify development of software engineering tools"
       "project-github", githubLink
@@ -32,19 +33,10 @@ let templates  = Settings.toolsHome @@ "bits/templates"
 let formatting = Settings.toolsHome @@ "FSharp.Formatting/"
 let docTemplate = "docpage.cshtml"
 
-// Where to look for *.csproj templates (in this order)
 let layoutRootsAll = new System.Collections.Generic.Dictionary<string, string list>()
-layoutRootsAll.Add("en",[ templates; formatting @@ "templates"
+layoutRootsAll.Add("en",[ templates
+                          formatting @@ "templates"
                           formatting @@ "templates/reference" ])
-
-subDirectories (directoryInfo templates)
-|> Seq.iter (fun d ->
-                let name = d.Name
-                if name.Length = 2 || name.Length = 3 then
-                    layoutRootsAll.Add(
-                            name, [templates @@ name
-                                   formatting @@ "templates"
-                                   formatting @@ "templates/reference" ]))
 
 // Copy static files and CSS + JS from F# Formatting
 let copyFiles () =
@@ -52,14 +44,10 @@ let copyFiles () =
     ensureDirectory (output @@ "content")
     CopyRecursive (formatting @@ "styles") (output @@ "content") true |> Log "Copying styles and scripts: "
 
-let binaries =
-    let conventionBased = 
-        directoryInfo Settings.outputPath 
-        |> subDirectories
-        |> Array.map (fun d -> d.FullName @@ (sprintf "%s.dll" d.Name))
-        |> List.ofArray
-
-    conventionBased
+let binaries = 
+    !! ( Settings.outputPath + "/" + "*.dll" )
+    |> Seq.filter ( fun f -> File.Exists(Path.Combine(Path.GetDirectoryName(f),Path.GetFileNameWithoutExtension(f) + ".xml") ) )
+    |> Seq.filter ( fun f -> Path.GetFileName(f).StartsWith(projectName, System.StringComparison.OrdinalIgnoreCase))
 
 let libDirs =
     let conventionBasedbinDirs =
@@ -72,13 +60,20 @@ let libDirs =
 
 // Build API reference from XML comments
 let buildReference () =
+    
     CleanDir (output @@ "reference")
+
+    trace ( sprintf "Generating API doc for: %A" binaries )
+
     MetadataFormat.Generate
-      ( binaries, output @@ "reference", layoutRootsAll.["en"],
+      ( binaries, 
+        output @@ "reference", 
+        layoutRootsAll.["en"],
         parameters = ("root", root)::info,
         sourceRepo = githubLink @@ "tree/master",
         sourceFolder = Settings.projectRoot @@ "src",
-        publicOnly = true,libDirs = libDirs )
+        publicOnly = true,
+        libDirs = libDirs )
 
 // Build documentation from `fsx` and `md` files in `docs/content`
 let buildDocumentation () =
