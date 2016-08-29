@@ -43,12 +43,5 @@ Target "RunNUnitTests" (fun _ ->
             DisableShadowCopy = true })
 )
 
-#load "ApiDoc.fsx"
-
-Target "GenerateApiDoc" (fun _ ->
-    ApiDoc.generateApiDoc()
-)
-
-
 RunTargetOrDefault "Default"
 

@@ -4,6 +4,6 @@
     <StartArguments>..\..\Plainion.CI.gc</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
 </Project>

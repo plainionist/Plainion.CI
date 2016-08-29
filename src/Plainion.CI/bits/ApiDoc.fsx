@@ -1,7 +1,13 @@
-﻿// --------------------------------------------------------------------------------------
-// Builds the documentation from `.fsx` and `.md` files in the 'docs/content' directory
-// (the generated documentation is stored in the 'docs/output' directory)
-// --------------------------------------------------------------------------------------
+﻿#I "../../../bin/Debug/FAKE"
+#I "../../../bin/Debug/FSharp.Formatting"
+#load "FSharp.Formatting.fsx"
+#r "FakeLib.dll"
+
+open Fake
+open System.IO
+open Fake.FileHelper
+open FSharp.Literate
+open FSharp.MetadataFormat
 
 // Web site location for the generated documentation
 let website = "/Plainion"
@@ -15,19 +21,6 @@ let info =
     "project-summary", "Provides .Net libraries to simplify development of software engineering tools"
     "project-github", githubLink
     "project-nuget", "http://nuget.org/packages/Plainion" ]
-
-#I "../../../bin/Debug/FAKE"
-#I "../../../bin/Debug/FSharp.Formatting"
-
-#load "FSharp.Formatting.fsx"
-
-#r "FakeLib.dll"
-
-open Fake
-open System.IO
-open Fake.FileHelper
-open FSharp.Literate
-open FSharp.MetadataFormat
 
 let root = website
 
@@ -44,6 +37,7 @@ let docTemplate = "docpage.cshtml"
 let layoutRootsAll = new System.Collections.Generic.Dictionary<string, string list>()
 layoutRootsAll.Add("en",[ templates; formatting @@ "templates"
                           formatting @@ "templates/reference" ])
+
 subDirectories (directoryInfo templates)
 |> Seq.iter (fun d ->
                 let name = d.Name
@@ -119,7 +113,11 @@ let buildDocumentation () =
         generateAnchors = true )
 
 
-let generateApiDoc () =
+Target "GenerateApiDoc" (fun _ ->
     copyFiles()
     buildDocumentation()
     buildReference()
+)
+
+RunTargetOrDefault "GenerateApiDoc"
+

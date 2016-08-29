@@ -27,12 +27,13 @@ namespace Plainion.CI.Services
 
             var builtInMsBuildScript = Path.Combine( Path.GetDirectoryName( GetType().Assembly.Location ), "Services", "Msbuild", "Plainion.CI.targets" );
             var commonFsx = Path.Combine( Path.GetDirectoryName( GetType().Assembly.Location ), "bits", "Common.fsx" );
+            var apiDocFsx = Path.Combine( Path.GetDirectoryName( GetType().Assembly.Location ), "bits", "ApiDoc.fsx" );
 
             return Task<bool>.Run( () =>
                 Try( "Clean", Run( commonFsx, "Clean" ), progress )
                 && Try( "update nuget packages", Run( commonFsx, "RestoreNugetPackages" ), progress )
                 && Try( "build", Run( myDefinition.GetSolutionPath() ), progress )
-                && ( !myDefinition.GenerateAPIDoc || Try( "api-doc", Run( commonFsx, "GenerateApiDoc" ), progress ) )
+                && ( !myDefinition.GenerateAPIDoc || Try( "api-doc", Run( apiDocFsx, "GenerateApiDoc" ), progress ) )
                 && ( !myDefinition.RunTests || Try( "test", Run( commonFsx, "RunNUnitTests" ), progress ) )
                 && ( !myDefinition.CheckIn || Try( "checkin", CheckIn, progress ) )
                 && ( !myDefinition.Push || Try( "push", Push, progress ) )
