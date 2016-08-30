@@ -8,10 +8,10 @@ namespace Plainion.CI.Services
 {
     abstract class AbstractScriptExecutor
     {
-        protected AbstractScriptExecutor( BuildDefinition buildDefinition, IProgress<string> progress )
+        protected AbstractScriptExecutor(BuildDefinition buildDefinition, IProgress<string> progress)
         {
-            Contract.RequiresNotNull( buildDefinition, "buildDefinition" );
-            Contract.RequiresNotNull( progress, "progress" );
+            Contract.RequiresNotNull(buildDefinition, "buildDefinition");
+            Contract.RequiresNotNull(progress, "progress");
 
             BuildDefinition = buildDefinition;
             Progress = progress;
@@ -25,41 +25,49 @@ namespace Plainion.CI.Services
 
         protected abstract IEnumerable<string> ValidScriptExtensions { get; }
 
-        public bool CanExecute( string script )
+        public bool CanExecute(string script)
         {
-            var fileExtension = Path.GetExtension( script );
-            return ValidScriptExtensions.Any( x => x.Equals( fileExtension, StringComparison.OrdinalIgnoreCase ) );
+            var fileExtension = Path.GetExtension(script);
+            return ValidScriptExtensions.Any(x => x.Equals(fileExtension, StringComparison.OrdinalIgnoreCase));
         }
 
-        public bool Execute( string script, string target, params string[] args )
+        public bool Execute(string script, string target, params string[] args)
         {
-            Contract.Requires( !string.IsNullOrWhiteSpace( script ), "No script given" );
+            Contract.Requires(!string.IsNullOrWhiteSpace(script), "No script given");
 
-            Contract.Requires( CanExecute( script ), "{0} is not a valid script. Valid file extensions are: {1}", script, string.Join( ",", ValidScriptExtensions ) );
+            Contract.Requires(CanExecute(script), "{0} is not a valid script. Valid file extensions are: {1}", script, string.Join(",", ValidScriptExtensions));
 
-            if( !Path.IsPathRooted( script ) )
+            if (!Path.IsPathRooted(script))
             {
-                script = Path.Combine( BuildDefinition.RepositoryRoot, script );
+                script = Path.Combine(BuildDefinition.RepositoryRoot, script);
             }
 
-            var process = new UiShellCommand( Interpreter, Progress );
+            var process = new UiShellCommand(Interpreter, Progress);
 
-            process.Environment[ "ToolsHome" ] = Path.GetDirectoryName( GetType().Assembly.Location );
-            process.Environment[ "Configuration" ] = BuildDefinition.Configuration;
-            process.Environment[ "Platform" ] = BuildDefinition.Platform;
-            process.Environment[ "OutputPath" ] = BuildDefinition.GetOutputPath();
-            process.Environment[ "ProjectRoot" ] = BuildDefinition.RepositoryRoot;
-            process.Environment[ "SolutionFile" ] = BuildDefinition.GetSolutionPath();
-            process.Environment[ "NUnitPath" ] = Path.GetDirectoryName( BuildDefinition.TestRunnerExecutable );
-            process.Environment[ "TestAssemblyPattern" ] =  BuildDefinition.TestAssemblyPattern;
+            var toolsHome = Path.GetDirectoryName(GetType().Assembly.Location);
+            var PATH = Environment.GetEnvironmentVariable("PATH");
 
-            var compiledArguments = CompileScriptArgumentsInternal( script, target, args ).ToArray();
+            // extend PATH so that FAKE targets can find the tools
+            process.Environment["PATH"] = Path.Combine(toolsHome, "FAKE")
+                + Path.PathSeparator + Path.Combine(toolsHome, "NuGet") + 
+                + Path.PathSeparator + PATH;
 
-            process.Execute( compiledArguments );
+            process.Environment["ToolsHome"] = toolsHome;
+            process.Environment["Configuration"] = BuildDefinition.Configuration;
+            process.Environment["Platform"] = BuildDefinition.Platform;
+            process.Environment["OutputPath"] = BuildDefinition.GetOutputPath();
+            process.Environment["ProjectRoot"] = BuildDefinition.RepositoryRoot;
+            process.Environment["SolutionFile"] = BuildDefinition.GetSolutionPath();
+            process.Environment["NUnitPath"] = Path.GetDirectoryName(BuildDefinition.TestRunnerExecutable);
+            process.Environment["TestAssemblyPattern"] = BuildDefinition.TestAssemblyPattern;
+
+            var compiledArguments = CompileScriptArgumentsInternal(script, target, args).ToArray();
+
+            process.Execute(compiledArguments);
 
             return process.ExitCode == 0;
         }
 
-        protected abstract IEnumerable<string> CompileScriptArgumentsInternal( string script, string target, string[] args );
+        protected abstract IEnumerable<string> CompileScriptArgumentsInternal(string script, string target, string[] args);
     }
 }
