@@ -49,7 +49,7 @@ namespace Plainion.CI.Services
 
             // extend PATH so that FAKE targets can find the tools
             process.Environment["PATH"] = Path.Combine(toolsHome, "FAKE")
-                + Path.PathSeparator + Path.Combine(toolsHome, "NuGet") + 
+                + Path.PathSeparator + Path.Combine(toolsHome, "NuGet") 
                 + Path.PathSeparator + PATH;
 
             process.Environment["ToolsHome"] = toolsHome;
