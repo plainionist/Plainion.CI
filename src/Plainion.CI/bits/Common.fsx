@@ -2,6 +2,7 @@
 #load "Settings.fsx"
 #r "FakeLib.dll"
 open Fake
+open Fake.Testing.NUnit3
 open System.IO
 
 Target "Default" (fun _ ->
@@ -21,11 +22,21 @@ Target "RestoreNugetPackages" (fun _ ->
 )
 
 Target "RunNUnitTests" (fun _ ->
-    !! ( Settings.outputPath + "/" + Settings.getPropertyAndTrace "TestAssemblyPattern" )
-    |> NUnitParallel (fun p -> 
-        { p with
-            ToolPath = Settings.getPropertyAndTrace "NUnitPath"
-            DisableShadowCopy = true })
+    let assemblies = !! ( Settings.outputPath + "/" + Settings.getPropertyAndTrace "TestAssemblyPattern" )
+    let toolPath = Settings.getPropertyAndTrace "NUnitPath"
+
+    if fileExists ( toolPath @@ "nunit-console.exe" ) then
+        assemblies
+        |> NUnitParallel (fun p -> 
+            { p with
+                ToolPath = toolPath
+                DisableShadowCopy = true })
+    else
+        assemblies
+        |> NUnit3 (fun p -> 
+            { p with
+                ToolPath = toolPath @@ "nunit3-console.exe"
+                ShadowCopy = false })
 )
 
 RunTargetOrDefault "Default"
