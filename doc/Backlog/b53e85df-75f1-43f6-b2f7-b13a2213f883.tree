@@ -5,6 +5,9 @@
     <Node Id="cab9024c-19d3-4d15-a2e6-a17e17261848">
       <Caption><![CDATA[add "Generate doc"]]></Caption>
     </Node>
+    <Node Id="63a84442-14e5-4b7c-a826-21c001640606">
+      <Caption><![CDATA[NUnit3 support]]></Caption>
+    </Node>
     <Node Id="50ac5c4f-1c1b-4e92-b479-d09335c077f5">
       <Caption><![CDATA[look at ProjectScaffold]]></Caption>
     </Node>
