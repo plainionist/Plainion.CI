@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="9aa595ef-4c80-437d-9023-a3de7296f327" Created="636086062596601494" LastModified="636086062724658769">
+  <Caption><![CDATA[remove "nuget" setting from build def]]></Caption>
+  <Content><![CDATA[we have it embedded now]]></Content>
+</Node>

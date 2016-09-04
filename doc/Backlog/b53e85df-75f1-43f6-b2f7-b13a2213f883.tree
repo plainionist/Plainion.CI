@@ -2,6 +2,9 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
+    <Node Id="9aa595ef-4c80-437d-9023-a3de7296f327">
+      <Caption><![CDATA[remove "nuget" setting from build def]]></Caption>
+    </Node>
     <Node Id="cab9024c-19d3-4d15-a2e6-a17e17261848">
       <Caption><![CDATA[add "Generate doc"]]></Caption>
     </Node>
