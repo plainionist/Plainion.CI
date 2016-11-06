@@ -2,9 +2,6 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="6f0550ea-6741-4a60-8af4-0ec6a11a0961">
-      <Caption><![CDATA[we need an icon for the app]]></Caption>
-    </Node>
     <Node Id="ed6fdbdb-d63b-4093-a929-356df537a807">
       <Caption><![CDATA[put whole workflow in FAKE]]></Caption>
     </Node>
