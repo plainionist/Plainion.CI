@@ -19,6 +19,8 @@ namespace Plainion.CI.Model
         private bool myDeploy;
         private string myConfiguration;
         private string myPlatform;
+        private string myApiDocGenExecutable;
+        private string myApiDocGenArguments;
         private string myTestRunnerExecutable;
         private string myTestAssemblyPattern;
         private string myCreatePackageScript;
@@ -103,6 +105,20 @@ namespace Plainion.CI.Model
             set { SetProperty( ref myPlatform, value ); }
         }
 
+        [DataMember]
+        public string ApiDocGenExecutable
+        {
+            get { return myApiDocGenExecutable; }
+            set { SetProperty( ref myApiDocGenExecutable, value ); }
+        }
+
+        [DataMember]
+        public string ApiDocGenArguments
+        {
+            get { return myApiDocGenArguments; }
+            set { SetProperty( ref myApiDocGenArguments, value ); }
+        }
+        
         [DataMember]
         public string TestRunnerExecutable
         {

@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="cab9024c-19d3-4d15-a2e6-a17e17261848" Created="636075602437845329" LastModified="636081621050231265">
-  <Caption><![CDATA[add "Generate doc"]]></Caption>
-  <Content><![CDATA[use IronDoc]]></Content>
-</Node>

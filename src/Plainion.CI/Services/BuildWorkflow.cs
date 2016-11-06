@@ -27,14 +27,13 @@ namespace Plainion.CI.Services
 
             var toolsHome = Path.GetDirectoryName( GetType().Assembly.Location );
             var commonFsx = Path.Combine( toolsHome, "bits", "Common.fsx" );
-            var apiDocFsx = Path.Combine( toolsHome, "bits", "ApiDoc.fsx" );
 
             return Task<bool>.Run( () =>
                 Try( "Clean", Run( commonFsx, "Clean" ), progress )
                 && ( myDefinition.Solution != "Plainion.CI.sln" || Try( "bootstrap", Run( Path.Combine( myDefinition.RepositoryRoot, "src", "Plainion.CI.Redist", "Plainion.CI.Redist.csproj" ) ), progress ) )
                 && Try( "update nuget packages", Run( commonFsx, "RestoreNugetPackages" ), progress )
                 && Try( "build", Run( myDefinition.GetSolutionPath() ), progress )
-                && ( !myDefinition.GenerateAPIDoc || Try( "api-doc", Run( apiDocFsx, "GenerateApiDoc" ), progress ) )
+                && ( !myDefinition.GenerateAPIDoc || Try( "api-doc", Run( commonFsx, "GenerateApiDoc" ), progress ) )
                 && ( !myDefinition.RunTests || Try( "test", Run( commonFsx, "RunNUnitTests" ), progress ) )
                 && ( !myDefinition.CheckIn || Try( "checkin", CheckIn, progress ) )
                 && ( !myDefinition.Push || Try( "push", Push, progress ) )

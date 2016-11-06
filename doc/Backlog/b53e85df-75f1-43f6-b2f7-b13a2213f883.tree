@@ -2,11 +2,8 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="9aa595ef-4c80-437d-9023-a3de7296f327">
-      <Caption><![CDATA[remove "nuget" setting from build def]]></Caption>
-    </Node>
-    <Node Id="cab9024c-19d3-4d15-a2e6-a17e17261848">
-      <Caption><![CDATA[add "Generate doc"]]></Caption>
+    <Node Id="6f0550ea-6741-4a60-8af4-0ec6a11a0961">
+      <Caption><![CDATA[we need an icon for the app]]></Caption>
     </Node>
     <Node Id="8dcd9a45-3478-4bc5-bd32-83f7fba5d423">
       <Caption><![CDATA[add "generate assemblyinfo"]]></Caption>
@@ -14,8 +11,17 @@
     <Node Id="50ac5c4f-1c1b-4e92-b479-d09335c077f5">
       <Caption><![CDATA[look at ProjectScaffold]]></Caption>
     </Node>
-    <Node Id="6f0550ea-6741-4a60-8af4-0ec6a11a0961">
-      <Caption><![CDATA[we need an icon for the app]]></Caption>
+    <Node Id="c7206ca3-242e-423d-90af-ee0a6a72143a">
+      <Caption><![CDATA[add "generate nuget package"]]></Caption>
+    </Node>
+    <Node Id="560dcd68-6c67-4aeb-93c7-aecc76036cd3">
+      <Caption><![CDATA[add "generate changelog"]]></Caption>
+    </Node>
+    <Node Id="bfb9edf2-ead9-4fab-84d5-e24e42402d5d">
+      <Caption><![CDATA[make it more extensible]]></Caption>
+    </Node>
+    <Node Id="50ac5c4f-1c1b-4e92-b479-d09335c077f5">
+      <Caption><![CDATA[look at ProjectScaffold]]></Caption>
     </Node>
   </Node>
 </Tree>

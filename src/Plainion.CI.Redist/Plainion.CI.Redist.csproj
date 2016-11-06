@@ -17,27 +17,20 @@
   </ItemGroup>
   <ItemGroup>
     <!-- http://stackoverflow.com/questions/19478775/add-native-files-from-nuget-package-to-project-output-directory -->
-    <None Include="..\..\packages\FAKE.4.39.0\tools\**\*">
+    <None Include="..\..\packages\FAKE.4.45.1\tools\**\*">
       <Link>FAKE\%(RecursiveDir)%(FileName)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\packages\FSharp.Formatting.2.14.4\**\*">
-      <Link>FSharp.Formatting\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\packages\NuGet.CommandLine.3.4.3\tools\*.*">
       <Link>NuGet\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\packages\FSharp.Compiler.Service.2.0.0.6\**\*.*">
-      <Link>FSharp.Compiler.Service\%(RecursiveDir)%(FileName)%(Extension)</Link>
+    <Content Include="bits\Common.fsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\packages\FSharpVSPowerTools.Core.2.3.0\**\*.*">
-      <Link>FSharpVSPowerTools.Core\%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </Content>
+    <Content Include="bits\Settings.fsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

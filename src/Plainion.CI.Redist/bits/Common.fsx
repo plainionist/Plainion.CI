@@ -4,6 +4,8 @@
 open Fake
 open Fake.Testing.NUnit3
 open System.IO
+open System.Diagnostics
+open System
 
 Target "Default" (fun _ ->
     trace "This script does not have default target. Explicitly choose one!"
@@ -37,6 +39,35 @@ Target "RunNUnitTests" (fun _ ->
             { p with
                 ToolPath = toolPath @@ "nunit3-console.exe"
                 ShadowCopy = false })
+)
+
+Target "GenerateApiDoc" (fun _ ->
+    let genApiDoc assembly =
+        let args = (Settings.getPropertyAndTrace "ApiDocGenArguments").Replace("%1", assembly)
+        shellExec { Program = Settings.getPropertyAndTrace "ApiDocGenExecutable"
+                    Args = []
+                    WorkingDirectory =  Settings.getPropertyAndTrace "ProjectRoot"
+                    CommandLine = args}
+    
+    let projectName = Path.GetFileNameWithoutExtension(Settings.getPropertyAndTrace "SolutionFile")
+
+    let assemblies = 
+        !! ( Settings.outputPath + "/" + "*.dll" )
+        ++ ( Settings.outputPath + "/" + "*.exe" )
+        |> Seq.filter(fun f -> Path.GetFileName(f).StartsWith(projectName, StringComparison.OrdinalIgnoreCase))
+        |> List.ofSeq
+
+    printfn "Assemblies:"
+    assemblies |> Seq.iter(fun x -> printfn " - %s" x)
+
+    let ret = 
+        assemblies
+        |> Seq.map genApiDoc
+        |> Seq.forall(fun x -> x = 0)
+
+    match ret with
+    | true -> ()
+    | false -> failwith "ApiDoc generation failed"
 )
 
 RunTargetOrDefault "Default"
