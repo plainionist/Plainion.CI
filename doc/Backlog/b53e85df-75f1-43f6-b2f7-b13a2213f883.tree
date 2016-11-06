@@ -5,23 +5,8 @@
     <Node Id="6f0550ea-6741-4a60-8af4-0ec6a11a0961">
       <Caption><![CDATA[we need an icon for the app]]></Caption>
     </Node>
-    <Node Id="8dcd9a45-3478-4bc5-bd32-83f7fba5d423">
-      <Caption><![CDATA[add "generate assemblyinfo"]]></Caption>
-    </Node>
-    <Node Id="50ac5c4f-1c1b-4e92-b479-d09335c077f5">
-      <Caption><![CDATA[look at ProjectScaffold]]></Caption>
-    </Node>
-    <Node Id="c7206ca3-242e-423d-90af-ee0a6a72143a">
-      <Caption><![CDATA[add "generate nuget package"]]></Caption>
-    </Node>
-    <Node Id="560dcd68-6c67-4aeb-93c7-aecc76036cd3">
-      <Caption><![CDATA[add "generate changelog"]]></Caption>
-    </Node>
-    <Node Id="bfb9edf2-ead9-4fab-84d5-e24e42402d5d">
-      <Caption><![CDATA[make it more extensible]]></Caption>
-    </Node>
-    <Node Id="50ac5c4f-1c1b-4e92-b479-d09335c077f5">
-      <Caption><![CDATA[look at ProjectScaffold]]></Caption>
+    <Node Id="ed6fdbdb-d63b-4093-a929-356df537a807">
+      <Caption><![CDATA[put whole workflow in FAKE]]></Caption>
     </Node>
   </Node>
 </Tree>

@@ -2,5 +2,26 @@
 <Tree>
   <Node Id="2856625b-08a7-446d-a528-72d708930d30">
     <Caption><![CDATA[Backlog]]></Caption>
+    <Node Id="bfb9edf2-ead9-4fab-84d5-e24e42402d5d">
+      <Caption><![CDATA[make it more extensible]]></Caption>
+    </Node>
+    <Node Id="50ac5c4f-1c1b-4e92-b479-d09335c077f5">
+      <Caption><![CDATA[look at ProjectScaffold]]></Caption>
+    </Node>
+    <Node Id="326ea4ac-6aef-44f6-81de-af15d77e3791">
+      <Caption><![CDATA[improve UI (esp. doc)]]></Caption>
+    </Node>
+    <Node Id="862d22e2-2236-4fb2-a8f9-a58677275316">
+      <Caption><![CDATA[Activities]]></Caption>
+      <Node Id="560dcd68-6c67-4aeb-93c7-aecc76036cd3">
+        <Caption><![CDATA[changelog]]></Caption>
+      </Node>
+      <Node Id="8dcd9a45-3478-4bc5-bd32-83f7fba5d423">
+        <Caption><![CDATA[assemblyinfo]]></Caption>
+      </Node>
+      <Node Id="c7206ca3-242e-423d-90af-ee0a6a72143a">
+        <Caption><![CDATA[create nuget package]]></Caption>
+      </Node>
+    </Node>
   </Node>
 </Tree>

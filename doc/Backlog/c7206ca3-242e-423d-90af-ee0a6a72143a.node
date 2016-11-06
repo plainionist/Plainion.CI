@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="c7206ca3-242e-423d-90af-ee0a6a72143a" Created="636140377382686229" LastModified="636140377678973175">
-  <Caption><![CDATA[add "generate nuget package"]]></Caption>
+<Node Id="c7206ca3-242e-423d-90af-ee0a6a72143a" Created="636140377382686229" LastModified="636140406198464397" Origin="b53e85df-75f1-43f6-b2f7-b13a2213f883">
+  <Caption><![CDATA[create nuget package]]></Caption>
   <Content><![CDATA[]]></Content>
 </Node>

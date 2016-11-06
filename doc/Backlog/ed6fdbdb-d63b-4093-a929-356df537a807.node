@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="ed6fdbdb-d63b-4093-a929-356df537a807" Created="636140403961636458" LastModified="636140404285244967">
+  <Caption><![CDATA[put whole workflow in FAKE]]></Caption>
+  <Content><![CDATA[- lets generate a overall script
+- performance?]]></Content>
+</Node>

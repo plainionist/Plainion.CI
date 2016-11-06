@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="560dcd68-6c67-4aeb-93c7-aecc76036cd3" Created="636140377698664302" LastModified="636140377747997123">
-  <Caption><![CDATA[add "generate changelog"]]></Caption>
+<Node Id="560dcd68-6c67-4aeb-93c7-aecc76036cd3" Created="636140377698664302" LastModified="636140406047515763" Origin="b53e85df-75f1-43f6-b2f7-b13a2213f883">
+  <Caption><![CDATA[changelog]]></Caption>
   <Content><![CDATA[]]></Content>
 </Node>
