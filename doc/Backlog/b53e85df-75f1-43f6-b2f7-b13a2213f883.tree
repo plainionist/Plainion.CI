@@ -5,5 +5,8 @@
     <Node Id="ed6fdbdb-d63b-4093-a929-356df537a807">
       <Caption><![CDATA[put whole workflow in FAKE]]></Caption>
     </Node>
+    <Node Id="9ecda8e6-7b3c-45f9-ad6d-fdd43e353a80">
+      <Caption><![CDATA[output of nunit missing]]></Caption>
+    </Node>
   </Node>
 </Tree>
