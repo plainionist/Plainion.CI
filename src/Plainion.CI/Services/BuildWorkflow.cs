@@ -30,7 +30,7 @@ namespace Plainion.CI.Services
 
             return Task<bool>.Run( () =>
                 Try( "Clean", Run( commonFsx, "Clean" ), progress )
-                && ( myDefinition.Solution != "Plainion.CI.sln" || Try( "bootstrap", Run( Path.Combine( myDefinition.RepositoryRoot, "src", "Plainion.CI.Redist", "Plainion.CI.Redist.csproj" ) ), progress ) )
+                && ( myDefinition.Solution != "Plainion.CI.sln" ||  Try( "bootstrap", Run( commonFsx, "Bootstrap" ), progress ))
                 && Try( "update nuget packages", Run( commonFsx, "RestoreNugetPackages" ), progress )
                 && Try( "build", Run( myDefinition.GetSolutionPath() ), progress )
                 && ( !myDefinition.GenerateAPIDoc || Try( "api-doc", Run( commonFsx, "GenerateApiDoc" ), progress ) )

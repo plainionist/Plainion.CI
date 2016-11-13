@@ -1,31 +1,47 @@
 ﻿#I "../../../bin/Debug/FAKE"
+
 #load "Settings.fsx"
 #r "FakeLib.dll"
+
 open Fake
 open Fake.Testing.NUnit3
 open System.IO
 open System.Diagnostics
 open System
+open Settings
+
+let setParams defaults =
+    { defaults with
+        Targets = ["Build"]
+        Properties = [ "OutputPath", outputPath
+                       "Configuration", !%"Configuration"
+                       "Platform", !%"Platform"
+                     ]
+    }
 
 Target "Default" (fun _ ->
     trace "This script does not have default target. Explicitly choose one!"
 )
 
 Target "Clean" (fun _ ->
-    CleanDir Settings.outputPath
+    CleanDir outputPath
+)
+
+Target "Bootstrap" (fun _ ->
+    build setParams (projectRoot </> "src" </> "Plainion.CI.Redist" </> "Plainion.CI.Redist.csproj")
 )
 
 Target "RestoreNugetPackages" (fun _ ->
-    Settings.getPropertyAndTrace "SolutionFile" 
+    !%"SolutionFile" 
     |> RestoreMSSolutionPackages (fun p ->
          { p with
-             OutputPath = Path.Combine( Settings.projectRoot, "packages" )
+             OutputPath = projectRoot </> "packages"
              Retries = 1 })
 )
 
 Target "RunNUnitTests" (fun _ ->
-    let assemblies = !! ( Settings.outputPath + "/" + Settings.getPropertyAndTrace "TestAssemblyPattern" )
-    let toolPath = Settings.getPropertyAndTrace "NUnitPath"
+    let assemblies = !! ( outputPath + "/" + !%"TestAssemblyPattern" )
+    let toolPath = !%"NUnitPath"
 
     if fileExists ( toolPath @@ "nunit-console.exe" ) then
         assemblies
@@ -43,17 +59,17 @@ Target "RunNUnitTests" (fun _ ->
 
 Target "GenerateApiDoc" (fun _ ->
     let genApiDoc assembly =
-        let args = (Settings.getPropertyAndTrace "ApiDocGenArguments").Replace("%1", assembly)
-        shellExec { Program = Settings.getPropertyAndTrace "ApiDocGenExecutable"
+        let args = (!%"ApiDocGenArguments").Replace("%1", assembly)
+        shellExec { Program = !%"ApiDocGenExecutable"
                     Args = []
-                    WorkingDirectory =  Settings.getPropertyAndTrace "ProjectRoot"
+                    WorkingDirectory =  !%"ProjectRoot"
                     CommandLine = args}
     
-    let projectName = Path.GetFileNameWithoutExtension(Settings.getPropertyAndTrace "SolutionFile")
+    let projectName = Path.GetFileNameWithoutExtension(!%"SolutionFile")
 
     let assemblies = 
-        !! ( Settings.outputPath + "/" + "*.dll" )
-        ++ ( Settings.outputPath + "/" + "*.exe" )
+        !! ( outputPath + "/" + "*.dll" )
+        ++ ( outputPath + "/" + "*.exe" )
         |> Seq.filter(fun f -> Path.GetFileName(f).StartsWith(projectName, StringComparison.OrdinalIgnoreCase))
         |> List.ofSeq
 

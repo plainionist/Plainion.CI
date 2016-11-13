@@ -15,7 +15,10 @@ let getPropertyAndTrace name =
     name + "=" + value |> trace 
     value
 
+/// get get environment variable given by Plainion.CI engine
+let (!%) = getPropertyAndTrace
+
 let toolsHome = getProperty "ToolsHome"
-let outputPath = getPropertyAndTrace "OutputPath"
-let projectRoot = getPropertyAndTrace "ProjectRoot" 
+let outputPath = !%"OutputPath"
+let projectRoot = !%"ProjectRoot" 
 
