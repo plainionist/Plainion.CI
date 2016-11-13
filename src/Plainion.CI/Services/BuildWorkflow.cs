@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Plainion.CI.Model;
 using Plainion.CI.Services.SourceControl;
@@ -25,21 +27,56 @@ namespace Plainion.CI.Services
             myDefinition = Objects.Clone( myDefinition );
             myRequest = Objects.Clone( myRequest );
 
-            var toolsHome = Path.GetDirectoryName( GetType().Assembly.Location );
-            var commonFsx = Path.Combine( toolsHome, "bits", "Common.fsx" );
+            var workflowFsx = GenerateBuildWorkflow();
 
             return Task<bool>.Run( () =>
-                Try( "Clean", Run( commonFsx, "Clean" ), progress )
-                && ( myDefinition.Solution != "Plainion.CI.sln" ||  Try( "bootstrap", Run( commonFsx, "Bootstrap" ), progress ))
-                && Try( "update nuget packages", Run( commonFsx, "RestoreNugetPackages" ), progress )
-                && Try( "build", Run( commonFsx, "Build" ), progress )
-                && ( !myDefinition.GenerateAPIDoc || Try( "api-doc", Run( commonFsx, "GenerateApiDoc" ), progress ) )
-                && ( !myDefinition.RunTests || Try( "test", Run( commonFsx, "RunNUnitTests" ), progress ) )
+                Try( "Workflow", Run( workflowFsx, "default" ), progress )
                 && ( !myDefinition.CheckIn || Try( "checkin", CheckIn, progress ) )
                 && ( !myDefinition.Push || Try( "push", Push, progress ) )
                 && ( !myDefinition.CreatePackage || Try( "create pacakge", Run( myDefinition.CreatePackageScript, myDefinition.CreatePackageArguments ), progress ) )
                 && ( !myDefinition.DeployPackage || Try( "deploy pacakge", Run( myDefinition.DeployPackageScript, myDefinition.DeployPackageArguments ), progress ) )
-            );
+            ).ContinueWith( t =>
+            {
+                //File.Delete( workflowFsx );
+                return t.Result;
+            } );
+        }
+
+        private string GenerateBuildWorkflow()
+        {
+            var file = Path.Combine( Path.GetTempPath(), "plainion.ci.fsx" );
+
+            var toolsHome = Path.GetDirectoryName( GetType().Assembly.Location )
+                .Replace( '\\', '/' );
+
+            File.WriteAllLines( file, new[] { 
+                string.Format("#I \"{0}\"", toolsHome + "/FAKE"),
+                string.Format("#load \"{0}/bits/Settings.fsx\"",toolsHome),
+                string.Format("#load \"{0}/bits/Common.fsx\"",toolsHome),
+                "#r \"FakeLib.dll\"",
+                "open Fake",
+                "open Settings",
+                "open Common",
+                "",
+                string.Join(" ==> ", GetTargets()
+                    .Select(t=>string.Format("\"{0}\"", t))),
+                "",
+                "RunTargetOrDefault \"Default\""
+            } );
+
+            return file;
+        }
+
+        private IEnumerable<string> GetTargets()
+        {
+            yield return "Clean";
+            yield return "RestoreNugetPackages";
+            yield return "Build";
+
+            if( myDefinition.GenerateAPIDoc ) yield return "GenerateApiDoc";
+            if( myDefinition.RunTests ) yield return "RunNUnitTests";
+
+            yield return "Default";
         }
 
         private bool Try( string activity, Func<IProgress<string>, bool> action, IProgress<string> progress )
@@ -48,7 +85,7 @@ namespace Plainion.CI.Services
             {
                 var success = action( progress );
 
-                if ( success )
+                if( success )
                 {
                     progress.Report( "--- " + activity.ToUpper() + " SUCCEEDED ---" );
                 }
@@ -59,7 +96,7 @@ namespace Plainion.CI.Services
 
                 return success;
             }
-            catch ( Exception ex )
+            catch( Exception ex )
             {
                 progress.Report( "ERROR: " + ex.Message );
                 progress.Report( "--- " + activity.ToUpper() + " FAILED ---" );
@@ -91,13 +128,13 @@ namespace Plainion.CI.Services
             var fakeScriptExecutor = new FakeScriptExecutor( myDefinition, progress );
 
             return fakeScriptExecutor.CanExecute( script )
-                ? (AbstractScriptExecutor)fakeScriptExecutor
-                : (AbstractScriptExecutor)new MsBuildScriptExecutor( myDefinition, progress );
+                ? ( AbstractScriptExecutor )fakeScriptExecutor
+                : ( AbstractScriptExecutor )new MsBuildScriptExecutor( myDefinition, progress );
         }
 
         private bool CheckIn( IProgress<string> progress )
         {
-            if ( string.IsNullOrEmpty( myRequest.CheckInComment ) )
+            if( string.IsNullOrEmpty( myRequest.CheckInComment ) )
             {
                 progress.Report( "!! NO CHECKIN COMMENT PROVIDED !!" );
                 return false;
@@ -110,7 +147,7 @@ namespace Plainion.CI.Services
 
         private bool Push( IProgress<string> progress )
         {
-            if ( myDefinition.User.Password == null )
+            if( myDefinition.User.Password == null )
             {
                 progress.Report( "!! NO PASSWORD PROVIDED !!" );
                 return false;

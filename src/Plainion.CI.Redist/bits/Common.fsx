@@ -20,15 +20,13 @@ let setParams defaults =
     }
 
 Target "Default" (fun _ ->
-    trace "This script does not have default target. Explicitly choose one!"
+    trace "--- Plainion.CI - DONE ---"
 )
+
+Target "Nop" (fun _ -> () )
 
 Target "Clean" (fun _ ->
     CleanDir outputPath
-)
-
-Target "Bootstrap" (fun _ ->
-    build setParams (projectRoot </> "src" </> "Plainion.CI.Redist" </> "Plainion.CI.Redist.csproj")
 )
 
 Target "Build" (fun _ ->
@@ -90,5 +88,5 @@ Target "GenerateApiDoc" (fun _ ->
     | false -> failwith "ApiDoc generation failed"
 )
 
-RunTargetOrDefault "Default"
+//RunTargetOrDefault "Default"
 
