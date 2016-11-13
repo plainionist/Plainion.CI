@@ -31,6 +31,10 @@ Target "Bootstrap" (fun _ ->
     build setParams (projectRoot </> "src" </> "Plainion.CI.Redist" </> "Plainion.CI.Redist.csproj")
 )
 
+Target "Build" (fun _ ->
+    build setParams (!%"SolutionFile")
+)
+
 Target "RestoreNugetPackages" (fun _ ->
     !%"SolutionFile" 
     |> RestoreMSSolutionPackages (fun p ->
