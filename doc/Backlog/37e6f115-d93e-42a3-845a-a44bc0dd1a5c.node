@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="37e6f115-d93e-42a3-845a-a44bc0dd1a5c" Created="636152440302249736" LastModified="636152440620157919">
-  <Caption><![CDATA[post-checkin workflow]]></Caption>
-  <Content><![CDATA[- push create and deploy package into workflow
-]]></Content>
-</Node>

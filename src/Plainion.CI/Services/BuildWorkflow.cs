@@ -36,11 +36,7 @@ namespace Plainion.CI.Services
                 && ( !myDefinition.Push || Try( "push", Push, progress ) )
                 && ( !myDefinition.CreatePackage || Try( "create pacakge", Run( myDefinition.CreatePackageScript, myDefinition.CreatePackageArguments ), progress ) )
                 && ( !myDefinition.DeployPackage || Try( "deploy pacakge", Run( myDefinition.DeployPackageScript, myDefinition.DeployPackageArguments ), progress ) )
-            ).ContinueWith( t =>
-            {
-                //File.Delete( workflowFsx );
-                return t.Result;
-            } );
+            );
         }
 
         private bool Try( string activity, Func<IProgress<string>, bool> action, IProgress<string> progress )

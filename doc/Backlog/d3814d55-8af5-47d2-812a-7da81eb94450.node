@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="d3814d55-8af5-47d2-812a-7da81eb94450" Created="636152441686548913" LastModified="636152441934723108">
+  <Caption><![CDATA[checkin and push in fake]]></Caption>
+  <Content><![CDATA[- should we just read builddef in fake then?
+  - any simple serialized form?]]></Content>
+</Node>

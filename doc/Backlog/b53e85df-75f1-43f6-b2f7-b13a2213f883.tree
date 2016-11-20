@@ -2,11 +2,14 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="37e6f115-d93e-42a3-845a-a44bc0dd1a5c">
-      <Caption><![CDATA[post-checkin workflow]]></Caption>
-    </Node>
     <Node Id="9ecda8e6-7b3c-45f9-ad6d-fdd43e353a80">
       <Caption><![CDATA[output of nunit missing]]></Caption>
+    </Node>
+    <Node Id="d3814d55-8af5-47d2-812a-7da81eb94450">
+      <Caption><![CDATA[checkin and push in fake]]></Caption>
+    </Node>
+    <Node Id="6b5d59f8-5dd6-4bcd-9f6d-5b9e9841e56c">
+      <Caption><![CDATA[put package activities into fake]]></Caption>
     </Node>
   </Node>
 </Tree>
