@@ -63,6 +63,9 @@ namespace Plainion.CI.Services
             process.Environment[ "ApiDocGenExecutable" ] = BuildDefinition.ApiDocGenExecutable;
             process.Environment[ "ApiDocGenArguments" ] = BuildDefinition.ApiDocGenArguments;
 
+            process.Environment[ "Option.ApiDoc" ] = BuildDefinition.GenerateAPIDoc.ToString();
+            process.Environment[ "Option.Tests" ] = BuildDefinition.RunTests.ToString();
+
             var compiledArguments = CompileScriptArgumentsInternal( script, target, args ).ToArray();
 
             process.Execute( compiledArguments );

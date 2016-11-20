@@ -1,6 +1,11 @@
 ﻿#I "../../../bin/Debug/FAKE"
 #r "FakeLib.dll"
+
 open Fake
+open System
+
+let toBool (str:string) =
+    Convert.ToBoolean(str)
 
 let getProperty name =
    match getBuildParamOrDefault name null with

@@ -27,7 +27,8 @@ namespace Plainion.CI.Services
             myDefinition = Objects.Clone( myDefinition );
             myRequest = Objects.Clone( myRequest );
 
-            var workflowFsx = GenerateBuildWorkflow();
+            var toolsHome = Path.GetDirectoryName( GetType().Assembly.Location );
+            var workflowFsx = Path.Combine( toolsHome, "bits", "Workflow.fsx" );
 
             return Task<bool>.Run( () =>
                 Try( "Workflow", Run( workflowFsx, "default" ), progress )
@@ -40,43 +41,6 @@ namespace Plainion.CI.Services
                 //File.Delete( workflowFsx );
                 return t.Result;
             } );
-        }
-
-        private string GenerateBuildWorkflow()
-        {
-            var file = Path.Combine( Path.GetTempPath(), "plainion.ci.fsx" );
-
-            var toolsHome = Path.GetDirectoryName( GetType().Assembly.Location )
-                .Replace( '\\', '/' );
-
-            File.WriteAllLines( file, new[] { 
-                string.Format("#I \"{0}\"", toolsHome + "/FAKE"),
-                string.Format("#load \"{0}/bits/Settings.fsx\"",toolsHome),
-                string.Format("#load \"{0}/bits/Common.fsx\"",toolsHome),
-                "#r \"FakeLib.dll\"",
-                "open Fake",
-                "open Settings",
-                "open Common",
-                "",
-                string.Join(" ==> ", GetTargets()
-                    .Select(t=>string.Format("\"{0}\"", t))),
-                "",
-                "RunTargetOrDefault \"Default\""
-            } );
-
-            return file;
-        }
-
-        private IEnumerable<string> GetTargets()
-        {
-            yield return "Clean";
-            yield return "RestoreNugetPackages";
-            yield return "Build";
-
-            if( myDefinition.GenerateAPIDoc ) yield return "GenerateApiDoc";
-            if( myDefinition.RunTests ) yield return "RunNUnitTests";
-
-            yield return "Default";
         }
 
         private bool Try( string activity, Func<IProgress<string>, bool> action, IProgress<string> progress )
