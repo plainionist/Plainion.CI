@@ -2,11 +2,17 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="9ecda8e6-7b3c-45f9-ad6d-fdd43e353a80">
-      <Caption><![CDATA[output of nunit missing]]></Caption>
-    </Node>
     <Node Id="d3814d55-8af5-47d2-812a-7da81eb94450">
       <Caption><![CDATA[checkin and push in fake]]></Caption>
+    </Node>
+    <Node Id="560dcd68-6c67-4aeb-93c7-aecc76036cd3">
+      <Caption><![CDATA[changelog]]></Caption>
+    </Node>
+    <Node Id="8dcd9a45-3478-4bc5-bd32-83f7fba5d423">
+      <Caption><![CDATA[assemblyinfo]]></Caption>
+    </Node>
+    <Node Id="c7206ca3-242e-423d-90af-ee0a6a72143a">
+      <Caption><![CDATA[create nuget package]]></Caption>
     </Node>
     <Node Id="6b5d59f8-5dd6-4bcd-9f6d-5b9e9841e56c">
       <Caption><![CDATA[put package activities into fake]]></Caption>

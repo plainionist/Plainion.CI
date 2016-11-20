@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="9ecda8e6-7b3c-45f9-ad6d-fdd43e353a80" Created="636146509041629175" LastModified="636146509228929888">
-  <Caption><![CDATA[output of nunit missing]]></Caption>
-  <Content><![CDATA[failed tests only reported in summary - error output missing]]></Content>
-</Node>

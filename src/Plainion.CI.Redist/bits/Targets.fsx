@@ -47,7 +47,8 @@ Target "RunNUnitTests" (fun _ ->
 
     if fileExists ( toolPath @@ "nunit-console.exe" ) then
         assemblies
-        |> NUnitParallel (fun p -> 
+        // "parallel" version does not show test output
+        |> NUnit (fun p -> 
             { p with
                 ToolPath = toolPath
                 DisableShadowCopy = true })

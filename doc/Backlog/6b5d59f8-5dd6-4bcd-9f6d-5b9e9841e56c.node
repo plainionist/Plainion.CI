@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="6b5d59f8-5dd6-4bcd-9f6d-5b9e9841e56c" Created="636152442087501846" LastModified="636152442237860446">
+<Node Id="6b5d59f8-5dd6-4bcd-9f6d-5b9e9841e56c" Created="636152442087501846" LastModified="636152443339763472">
   <Caption><![CDATA[put package activities into fake]]></Caption>
-  <Content><![CDATA[]]></Content>
+  <Content><![CDATA[- package generation actually implies automatic version update!]]></Content>
 </Node>
