@@ -11,8 +11,5 @@
     <Node Id="bfb9edf2-ead9-4fab-84d5-e24e42402d5d">
       <Caption><![CDATA[make it more extensible]]></Caption>
     </Node>
-    <Node Id="8a464278-9356-412a-953f-10ec9437ff8e">
-      <Caption><![CDATA[allow copy and paste from log]]></Caption>
-    </Node>
   </Node>
 </Tree>

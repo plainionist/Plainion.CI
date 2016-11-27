@@ -71,14 +71,14 @@ namespace Plainion.CI
 
         private void OnGo()
         {
-            BuildLogViewModel.Log.Clear();
+            BuildLogViewModel.Clear();
             myIsBusy = true;
             BuildLogViewModel.Succeeded = null;
             GoCommand.RaiseCanExecuteChanged();
 
             SelectedTab = 2;
 
-            var progress = new Progress<string>( p => BuildLogViewModel.Log.Add( p ) );
+            var progress = new Progress<string>( p => BuildLogViewModel.Append( p ) );
 
             var request = new BuildRequest
             {

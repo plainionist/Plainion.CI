@@ -93,7 +93,6 @@
     <Compile Include="Views\BuildDefinitionView.xaml.cs">
       <DependentUpon>BuildDefinitionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ListBoxExtensions.cs" />
     <Compile Include="Views\PasswordBinder.cs" />
     <Compile Include="Views\TextBoxBehaviour.cs" />
     <Compile Include="ViewModels\CheckInViewModel.cs" />
