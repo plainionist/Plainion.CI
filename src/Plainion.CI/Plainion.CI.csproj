@@ -71,8 +71,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\User.cs" />
-    <Compile Include="SecureStringExtensions.cs" />
     <Compile Include="Services\BuildWorkflow.cs" />
     <Compile Include="Services\AbstractShellProcess.cs" />
     <Compile Include="Services\AbstractScriptExecutor.cs" />
@@ -85,9 +83,7 @@
     <Compile Include="Services\UiShellCommand.cs" />
     <Compile Include="ViewModels\BuildDefinitionViewModel.cs" />
     <Compile Include="ViewModels\RepositoryEntry.cs" />
-    <Compile Include="Model\BuildRequest.cs" />
     <Compile Include="Services\SourceControl\GitService.cs" />
-    <Compile Include="Model\BuildDefinition.cs" />
     <Compile Include="Services\BuildService.cs" />
     <Compile Include="ShellViewModel.cs" />
     <Compile Include="Views\BuildDefinitionView.xaml.cs">
@@ -142,6 +138,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\ci.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Plainion.CI.Core\Plainion.CI.Core.csproj">
+      <Project>{14bd8184-fae7-408e-bf97-2ea3dcf3acec}</Project>
+      <Name>Plainion.CI.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

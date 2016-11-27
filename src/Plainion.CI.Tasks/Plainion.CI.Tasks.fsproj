@@ -17,11 +17,11 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Tailcalls>false</Tailcalls>
-    <DocumentationFile>bin\Debug\Plainion.CI.Tasks.XML</DocumentationFile>
+    <DocumentationFile>..\..\bin\Debug\Plainion.CI.Tasks.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Tailcalls>true</Tailcalls>
-    <DocumentationFile>bin\Release\Plainion.CI.Tasks.XML</DocumentationFile>
+    <DocumentationFile>..\..\bin\Release\Plainion.CI.Tasks.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

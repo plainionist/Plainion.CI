@@ -3,11 +3,11 @@ using System.IO;
 using System.Runtime.Serialization;
 using Plainion.Serialization;
 
-namespace Plainion.CI.Model
+namespace Plainion.CI
 {
     [Serializable]
     [DataContract( Namespace = "http://github.com/ronin4net/plainion/GatedCheckIn", Name = "BuildDefinition" )]
-    class BuildDefinition : SerializableBindableBase
+    public class BuildDefinition : SerializableBindableBase
     {
         private string myRepositoryRoot;
         private string mySolution;

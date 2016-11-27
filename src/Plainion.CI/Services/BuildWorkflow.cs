@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Plainion.CI.Model;
+using Plainion.CI;
 using Plainion.CI.Services.SourceControl;
 
 namespace Plainion.CI.Services

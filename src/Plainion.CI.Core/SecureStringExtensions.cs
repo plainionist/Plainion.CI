@@ -4,7 +4,7 @@ using System.Security;
 
 namespace Plainion.CI
 {
-    static class SecureStringExtensions
+    public static class SecureStringExtensions
     {
         public static string ToUnsecureString( this SecureString source )
         {

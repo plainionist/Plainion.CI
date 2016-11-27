@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Plainion.CI.Model
+namespace Plainion.CI
 {
     [Serializable]
-    class BuildRequest
+    public class BuildRequest
     {
         public string CheckInComment { get; set; }
 

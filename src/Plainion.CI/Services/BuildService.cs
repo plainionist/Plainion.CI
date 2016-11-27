@@ -4,7 +4,6 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Xml;
-using Plainion.CI.Model;
 using Plainion.CI.Services.SourceControl;
 
 namespace Plainion.CI.Services

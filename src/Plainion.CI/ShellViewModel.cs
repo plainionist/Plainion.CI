@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
-using Plainion.CI.Model;
 using Plainion.CI.Services;
 using Plainion.CI.Services.SourceControl;
 using Plainion.CI.ViewModels;

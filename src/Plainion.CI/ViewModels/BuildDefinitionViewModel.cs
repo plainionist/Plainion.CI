@@ -4,7 +4,6 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using Microsoft.Practices.Prism.Mvvm;
-using Plainion.CI.Model;
 using Plainion.CI.Services;
 
 namespace Plainion.CI.ViewModels

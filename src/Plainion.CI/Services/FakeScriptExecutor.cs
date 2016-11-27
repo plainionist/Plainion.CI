@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Plainion.CI.Model;
 
 namespace Plainion.CI.Services
 {

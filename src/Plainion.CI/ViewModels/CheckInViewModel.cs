@@ -12,7 +12,6 @@ using LibGit2Sharp;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Plainion.Collections;
-using Plainion.CI.Model;
 using Plainion.CI.Services;
 using Plainion.CI.Services.SourceControl;
 

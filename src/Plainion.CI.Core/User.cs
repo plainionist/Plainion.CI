@@ -5,11 +5,11 @@ using System.Security.Cryptography;
 using System.Text;
 using Plainion.Serialization;
 
-namespace Plainion.CI.Model
+namespace Plainion.CI
 {
     [Serializable]
     [DataContract( Namespace = "http://github.com/ronin4net/plainion/GatedCheckIn", Name = "User" )]
-    class User : SerializableBindableBase
+    public class User : SerializableBindableBase
     {
         private string myLogin;
         private string myEMail;
