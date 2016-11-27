@@ -53,7 +53,10 @@ namespace Plainion.CI.Services
 
             process.Environment[ "ToolsHome" ] = toolsHome;
             process.Environment[ "BuildDefinitionFile" ] = BuildDefinitionSerializer.GetLocation( BuildDefinition );
-            
+
+            process.Environment[ "ProjectRoot" ] = BuildDefinition.RepositoryRoot;
+            process.Environment[ "outputPath " ] = BuildDefinition.GetOutputPath();
+
             var compiledArguments = CompileScriptArgumentsInternal( script, target, args ).ToArray();
 
             process.Execute( compiledArguments );

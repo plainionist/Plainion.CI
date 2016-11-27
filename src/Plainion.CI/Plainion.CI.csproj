@@ -71,7 +71,6 @@
     <Compile Include="Services\BuildWorkflow.cs" />
     <Compile Include="Services\AbstractShellProcess.cs" />
     <Compile Include="Services\AbstractScriptExecutor.cs" />
-    <Compile Include="Services\MsBuildScriptExecutor.cs" />
     <Compile Include="Services\FakeScriptExecutor.cs" />
     <Compile Include="Services\SourceControl\Change.cs" />
     <Compile Include="Services\SourceControl\ChangeType.cs" />

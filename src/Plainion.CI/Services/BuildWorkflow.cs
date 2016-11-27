@@ -32,8 +32,6 @@ namespace Plainion.CI.Services
 
             return Task<bool>.Run( () =>
                 Try( "Workflow", Run( workflowFsx, "default" ), progress )
-                && ( !myDefinition.CreatePackage || Try( "create pacakge", Run( myDefinition.CreatePackageScript, myDefinition.CreatePackageArguments ), progress ) )
-                && ( !myDefinition.DeployPackage || Try( "deploy pacakge", Run( myDefinition.DeployPackageScript, myDefinition.DeployPackageArguments ), progress ) )
             );
         }
 
@@ -76,18 +74,9 @@ namespace Plainion.CI.Services
         {
             return p =>
             {
-                var executor = GetExecutor( script, p );
+                var executor = new FakeScriptExecutor( myDefinition, p );
                 return executor.Execute( script, target, args );
             };
-        }
-
-        private AbstractScriptExecutor GetExecutor( string script, IProgress<string> progress )
-        {
-            var fakeScriptExecutor = new FakeScriptExecutor( myDefinition, progress );
-
-            return fakeScriptExecutor.CanExecute( script )
-                ? ( AbstractScriptExecutor )fakeScriptExecutor
-                : ( AbstractScriptExecutor )new MsBuildScriptExecutor( myDefinition, progress );
         }
     }
 }

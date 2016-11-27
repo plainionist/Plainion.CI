@@ -12,6 +12,8 @@ open Settings
     =?> ("RunNUnitTests", buildDefinition.RunTests)
     =?> ("Commit", buildDefinition.CheckIn)
     =?> ("Push", buildDefinition.Push)
+    =?> ("CreatePackage", buildDefinition.CreatePackage)
+    =?> ("DeployPackage", buildDefinition.DeployPackage)
     ==> "Default"
 
 RunTargetOrDefault "Default"

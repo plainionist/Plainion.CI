@@ -1,6 +1,9 @@
 ﻿#r "../../../bin/Debug/FAKE/FakeLib.dll"
+#r "../FAKE/FakeLib.dll"
 #r "../../../bin/Debug/Plainion.CI.Core.dll"
+#r "../Plainion.CI.Core.dll"
 #r "../../../bin/Debug/Plainion.Core.dll"
+#r "../Plainion.Core.dll"
 
 open Fake
 open Plainion.CI
@@ -27,8 +30,8 @@ let toolsHome = getProperty "ToolsHome"
 let buildDefinition = BuildDefinitionSerializer.TryDeserialize( !%"BuildDefinitionFile" )
 let buildRequest = BuildRequestSerializer.Deserialize()
 
-let outputPath = buildDefinition.GetOutputPath()
 let projectRoot = buildDefinition.RepositoryRoot
+let outputPath = buildDefinition.GetOutputPath()
 
 let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
 let releaseNotesFile = projectRoot </> "ChangeLog.md"

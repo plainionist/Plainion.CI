@@ -1,4 +1,5 @@
 ﻿#r "../../../bin/Debug/Plainion.CI.Tasks.dll"
+#r "../Plainion.CI.Tasks.dll"
 
 #load "Settings.fsx"
 
@@ -123,9 +124,9 @@ Target "AssemblyInfo" (fun _ ->
 
     let (|Fsproj|Csproj|) (projFileName:string) =
         match projFileName with
-        | f when f.EndsWith("fsproj") -> Fsproj
-        | f when f.EndsWith("csproj") -> Csproj
-        | _                           -> failwith (sprintf "Project file %s not supported. Unknown project type." projFileName)
+        | f when f.EndsWith("fsproj", StringComparison.OrdinalIgnoreCase) -> Fsproj
+        | f when f.EndsWith("csproj", StringComparison.OrdinalIgnoreCase) -> Csproj
+        | _  -> failwith (sprintf "Project file %s not supported. Unknown project type." projFileName)
 
     !! ( projectRoot </> "src/**/*.??proj" )
     |> Seq.map getProjectDetails
@@ -136,3 +137,36 @@ Target "AssemblyInfo" (fun _ ->
         )
 )
 
+let runScript (script:string) args =
+    let ret = 
+        if script.EndsWith(".fsx", StringComparison.OrdinalIgnoreCase) then
+            shellExec { Program = "fake.exe"
+                        Args = []
+                        WorkingDirectory = projectRoot
+                        CommandLine = args }
+        elif script.EndsWith(".msbuild", StringComparison.OrdinalIgnoreCase) || script.EndsWith(".targets", StringComparison.OrdinalIgnoreCase) then
+            shellExec { Program = @"C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
+                        Args = []
+                        WorkingDirectory = projectRoot
+                        CommandLine = args }
+        else
+            failwithf "Unknown script type: %s" script
+
+    match ret with
+    | 0 -> ()
+    | _-> failwith "script execution failed: %s" script
+
+
+Target "CreatePackage" (fun _ ->
+    if buildDefinition.CreatePackageScript |> File.Exists |> not then
+        failwithf "Package creation script does not exist: %s" buildDefinition.CreatePackageScript
+    
+    runScript buildDefinition.CreatePackageScript buildDefinition.CreatePackageArguments
+)
+
+Target "DeployPackage" (fun _ ->
+    if buildDefinition.DeployPackageScript |> File.Exists |> not then
+        failwithf "Package deployment script does not exist: %s" buildDefinition.DeployPackageScript
+    
+    runScript buildDefinition.DeployPackageScript buildDefinition.DeployPackageArguments
+)
