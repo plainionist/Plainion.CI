@@ -1,9 +1,12 @@
-﻿#r "../../../bin/Debug/FAKE/FakeLib.dll"
-#r "../FAKE/FakeLib.dll"
+﻿#if INTERACTIVE
+#r "../../../bin/Debug/FAKE/FakeLib.dll"
 #r "../../../bin/Debug/Plainion.CI.Core.dll"
-#r "../Plainion.CI.Core.dll"
 #r "../../../bin/Debug/Plainion.Core.dll"
+#else
+#r "../FAKE/FakeLib.dll"
+#r "../Plainion.CI.Core.dll"
 #r "../Plainion.Core.dll"
+#endif
 
 open Fake
 open Plainion.CI

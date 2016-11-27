@@ -1,5 +1,8 @@
-﻿#r "../../../bin/Debug/Plainion.CI.Tasks.dll"
+﻿#if INTERACTIVE
+#r "../../../bin/Debug/Plainion.CI.Tasks.dll"
+#else
 #r "../Plainion.CI.Tasks.dll"
+#endif
 
 #load "Settings.fsx"
 
