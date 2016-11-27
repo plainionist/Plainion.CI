@@ -3,6 +3,7 @@
 
 #load "Settings.fsx"
 #r "FakeLib.dll"
+#r "Plainion.CI.Core.dll"
 #r "Plainion.CI.Tasks.dll"
 
 open Fake
@@ -10,6 +11,7 @@ open Fake.Testing.NUnit3
 open System.IO
 open System
 open Settings
+open Plainion.CI
 
 let setParams defaults =
     { defaults with
@@ -91,9 +93,16 @@ Target "GenerateApiDoc" (fun _ ->
 )
 
 Target "Commit" (fun _ ->
-//    if buildRequest.CheckInComment |> String.IsNullOrEmpty then
-//        failwith "!! NO CHECKIN COMMENT PROVIDED !!"
-//    
-//    Plainion.CI.Tasks.Git.Commit projectRoot (buildRequest.Files, buildRequest.CheckInComment, buildDefinition.User.Login, buildDefinition.User.EMail)
+    if buildRequest.CheckInComment |> String.IsNullOrEmpty then
+        failwith "!! NO CHECKIN COMMENT PROVIDED !!"
+    
+    Plainion.CI.Tasks.Git.Commit projectRoot (buildRequest.Files |> List.ofSeq, buildRequest.CheckInComment, buildDefinition.User.Login, buildDefinition.User.EMail)
+)
+
+Target "Push" (fun _ ->
+    if buildDefinition.User.Password = null then
+        failwith "!! NO PASSWORD PROVIDED !!"
+    
+    Plainion.CI.Tasks.Git.Push projectRoot (buildDefinition.User.Login, buildDefinition.User.Password.ToUnsecureString())
 )
 

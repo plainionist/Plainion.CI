@@ -32,8 +32,6 @@ namespace Plainion.CI.Services
 
             return Task<bool>.Run( () =>
                 Try( "Workflow", Run( workflowFsx, "default" ), progress )
-                && ( !myDefinition.CheckIn || Try( "checkin", CheckIn, progress ) )
-                && ( !myDefinition.Push || Try( "push", Push, progress ) )
                 && ( !myDefinition.CreatePackage || Try( "create pacakge", Run( myDefinition.CreatePackageScript, myDefinition.CreatePackageArguments ), progress ) )
                 && ( !myDefinition.DeployPackage || Try( "deploy pacakge", Run( myDefinition.DeployPackageScript, myDefinition.DeployPackageArguments ), progress ) )
             );
@@ -90,32 +88,6 @@ namespace Plainion.CI.Services
             return fakeScriptExecutor.CanExecute( script )
                 ? ( AbstractScriptExecutor )fakeScriptExecutor
                 : ( AbstractScriptExecutor )new MsBuildScriptExecutor( myDefinition, progress );
-        }
-
-        private bool CheckIn( IProgress<string> progress )
-        {
-            if( string.IsNullOrEmpty( myRequest.CheckInComment ) )
-            {
-                progress.Report( "!! NO CHECKIN COMMENT PROVIDED !!" );
-                return false;
-            }
-
-            mySourceControl.Commit( myDefinition.RepositoryRoot, myRequest.Files, myRequest.CheckInComment, myDefinition.User.Login, myDefinition.User.EMail );
-
-            return true;
-        }
-
-        private bool Push( IProgress<string> progress )
-        {
-            if( myDefinition.User.Password == null )
-            {
-                progress.Report( "!! NO PASSWORD PROVIDED !!" );
-                return false;
-            }
-
-            mySourceControl.Push( myDefinition.RepositoryRoot, myDefinition.User.Login, myDefinition.User.Password.ToUnsecureString() );
-
-            return true;
         }
     }
 }

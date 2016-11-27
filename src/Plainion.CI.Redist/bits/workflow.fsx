@@ -4,13 +4,14 @@
 
 open Fake
 open Settings
-open Targets
 
 "Clean"
     ==> "RestoreNugetPackages"
     ==> "Build"
     =?> ("GenerateApiDoc", !%"Option.ApiDoc" |> toBool)
     =?> ("RunNUnitTests", !%"Option.Tests" |> toBool)
+    =?> ("Commit", buildDefinition.CheckIn)
+    =?> ("Push", buildDefinition.Push)
     ==> "Default"
 
 RunTargetOrDefault "Default"
