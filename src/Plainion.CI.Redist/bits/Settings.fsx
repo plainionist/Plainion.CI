@@ -1,6 +1,6 @@
-﻿#I @"../../../bin/Debug"
-#r "FAKE/FakeLib.dll"
-#r "Plainion.CI.Core.dll"
+﻿#r "../../../bin/Debug/FAKE/FakeLib.dll"
+#r "../../../bin/Debug/Plainion.CI.Core.dll"
+#r "../../../bin/Debug/Plainion.Core.dll"
 
 open Fake
 open Plainion.CI

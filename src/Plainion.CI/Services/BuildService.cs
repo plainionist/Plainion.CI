@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using Plainion.CI.Services.SourceControl;
 
@@ -44,6 +45,12 @@ namespace Plainion.CI.Services
 
             // save all settings and parameters to be read by FAKE
             BuildDefinitionSerializer.Serialize( BuildDefinition );
+
+            request.Files = request.Files
+                .Concat( new[] { BuildDefinitionSerializer.GetLocation( BuildDefinition ) } )
+                .Distinct()
+                .ToArray();
+
             BuildRequestSerializer.Serialize( request );
 
             return new BuildWorkflow( mySourceControl, BuildDefinition, request )

@@ -1,11 +1,6 @@
-﻿#I "../../../bin/Debug/FAKE"
-#I "../../../bin/Debug"
+﻿#r "../../../bin/Debug/Plainion.CI.Tasks.dll"
 
 #load "Settings.fsx"
-#r "FakeLib.dll"
-#r "Plainion.Core.dll"
-#r "Plainion.CI.Core.dll"
-#r "Plainion.CI.Tasks.dll"
 
 open System
 open System.IO

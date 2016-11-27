@@ -1,6 +1,4 @@
-﻿#I "../../../bin/Debug/FAKE"
-
-#load "Targets.fsx"
+﻿#load "Targets.fsx"
 
 open System.IO
 open Fake
