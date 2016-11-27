@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F9FD50
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Plainion.CI.Tasks", "src\Plainion.CI.Tasks\Plainion.CI.Tasks.fsproj", "{817A039F-E292-4F79-85B6-A0A0189A2E90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{72FFCC77-96EE-4067-BAF7-246DD065620A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72FFCC77-96EE-4067-BAF7-246DD065620A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72FFCC77-96EE-4067-BAF7-246DD065620A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{817A039F-E292-4F79-85B6-A0A0189A2E90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{817A039F-E292-4F79-85B6-A0A0189A2E90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{817A039F-E292-4F79-85B6-A0A0189A2E90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{817A039F-E292-4F79-85B6-A0A0189A2E90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

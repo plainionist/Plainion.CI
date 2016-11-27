@@ -1,12 +1,13 @@
 ﻿#I "../../../bin/Debug/FAKE"
+#I "../../../bin/Debug"
 
 #load "Settings.fsx"
 #r "FakeLib.dll"
+#r "Plainion.CI.Tasks.dll"
 
 open Fake
 open Fake.Testing.NUnit3
 open System.IO
-open System.Diagnostics
 open System
 open Settings
 
@@ -89,5 +90,7 @@ Target "GenerateApiDoc" (fun _ ->
     | false -> failwith "ApiDoc generation failed"
 )
 
-//RunTargetOrDefault "Default"
+Target "Commit" (fun _ ->
+    //Plainion.CI.Tasks.Git.Commit projectRoot (files,comment,name,email)
+)
 

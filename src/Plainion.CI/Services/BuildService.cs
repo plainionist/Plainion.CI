@@ -25,6 +25,28 @@ namespace Plainion.CI.Services
             SaveBuildDefinitionOnDemand();
         }
 
+        private void SaveBuildDefinitionOnDemand()
+        {
+            if( BuildDefinition == null || BuildDefinition.RepositoryRoot == null )
+            {
+                return;
+            }
+
+            var buildDefinitionFile = Path.Combine( BuildDefinition.RepositoryRoot, Path.GetFileName( BuildDefinition.RepositoryRoot ) + ".gc" );
+            using( var writer = XmlWriter.Create( buildDefinitionFile ) )
+            {
+                var serializer = new DataContractSerializer( typeof( BuildDefinition ) );
+                serializer.WriteObject( writer, BuildDefinition );
+            }
+
+            var userFile = buildDefinitionFile + "." + Environment.UserName;
+            using( var writer = XmlWriter.Create( userFile ) )
+            {
+                var serializer = new DataContractSerializer( typeof( User ) );
+                serializer.WriteObject( writer, BuildDefinition.User );
+            }
+        }
+
         public BuildDefinition BuildDefinition { get; private set; }
 
         public event Action BuildDefinitionChanged;
@@ -65,28 +87,6 @@ namespace Plainion.CI.Services
             if( BuildDefinitionChanged != null )
             {
                 BuildDefinitionChanged();
-            }
-        }
-
-        private void SaveBuildDefinitionOnDemand()
-        {
-            if( BuildDefinition == null || BuildDefinition.RepositoryRoot == null )
-            {
-                return;
-            }
-
-            var buildDefinitionFile = Path.Combine( BuildDefinition.RepositoryRoot, Path.GetFileName( BuildDefinition.RepositoryRoot ) + ".gc" );
-            using( var writer = XmlWriter.Create( buildDefinitionFile ) )
-            {
-                var serializer = new DataContractSerializer( typeof( BuildDefinition ) );
-                serializer.WriteObject( writer, BuildDefinition );
-            }
-
-            var userFile = buildDefinitionFile + "." + Environment.UserName;
-            using( var writer = XmlWriter.Create( userFile ) )
-            {
-                var serializer = new DataContractSerializer( typeof( User ) );
-                serializer.WriteObject( writer, BuildDefinition.User );
             }
         }
 
