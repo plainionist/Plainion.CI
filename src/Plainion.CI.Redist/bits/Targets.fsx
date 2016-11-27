@@ -158,15 +158,17 @@ let runScript (script:string) args =
 
 
 Target "CreatePackage" (fun _ ->
-    if buildDefinition.CreatePackageScript |> File.Exists |> not then
+    let script = projectRoot </> buildDefinition.CreatePackageScript
+    if script |> File.Exists |> not then
         failwithf "Package creation script does not exist: %s" buildDefinition.CreatePackageScript
     
-    runScript buildDefinition.CreatePackageScript buildDefinition.CreatePackageArguments
+    runScript script buildDefinition.CreatePackageArguments
 )
 
 Target "DeployPackage" (fun _ ->
-    if buildDefinition.DeployPackageScript |> File.Exists |> not then
+    let script = projectRoot </> buildDefinition.DeployPackageScript
+    if script |> File.Exists |> not then
         failwithf "Package deployment script does not exist: %s" buildDefinition.DeployPackageScript
     
-    runScript buildDefinition.DeployPackageScript buildDefinition.DeployPackageArguments
+    runScript script buildDefinition.DeployPackageArguments
 )

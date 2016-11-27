@@ -16,4 +16,6 @@ your project to the push of a button.
 Of course simplicitly comes with reduced flexibility. If your project grows, if the number of contributors
 increases I encourage you to switch to one of the "bigger solutions" out there.
 
+## Usage
 
+* specify package creation and deployment scripts relative to project root
