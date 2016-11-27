@@ -1,7 +1,7 @@
-﻿#if INTERACTIVE
-#r "../../../bin/Debug/Plainion.CI.Tasks.dll"
-#else
+﻿#if FAKE
 #r "../Plainion.CI.Tasks.dll"
+#else
+#r "../../../bin/Debug/Plainion.CI.Tasks.dll"
 #endif
 
 #load "Settings.fsx"

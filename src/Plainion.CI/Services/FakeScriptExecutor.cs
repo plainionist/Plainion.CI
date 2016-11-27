@@ -27,6 +27,8 @@ namespace Plainion.CI.Services
 
         protected override IEnumerable<string> CompileScriptArgumentsInternal( string script, string target, string[] args )
         {
+            yield return "--fsiargs \"--define:FAKE\"";
+
             yield return script;
 
             yield return target;
@@ -35,6 +37,7 @@ namespace Plainion.CI.Services
             {
                 yield return arg;
             }
+
         }
     }
 }

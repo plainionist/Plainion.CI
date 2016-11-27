@@ -1,11 +1,11 @@
-﻿#if INTERACTIVE
-#r "../../../bin/Debug/FAKE/FakeLib.dll"
-#r "../../../bin/Debug/Plainion.CI.Core.dll"
-#r "../../../bin/Debug/Plainion.Core.dll"
-#else
+﻿#if FAKE
 #r "../FAKE/FakeLib.dll"
 #r "../Plainion.CI.Core.dll"
 #r "../Plainion.Core.dll"
+#else
+#r "../../../bin/Debug/FAKE/FakeLib.dll"
+#r "../../../bin/Debug/Plainion.CI.Core.dll"
+#r "../../../bin/Debug/Plainion.Core.dll"
 #endif
 
 open Fake
