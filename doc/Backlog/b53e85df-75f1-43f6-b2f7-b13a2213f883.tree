@@ -2,11 +2,11 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="16609c16-1f4e-43c5-bcc9-25e124b600a3">
-      <Caption><![CDATA[package creation and deploy to fake]]></Caption>
-    </Node>
     <Node Id="c7206ca3-242e-423d-90af-ee0a6a72143a">
       <Caption><![CDATA[create nuget package]]></Caption>
+    </Node>
+    <Node Id="dbeac13e-b344-468e-be6e-2e01f41cdb47">
+      <Caption><![CDATA[release on github]]></Caption>
     </Node>
   </Node>
 </Tree>
