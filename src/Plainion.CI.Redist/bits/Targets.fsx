@@ -143,18 +143,18 @@ let runScript (script:string) args =
             shellExec { Program = "fake.exe"
                         Args = []
                         WorkingDirectory = projectRoot
-                        CommandLine = args }
+                        CommandLine = (script + " " + args) }
         elif script.EndsWith(".msbuild", StringComparison.OrdinalIgnoreCase) || script.EndsWith(".targets", StringComparison.OrdinalIgnoreCase) then
             shellExec { Program = @"C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
                         Args = []
                         WorkingDirectory = projectRoot
-                        CommandLine = args }
+                        CommandLine = (sprintf "/p:OutputPath=%s %s %s" outputPath args script) }
         else
             failwithf "Unknown script type: %s" script
 
     match ret with
     | 0 -> ()
-    | _-> failwith "script execution failed: %s" script
+    | _-> failwithf "script execution failed: %s" script
 
 
 Target "CreatePackage" (fun _ ->
