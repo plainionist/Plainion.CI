@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="560dcd68-6c67-4aeb-93c7-aecc76036cd3" Created="636140377698664302" LastModified="636152443818260840" Origin="862d22e2-2236-4fb2-a8f9-a58677275316">
-  <Caption><![CDATA[changelog]]></Caption>
-  <Content><![CDATA[see https://github.com/fsprojects/ProjectScaffold
-changelog is also used to maintain project/package version]]></Content>
-</Node>

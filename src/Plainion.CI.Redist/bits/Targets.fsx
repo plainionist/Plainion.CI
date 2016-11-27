@@ -115,7 +115,7 @@ Target "AssemblyInfo" (fun _ ->
           Attribute.Product projectName
           Attribute.Description projectName
           Attribute.Copyright (sprintf "Copyright @ %i" DateTime.UtcNow.Year)
-          Attribute.Version release.AssemblyVersion 
+          Attribute.Version release.AssemblyVersion
           Attribute.FileVersion release.AssemblyVersion ]
 
     let getProjectDetails projectPath =

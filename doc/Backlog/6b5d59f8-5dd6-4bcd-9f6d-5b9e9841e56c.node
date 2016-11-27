@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="6b5d59f8-5dd6-4bcd-9f6d-5b9e9841e56c" Created="636152442087501846" LastModified="636158286151747853">
-  <Caption><![CDATA[package versioning]]></Caption>
-  <Content><![CDATA[- package generation actually implies automatic version update!
-  - at least patch level in order to ensure that we always know what is running
-  - this implies that we first update the version and then checkin
-    and then package creation
-  - what do we do if package generation fails? ==> no rollback]]></Content>
-</Node>
