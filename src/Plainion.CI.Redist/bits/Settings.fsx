@@ -3,12 +3,8 @@
 #r "FakeLib.dll"
 #r "Plainion.CI.Core.dll"
 
-open System
 open Fake
 open Plainion.CI
-
-let toBool (str:string) =
-    Convert.ToBoolean(str)
 
 let getProperty name =
    match getBuildParamOrDefault name null with
@@ -27,8 +23,10 @@ let getPropertyAndTrace name =
 let (!%) = getProperty
 
 let toolsHome = getProperty "ToolsHome"
-let outputPath = !%"OutputPath"
-let projectRoot = !%"ProjectRoot" 
 
 let buildDefinition = BuildDefinitionSerializer.TryDeserialize( !%"BuildDefinitionFile" )
 let buildRequest = BuildRequestSerializer.Deserialize()
+
+let outputPath = buildDefinition.GetOutputPath()
+let projectRoot = buildDefinition.RepositoryRoot
+

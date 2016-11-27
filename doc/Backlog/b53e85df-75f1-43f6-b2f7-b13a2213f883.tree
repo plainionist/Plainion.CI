@@ -2,8 +2,8 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="d3814d55-8af5-47d2-812a-7da81eb94450">
-      <Caption><![CDATA[checkin and push in fake]]></Caption>
+    <Node Id="16609c16-1f4e-43c5-bcc9-25e124b600a3">
+      <Caption><![CDATA[package creation and deploy to fake]]></Caption>
     </Node>
     <Node Id="560dcd68-6c67-4aeb-93c7-aecc76036cd3">
       <Caption><![CDATA[changelog]]></Caption>
@@ -15,7 +15,7 @@
       <Caption><![CDATA[create nuget package]]></Caption>
     </Node>
     <Node Id="6b5d59f8-5dd6-4bcd-9f6d-5b9e9841e56c">
-      <Caption><![CDATA[put package activities into fake]]></Caption>
+      <Caption><![CDATA[package versioning]]></Caption>
     </Node>
   </Node>
 </Tree>

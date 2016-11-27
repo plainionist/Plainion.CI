@@ -8,8 +8,8 @@ open Settings
 "Clean"
     ==> "RestoreNugetPackages"
     ==> "Build"
-    =?> ("GenerateApiDoc", !%"Option.ApiDoc" |> toBool)
-    =?> ("RunNUnitTests", !%"Option.Tests" |> toBool)
+    =?> ("GenerateApiDoc", buildDefinition.GenerateAPIDoc)
+    =?> ("RunNUnitTests", buildDefinition.RunTests)
     =?> ("Commit", buildDefinition.CheckIn)
     =?> ("Push", buildDefinition.Push)
     ==> "Default"

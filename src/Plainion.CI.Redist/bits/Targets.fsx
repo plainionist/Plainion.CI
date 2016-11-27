@@ -3,6 +3,7 @@
 
 #load "Settings.fsx"
 #r "FakeLib.dll"
+#r "Plainion.Core.dll"
 #r "Plainion.CI.Core.dll"
 #r "Plainion.CI.Tasks.dll"
 
@@ -17,8 +18,8 @@ let setParams defaults =
     { defaults with
         Targets = ["Build"]
         Properties = [ "OutputPath", outputPath
-                       "Configuration", !%"Configuration"
-                       "Platform", !%"Platform"
+                       "Configuration", buildDefinition.Configuration
+                       "Platform", buildDefinition.Platform
                      ]
     }
 
@@ -33,11 +34,11 @@ Target "Clean" (fun _ ->
 )
 
 Target "Build" (fun _ ->
-    build setParams (!%"SolutionFile")
+    build setParams (buildDefinition.GetSolutionPath())
 )
 
 Target "RestoreNugetPackages" (fun _ ->
-    !%"SolutionFile" 
+    buildDefinition.GetSolutionPath()
     |> RestoreMSSolutionPackages (fun p ->
          { p with
              OutputPath = projectRoot </> "packages"
@@ -45,8 +46,8 @@ Target "RestoreNugetPackages" (fun _ ->
 )
 
 Target "RunNUnitTests" (fun _ ->
-    let assemblies = !! ( outputPath + "/" + !%"TestAssemblyPattern" )
-    let toolPath = !%"NUnitPath"
+    let assemblies = !! ( outputPath + "/" + buildDefinition.TestAssemblyPattern )
+    let toolPath = Path.GetDirectoryName( buildDefinition.TestRunnerExecutable )
 
     if fileExists ( toolPath @@ "nunit-console.exe" ) then
         assemblies
@@ -65,13 +66,13 @@ Target "RunNUnitTests" (fun _ ->
 
 Target "GenerateApiDoc" (fun _ ->
     let genApiDoc assembly =
-        let args = (!%"ApiDocGenArguments").Replace("%1", assembly)
-        shellExec { Program = !%"ApiDocGenExecutable"
+        let args = (buildDefinition.ApiDocGenArguments).Replace("%1", assembly)
+        shellExec { Program = buildDefinition.ApiDocGenExecutable
                     Args = []
-                    WorkingDirectory =  !%"ProjectRoot"
+                    WorkingDirectory =  projectRoot
                     CommandLine = args}
     
-    let projectName = Path.GetFileNameWithoutExtension(!%"SolutionFile")
+    let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
 
     let assemblies = 
         !! ( outputPath + "/" + "*.dll" )

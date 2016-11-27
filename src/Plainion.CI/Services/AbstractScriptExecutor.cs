@@ -53,19 +53,7 @@ namespace Plainion.CI.Services
 
             process.Environment[ "ToolsHome" ] = toolsHome;
             process.Environment[ "BuildDefinitionFile" ] = BuildDefinitionSerializer.GetLocation( BuildDefinition );
-            process.Environment[ "Configuration" ] = BuildDefinition.Configuration;
-            process.Environment[ "Platform" ] = BuildDefinition.Platform;
-            process.Environment[ "OutputPath" ] = BuildDefinition.GetOutputPath();
-            process.Environment[ "ProjectRoot" ] = BuildDefinition.RepositoryRoot;
-            process.Environment[ "SolutionFile" ] = BuildDefinition.GetSolutionPath();
-            process.Environment[ "NUnitPath" ] = Path.GetDirectoryName( BuildDefinition.TestRunnerExecutable );
-            process.Environment[ "TestAssemblyPattern" ] = BuildDefinition.TestAssemblyPattern;
-            process.Environment[ "ApiDocGenExecutable" ] = BuildDefinition.ApiDocGenExecutable;
-            process.Environment[ "ApiDocGenArguments" ] = BuildDefinition.ApiDocGenArguments;
-
-            process.Environment[ "Option.ApiDoc" ] = BuildDefinition.GenerateAPIDoc.ToString();
-            process.Environment[ "Option.Tests" ] = BuildDefinition.RunTests.ToString();
-
+            
             var compiledArguments = CompileScriptArgumentsInternal( script, target, args ).ToArray();
 
             process.Execute( compiledArguments );
