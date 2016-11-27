@@ -91,6 +91,9 @@ Target "GenerateApiDoc" (fun _ ->
 )
 
 Target "Commit" (fun _ ->
-    //Plainion.CI.Tasks.Git.Commit projectRoot (files,comment,name,email)
+//    if buildRequest.CheckInComment |> String.IsNullOrEmpty then
+//        failwith "!! NO CHECKIN COMMENT PROVIDED !!"
+//    
+//    Plainion.CI.Tasks.Git.Commit projectRoot (buildRequest.Files, buildRequest.CheckInComment, buildDefinition.User.Login, buildDefinition.User.EMail)
 )
 

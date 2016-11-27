@@ -52,6 +52,7 @@ namespace Plainion.CI.Services
                 + Path.PathSeparator + PATH;
 
             process.Environment[ "ToolsHome" ] = toolsHome;
+            process.Environment[ "BuildDefinitionFile" ] = BuildDefinitionSerializer.GetLocation( BuildDefinition );
             process.Environment[ "Configuration" ] = BuildDefinition.Configuration;
             process.Environment[ "Platform" ] = BuildDefinition.Platform;
             process.Environment[ "OutputPath" ] = BuildDefinition.GetOutputPath();

@@ -85,7 +85,7 @@ namespace Plainion.CI
                 Files = CheckInViewModel.Files
                     .Where( e => e.IsChecked )
                     .Select( e => e.File )
-                    .ToList(),
+                    .ToArray(),
             };
 
             myBuildService.ExecuteAsync( request, progress )

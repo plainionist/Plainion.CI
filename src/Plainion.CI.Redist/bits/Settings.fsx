@@ -1,8 +1,11 @@
-﻿#I "../../../bin/Debug/FAKE"
+﻿#I "../../../bin/Debug"
+#I "../../../bin/Debug/FAKE"
 #r "FakeLib.dll"
+#r "Plainion.CI.Core.dll"
 
-open Fake
 open System
+open Fake
+open Plainion.CI
 
 let toBool (str:string) =
     Convert.ToBoolean(str)
@@ -27,3 +30,5 @@ let toolsHome = getProperty "ToolsHome"
 let outputPath = !%"OutputPath"
 let projectRoot = !%"ProjectRoot" 
 
+let buildDefinition = BuildDefinitionSerializer.TryDeserialize( !%"BuildDefinitionFile" )
+let buildRequest = BuildRequestSerializer.Deserialize()
