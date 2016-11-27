@@ -1,10 +1,10 @@
-﻿#I "../../../bin/Debug"
-#I "../../../bin/Debug/FAKE"
-#r "FakeLib.dll"
+﻿#I @"../../../bin/Debug"
+#r "FAKE/FakeLib.dll"
 #r "Plainion.CI.Core.dll"
 
 open Fake
 open Plainion.CI
+open System.IO
 
 let getProperty name =
    match getBuildParamOrDefault name null with
@@ -30,3 +30,5 @@ let buildRequest = BuildRequestSerializer.Deserialize()
 let outputPath = buildDefinition.GetOutputPath()
 let projectRoot = buildDefinition.RepositoryRoot
 
+let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
+let releaseNotesFile = projectRoot </> "ChangeLog.md"
