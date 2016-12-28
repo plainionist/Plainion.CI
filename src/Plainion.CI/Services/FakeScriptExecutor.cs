@@ -1,57 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace Plainion.CI.Services
 {
-    sealed class FakeScriptExecutor 
+    sealed class FakeScriptExecutor
     {
+        private IProgress<string> myProgress;
+        private BuildDefinition myBuildDefinition;
+
         public FakeScriptExecutor( BuildDefinition buildDefinition, IProgress<string> progress )
         {
             Contract.RequiresNotNull( buildDefinition, "buildDefinition" );
             Contract.RequiresNotNull( progress, "progress" );
 
-            BuildDefinition = buildDefinition;
-            Progress = progress;
-        }
-
-        private IProgress<string> Progress { get; set; }
-
-        private BuildDefinition BuildDefinition { get; set; }
-
-        private string Interpreter
-        {
-            get
-            {
-                var home = Path.GetDirectoryName( GetType().Assembly.Location );
-                return Path.Combine( home, "FAKE", "fake.exe" );
-            }
-        }
-
-        private IEnumerable<string> ValidScriptExtensions
-        {
-            get { yield return ".fsx"; }
-        }
-
-        public bool CanExecute( string script )
-        {
-            var fileExtension = Path.GetExtension( script );
-            return ValidScriptExtensions.Any( x => x.Equals( fileExtension, StringComparison.OrdinalIgnoreCase ) );
+            myBuildDefinition = buildDefinition;
+            myProgress = progress;
         }
 
         public bool Execute( string script, params string[] args )
         {
             Contract.Requires( !string.IsNullOrWhiteSpace( script ), "No script given" );
 
-            Contract.Requires( CanExecute( script ), "{0} is not a valid script. Valid file extensions are: {1}", script, string.Join( ",", ValidScriptExtensions ) );
-
             if( !Path.IsPathRooted( script ) )
             {
-                script = Path.Combine( BuildDefinition.RepositoryRoot, script );
+                script = Path.Combine( myBuildDefinition.RepositoryRoot, script );
             }
 
-            var process = new UiShellCommand( Interpreter, Progress );
+            var home = Path.GetDirectoryName( GetType().Assembly.Location );
+            var interpreter = Path.Combine( home, "FAKE", "fake.exe" );
+
+            var process = new UiShellCommand( interpreter, myProgress );
 
             var toolsHome = Path.GetDirectoryName( GetType().Assembly.Location );
             var PATH = Environment.GetEnvironmentVariable( "PATH" );
@@ -62,28 +41,18 @@ namespace Plainion.CI.Services
                 + Path.PathSeparator + PATH;
 
             process.Environment[ "ToolsHome" ] = toolsHome;
-            process.Environment[ "BuildDefinitionFile" ] = BuildDefinitionSerializer.GetLocation( BuildDefinition );
+            process.Environment[ "BuildDefinitionFile" ] = BuildDefinitionSerializer.GetLocation( myBuildDefinition );
 
-            process.Environment[ "ProjectRoot" ] = BuildDefinition.RepositoryRoot;
-            process.Environment[ "outputPath " ] = BuildDefinition.GetOutputPath();
+            process.Environment[ "ProjectRoot" ] = myBuildDefinition.RepositoryRoot;
+            process.Environment[ "outputPath " ] = myBuildDefinition.GetOutputPath();
 
-            var compiledArguments = CompileScriptArgumentsInternal( script, args ).ToArray();
+            var compiledArguments = new[] { "--fsiargs \"--define:FAKE\"", script }
+                .Concat( args )
+                .ToArray();
 
             process.Execute( compiledArguments );
 
             return process.ExitCode == 0;
-        }
-
-        private IEnumerable<string> CompileScriptArgumentsInternal( string script, string[] args )
-        {
-            yield return "--fsiargs \"--define:FAKE\"";
-
-            yield return script;
-
-            foreach( var arg in args )
-            {
-                yield return arg;
-            }
         }
     }
 }
