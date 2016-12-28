@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Plainion.CI.Services.SourceControl;
@@ -43,9 +44,6 @@ namespace Plainion.CI.Services
         {
             Contract.Invariant( BuildDefinition != null, "BuildDefinition not loaded" );
 
-            // save all settings and parameters to be read by FAKE
-            BuildDefinitionSerializer.Serialize( BuildDefinition );
-
             request.Files = request.Files
                 .Concat( new[] { BuildDefinitionSerializer.GetLocation( BuildDefinition ) } )
                 .Distinct()
@@ -53,8 +51,37 @@ namespace Plainion.CI.Services
 
             BuildRequestSerializer.Serialize( request );
 
-            return new BuildWorkflow( mySourceControl, BuildDefinition, request )
-                .ExecuteAsync( progress );
+            // save all settings and parameters to be read by FAKE
+            BuildDefinitionSerializer.Serialize( BuildDefinition );
+
+            var buildDef = Objects.Clone( BuildDefinition );
+            var toolsHome = Path.GetDirectoryName( GetType().Assembly.Location );
+
+            return Task<bool>.Run( () =>
+            {
+                try
+                {
+                    var executor = new FakeScriptExecutor( buildDef, progress );
+                    var success = executor.Execute( Path.Combine( toolsHome, "bits", "Workflow.fsx" ), "default" );
+
+                    if( success )
+                    {
+                        progress.Report( "--- WORKFLOW SUCCEEDED ---" );
+                    }
+                    else
+                    {
+                        progress.Report( "--- WORKFLOW FAILED ---" );
+                    }
+
+                    return success;
+                }
+                catch( Exception ex )
+                {
+                    progress.Report( "ERROR: " + ex.Message );
+                    progress.Report( "--- WORKFLOW FAILED ---" );
+                    return false;
+                }
+            } );
         }
     }
 }

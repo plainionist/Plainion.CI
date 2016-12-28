@@ -68,7 +68,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Services\BuildWorkflow.cs" />
     <Compile Include="Services\AbstractShellProcess.cs" />
     <Compile Include="Services\AbstractScriptExecutor.cs" />
     <Compile Include="Services\FakeScriptExecutor.cs" />
