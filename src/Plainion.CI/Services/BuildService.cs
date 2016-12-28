@@ -50,19 +50,49 @@ namespace Plainion.CI.Services
                 .ToArray();
 
             BuildRequestSerializer.Serialize( request );
-
-            // save all settings and parameters to be read by FAKE
             BuildDefinitionSerializer.Serialize( BuildDefinition );
 
-            var buildDef = Objects.Clone( BuildDefinition );
             var toolsHome = Path.GetDirectoryName( GetType().Assembly.Location );
+            var repositoryRoot = BuildDefinition.RepositoryRoot;
+            var buildDefinitionFile = BuildDefinitionSerializer.GetLocation( BuildDefinition );
+            var outputPath = BuildDefinition.GetOutputPath();
 
             return Task<bool>.Run( () =>
             {
                 try
                 {
-                    var executor = new FakeScriptExecutor( buildDef, progress );
-                    var success = executor.Execute( Path.Combine( toolsHome, "bits", "Workflow.fsx" ), "default" );
+                    var script = Path.Combine( toolsHome, "bits", "Workflow.fsx" );
+
+                    if( !Path.IsPathRooted( script ) )
+                    {
+                        script = Path.Combine( repositoryRoot, script );
+                    }
+
+                    var home = Path.GetDirectoryName( GetType().Assembly.Location );
+                    var interpreter = Path.Combine( home, "FAKE", "fake.exe" );
+
+                    var process = new UiShellCommand( interpreter, progress );
+
+                    var PATH = Environment.GetEnvironmentVariable( "PATH" );
+
+                    // extend PATH so that FAKE targets can find the tools
+                    process.Environment[ "PATH" ] = Path.Combine( toolsHome, "FAKE" )
+                        + Path.PathSeparator + Path.Combine( toolsHome, "NuGet" )
+                        + Path.PathSeparator + PATH;
+
+                    process.Environment[ "ToolsHome" ] = toolsHome;
+                    process.Environment[ "BuildDefinitionFile" ] = buildDefinitionFile;
+                    process.Environment[ "ProjectRoot" ] = repositoryRoot;
+                    process.Environment[ "outputPath " ] = outputPath;
+
+                    var compiledArguments = new[] { 
+                        "--fsiargs \"--define:FAKE\"", 
+                        script,
+                        "default" };
+
+                    process.Execute( compiledArguments );
+
+                    var success = process.ExitCode == 0;
 
                     if( success )
                     {

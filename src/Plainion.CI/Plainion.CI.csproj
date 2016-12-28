@@ -69,7 +69,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Services\AbstractShellProcess.cs" />
-    <Compile Include="Services\FakeScriptExecutor.cs" />
     <Compile Include="Services\SourceControl\Change.cs" />
     <Compile Include="Services\SourceControl\ChangeType.cs" />
     <Compile Include="Services\SourceControl\ISourceControl.cs" />
