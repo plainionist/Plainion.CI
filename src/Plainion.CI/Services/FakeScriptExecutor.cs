@@ -25,19 +25,16 @@ namespace Plainion.CI.Services
             get { yield return ".fsx"; }
         }
 
-        protected override IEnumerable<string> CompileScriptArgumentsInternal( string script, string target, string[] args )
+        protected override IEnumerable<string> CompileScriptArgumentsInternal( string script, string[] args )
         {
             yield return "--fsiargs \"--define:FAKE\"";
 
             yield return script;
 
-            yield return target;
-
             foreach( var arg in args )
             {
                 yield return arg;
             }
-
         }
     }
 }

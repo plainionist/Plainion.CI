@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Plainion.CI;
 using Plainion.CI.Services.SourceControl;
 
 namespace Plainion.CI.Services
@@ -62,20 +59,10 @@ namespace Plainion.CI.Services
 
         private Func<IProgress<string>, bool> Run( string script, string args )
         {
-            return Run( script, null, args.Split( new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ) );
-        }
-
-        private Func<IProgress<string>, bool> Run( string script, params string[] args )
-        {
-            return Run( script, null, args );
-        }
-
-        private Func<IProgress<string>, bool> Run( string script, string target, params string[] args )
-        {
             return p =>
             {
                 var executor = new FakeScriptExecutor( myDefinition, p );
-                return executor.Execute( script, target, args );
+                return executor.Execute( script, args.Split( new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries ) );
             };
         }
     }

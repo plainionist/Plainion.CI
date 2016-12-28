@@ -30,7 +30,7 @@ namespace Plainion.CI.Services
             return ValidScriptExtensions.Any( x => x.Equals( fileExtension, StringComparison.OrdinalIgnoreCase ) );
         }
 
-        public bool Execute( string script, string target, params string[] args )
+        public bool Execute( string script, params string[] args )
         {
             Contract.Requires( !string.IsNullOrWhiteSpace( script ), "No script given" );
 
@@ -57,13 +57,13 @@ namespace Plainion.CI.Services
             process.Environment[ "ProjectRoot" ] = BuildDefinition.RepositoryRoot;
             process.Environment[ "outputPath " ] = BuildDefinition.GetOutputPath();
 
-            var compiledArguments = CompileScriptArgumentsInternal( script, target, args ).ToArray();
+            var compiledArguments = CompileScriptArgumentsInternal( script, args ).ToArray();
 
             process.Execute( compiledArguments );
 
             return process.ExitCode == 0;
         }
 
-        protected abstract IEnumerable<string> CompileScriptArgumentsInternal( string script, string target, string[] args );
+        protected abstract IEnumerable<string> CompileScriptArgumentsInternal( string script, string[] args );
     }
 }
