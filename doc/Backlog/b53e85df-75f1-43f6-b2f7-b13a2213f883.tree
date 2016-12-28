@@ -5,14 +5,20 @@
     <Node Id="2e4d5569-160c-4906-97ad-187eb579d7e8">
       <Caption><![CDATA[switch own packaging hooks to fake scripts]]></Caption>
     </Node>
-    <Node Id="c7206ca3-242e-423d-90af-ee0a6a72143a">
-      <Caption><![CDATA[create nuget package]]></Caption>
+    <Node Id="4e7c4e7a-dfc2-4858-812c-028a17de1a5d">
+      <Caption><![CDATA[draw arch picture]]></Caption>
     </Node>
-    <Node Id="5cd8ae90-558f-4a66-a963-24559fa8415b">
-      <Caption><![CDATA[publish nuget package]]></Caption>
-    </Node>
-    <Node Id="dbeac13e-b344-468e-be6e-2e01f41cdb47">
-      <Caption><![CDATA[publish release on github]]></Caption>
+    <Node Id="d926bd9e-2a8d-442d-b12c-943d588844d3">
+      <Caption><![CDATA[next]]></Caption>
+      <Node Id="c7206ca3-242e-423d-90af-ee0a6a72143a">
+        <Caption><![CDATA[create nuget package]]></Caption>
+      </Node>
+      <Node Id="dbeac13e-b344-468e-be6e-2e01f41cdb47">
+        <Caption><![CDATA[publish release on github]]></Caption>
+      </Node>
+      <Node Id="5cd8ae90-558f-4a66-a963-24559fa8415b">
+        <Caption><![CDATA[publish nuget package]]></Caption>
+      </Node>
     </Node>
   </Node>
 </Tree>
