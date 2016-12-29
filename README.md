@@ -104,4 +104,4 @@ regarding APIKey and have stored your APIKey with "setApiKey".
 
 # References
 
-* [Design overview](doc/Overview.png)
+* [Design overview](doc/Design.md)
