@@ -79,3 +79,6 @@ let PublishNuGetPackage packageOut =
                                     PublishUrl = "https://www.nuget.org/api/v2/package"
                                     Publish = true }) 
 
+let PublishReleaseOnGitHub () =
+    //https://github.com/fsprojects/ProjectScaffold/blob/master/build.template
+    ()
