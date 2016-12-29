@@ -18,10 +18,10 @@ Target "CreatePackage" (fun _ ->
     |> DeleteFiles
 
     // create a dummy nuget package for testing
-//    [
-//        ("Plainion.CI*", Some "lib", None)
-//    ]
-//    |> CreateNuGetPackage (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
+    [
+        ("Plainion.CI*", Some "lib", None)
+    ]
+    |> PNuGet.Pack (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
 )
 
 Target "DeployPackage" (fun _ ->
@@ -32,7 +32,7 @@ Target "DeployPackage" (fun _ ->
     CopyRecursive outputPath releaseDir true |> ignore
 
     // publish a dummy nuget package for testing
-//    PublishNuGetPackage (projectRoot </> "pkg")
+    PNuGet.Publish (projectRoot </> "pkg")
 )
 
 RunTarget()

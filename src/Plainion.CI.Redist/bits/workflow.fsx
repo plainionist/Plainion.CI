@@ -13,6 +13,7 @@ open Fake.Testing.NUnit3
 open Fake.AssemblyInfoFile
 open Fake.ReleaseNotesHelper
 open Plainion.CI
+open Plainion.CI.Tasks
 open PlainionCI
 
 Target "All" (fun _ ->
@@ -85,14 +86,14 @@ Target "Commit" (fun _ ->
     if buildRequest.CheckInComment |> String.IsNullOrEmpty then
         failwith "!! NO CHECKIN COMMENT PROVIDED !!"
     
-    Plainion.CI.Tasks.Git.Commit projectRoot (buildRequest.Files |> List.ofSeq, buildRequest.CheckInComment, buildDefinition.User.Login, buildDefinition.User.EMail)
+    PGit.Commit projectRoot (buildRequest.Files |> List.ofSeq, buildRequest.CheckInComment, buildDefinition.User.Login, buildDefinition.User.EMail)
 )
 
 Target "Push" (fun _ ->
     if buildDefinition.User.Password = null then
         failwith "!! NO PASSWORD PROVIDED !!"
     
-    Plainion.CI.Tasks.Git.Push projectRoot (buildDefinition.User.Login, buildDefinition.User.Password.ToUnsecureString())
+    PGit.Push projectRoot (buildDefinition.User.Login, buildDefinition.User.Password.ToUnsecureString())
 )
 
 Target "AssemblyInfo" (fun _ ->

@@ -51,34 +51,36 @@ let setParams defaults =
                      ]
     }
 
-/// Creates a nuget package with the given files and nuspec at the packageOut folder.
-/// Version is taken from changelog.md
-let CreateNuGetPackage nuspec packageOut files =
-    let release = ReleaseNotesHelper.LoadReleaseNotes releaseNotesFile
+module PNuGet =
+    /// Creates a nuget package with the given files and nuspec at the packageOut folder.
+    /// Version is taken from changelog.md
+    let Pack nuspec packageOut files =
+        let release = ReleaseNotesHelper.LoadReleaseNotes releaseNotesFile
 
-    CreateDir packageOut
-    CleanDir packageOut
+        CreateDir packageOut
+        CleanDir packageOut
 
-    nuspec 
-    |> NuGet (fun p ->  {p with OutputPath = packageOut
-                                WorkingDir = outputPath
-                                Project = projectName
-                                Version = release.AssemblyVersion
-                                ReleaseNotes = release.Notes 
-                                               |> Seq.map ((+) "- ")
-                                               |> String.concat Environment.NewLine
-                                Files = files }) 
-                    
-let PublishNuGetPackage packageOut =
-    let release = ReleaseNotesHelper.LoadReleaseNotes releaseNotesFile
-
-    NuGetPublish  (fun p -> {p with OutputPath = packageOut
-                                    WorkingDir = projectRoot
+        nuspec 
+        |> NuGet (fun p ->  {p with OutputPath = packageOut
+                                    WorkingDir = outputPath
                                     Project = projectName
                                     Version = release.AssemblyVersion
-                                    PublishUrl = "https://www.nuget.org/api/v2/package"
-                                    Publish = true }) 
+                                    ReleaseNotes = release.Notes 
+                                                   |> Seq.map ((+) "- ")
+                                                   |> String.concat Environment.NewLine
+                                    Files = files }) 
+                    
+    let Publish packageOut =
+        let release = ReleaseNotesHelper.LoadReleaseNotes releaseNotesFile
 
-let PublishReleaseOnGitHub () =
-    //https://github.com/fsprojects/ProjectScaffold/blob/master/build.template
-    ()
+        NuGetPublish  (fun p -> {p with OutputPath = packageOut
+                                        WorkingDir = projectRoot
+                                        Project = projectName
+                                        Version = release.AssemblyVersion
+                                        PublishUrl = "https://www.nuget.org/api/v2/package"
+                                        Publish = true }) 
+
+module PGitHub =
+    let Release () =
+        //https://github.com/fsprojects/ProjectScaffold/blob/master/build.template
+        ()

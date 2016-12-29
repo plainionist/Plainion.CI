@@ -1,4 +1,4 @@
-﻿module Plainion.CI.Tasks.Git
+﻿module Plainion.CI.Tasks.PGit
 
 open System
 open LibGit2Sharp

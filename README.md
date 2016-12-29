@@ -62,7 +62,7 @@ You can create a NuGet package from your custom "CreatePackage" target like this
     [
         ("Plainion.CI*", Some "lib", None)
     ]
-    |> CreateNuGetPackage (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
+    |> PNuGet.Pack (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
 ```
 
 Hint: this function assumes that you have a ChangeLog.md in the root of your project.
@@ -96,7 +96,7 @@ A sample NuSpec could look like this
 You can publish a NuGet package like this 
 
 ```F#
-    PublishNuGetPackage (projectRoot </> "pkg")
+    PNuGet.Publish (projectRoot </> "pkg")
 ```
 
 **Hint:** Publishing NuGet packages currently only works if you once followed the instructions [here](https://docs.nuget.org/ndocs/create-packages/publish-a-package) 
