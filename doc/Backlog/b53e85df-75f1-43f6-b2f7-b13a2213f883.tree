@@ -2,17 +2,8 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="c7206ca3-242e-423d-90af-ee0a6a72143a">
-      <Caption><![CDATA[create nuget package]]></Caption>
-    </Node>
-    <Node Id="5cd8ae90-558f-4a66-a963-24559fa8415b">
-      <Caption><![CDATA[publish nuget package]]></Caption>
-    </Node>
     <Node Id="dbeac13e-b344-468e-be6e-2e01f41cdb47">
       <Caption><![CDATA[publish release on github]]></Caption>
-    </Node>
-    <Node Id="8b1be2da-7a8a-4bc6-9b83-50967a4e967c">
-      <Caption><![CDATA[move abstractshellprocess and uishellcommand to plainion.core]]></Caption>
     </Node>
   </Node>
 </Tree>

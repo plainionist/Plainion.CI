@@ -14,5 +14,8 @@
     <Node Id="2caf4a85-0095-4425-adcb-99f22e4a9dd0">
       <Caption><![CDATA[log window does hang on fast binding update]]></Caption>
     </Node>
+    <Node Id="8b1be2da-7a8a-4bc6-9b83-50967a4e967c">
+      <Caption><![CDATA[move abstractshellprocess and uishellcommand to plainion.core]]></Caption>
+    </Node>
   </Node>
 </Tree>
