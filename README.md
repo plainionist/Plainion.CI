@@ -18,4 +18,10 @@ increases I encourage you to switch to one of the "bigger solutions" out there.
 
 ## Usage
 
+Just start the tool and enter all relevant information under the "build definition" tab.
+Then change to CheckIn tab, select the files you want to commit and enter a commit message and press "go".
+
+### Hints
+
 * specify package creation and deployment scripts relative to project root
+
