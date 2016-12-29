@@ -1,5 +1,6 @@
-#r "/bin/Plainion.CI/FAKE/FakeLib.dll"
-#load "/bin/Plainion.CI/bits/PlainionCI.fsx"
+// load dependencies from source folder to allow bootstrapping
+#r "../bin/Debug/FAKE/FakeLib.dll"
+#load "../bin/Debug/bits/PlainionCI.fsx"
 
 open Fake
 open PlainionCI
@@ -20,7 +21,7 @@ Target "CreatePackage" (fun _ ->
 Target "DeployPackage" (fun _ ->
     let releaseDir = @"\bin\Plainion.CI"
 
-    DeleteDir releaseDir
+    CleanDir releaseDir
 
     CopyRecursive outputPath releaseDir true |> ignore
 )

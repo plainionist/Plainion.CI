@@ -86,9 +86,10 @@ namespace Plainion.CI.Services
                     process.Environment[ "outputPath " ] = outputPath;
 
                     var compiledArguments = new[] { 
-                        "--fsiargs \"--define:FAKE\"", 
+                        "All",
+                        "--fsiargs \"--define:FAKE\"",
                         script,
-                        "default" };
+                    };
 
                     process.Execute( compiledArguments );
 

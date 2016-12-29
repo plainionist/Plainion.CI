@@ -15,7 +15,7 @@ open Fake.ReleaseNotesHelper
 open Plainion.CI
 open PlainionCI
 
-Target "Default" (fun _ ->
+Target "All" (fun _ ->
     trace "--- Plainion.CI - DONE ---"
 )
 
@@ -132,13 +132,10 @@ Target "AssemblyInfo" (fun _ ->
 let runScript (script:string) args =
     let ret = 
         if script.EndsWith(".fsx", StringComparison.OrdinalIgnoreCase) then
-            let x =
-                { Program = "fake.exe"
-                  Args = []
-                  WorkingDirectory = projectRoot
-                  CommandLine = ("--fsiargs \"--define:FAKE\" " + script + " " + args) }
-            trace (sprintf "FAKE: %s" x.CommandLine)
-            x
+            { Program = "fake.exe"
+              Args = []
+              WorkingDirectory = projectRoot
+              CommandLine = (args + " --fsiargs \"--define:FAKE\" " + script ) }
             |> shellExec
         elif script.EndsWith(".msbuild", StringComparison.OrdinalIgnoreCase) || script.EndsWith(".targets", StringComparison.OrdinalIgnoreCase) then
             { Program = @"C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
@@ -180,6 +177,6 @@ Target "DeployPackage" (fun _ ->
     =?> ("Push", buildDefinition.Push)
     =?> ("CreatePackage", buildDefinition.CreatePackage)
     =?> ("DeployPackage", buildDefinition.DeployPackage)
-    ==> "Default"
+    ==> "All"
 
-RunTargetOrDefault "Default"
+RunTarget()
