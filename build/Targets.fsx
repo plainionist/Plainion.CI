@@ -1,7 +1,8 @@
 #r "/bin/Plainion.CI/FAKE/FakeLib.dll"
-#load "/bin/Plainion.CI/bits/Settings.fsx"
+#load "/bin/Plainion.CI/bits/PlainionCI.fsx"
 
 open Fake
+open PlainionCI
 
 Target "CreatePackage" (fun _ ->
     !! ( outputPath </> "*.*Tests.*" )
@@ -23,3 +24,5 @@ Target "DeployPackage" (fun _ ->
 
     CopyRecursive outputPath releaseDir true |> ignore
 )
+
+RunTarget()

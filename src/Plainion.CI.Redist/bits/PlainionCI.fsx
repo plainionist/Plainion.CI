@@ -1,16 +1,19 @@
-﻿#if FAKE
+﻿module PlainionCI
+
+#if FAKE
 #r "../FAKE/FakeLib.dll"
 #r "../Plainion.CI.Core.dll"
 #r "../Plainion.Core.dll"
 #else
 #r "../../../bin/Debug/FAKE/FakeLib.dll"
-#r "../../../bin/Debug/Plainion.CI.Core.dll"
 #r "../../../bin/Debug/Plainion.Core.dll"
+#r "../../../bin/Debug/Plainion.CI.Core.dll"
 #endif
 
+open System
+open System.IO
 open Fake
 open Plainion.CI
-open System.IO
 
 let getProperty name =
    match getBuildParamOrDefault name null with
@@ -38,3 +41,13 @@ let outputPath = buildDefinition.GetOutputPath()
 
 let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
 let releaseNotesFile = projectRoot </> "ChangeLog.md"
+
+let setParams defaults =
+    { defaults with
+        Targets = ["Build"]
+        Properties = [ "OutputPath", outputPath
+                       "Configuration", buildDefinition.Configuration
+                       "Platform", buildDefinition.Platform
+                     ]
+    }
+
