@@ -26,16 +26,16 @@ namespace Plainion.CI.Views
         static void OnScrollOnTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
             var textBox = dependencyObject as TextBox;
-            if (textBox == null)
+            if(textBox == null)
             {
                 return;
             }
             bool oldValue = (bool)e.OldValue, newValue = (bool)e.NewValue;
-            if (newValue == oldValue)
+            if(newValue == oldValue)
             {
                 return;
             }
-            if (newValue)
+            if(newValue)
             {
                 textBox.Loaded += TextBoxLoaded;
                 textBox.Unloaded += TextBoxUnloaded;
@@ -44,7 +44,7 @@ namespace Plainion.CI.Views
             {
                 textBox.Loaded -= TextBoxLoaded;
                 textBox.Unloaded -= TextBoxUnloaded;
-                if (myAssociations.ContainsKey(textBox))
+                if(myAssociations.ContainsKey(textBox))
                 {
                     myAssociations[textBox].Dispose();
                 }
@@ -67,22 +67,33 @@ namespace Plainion.CI.Views
 
         class Capture : IDisposable
         {
-            private TextBox TextBox { get; set; }
+            private TextBox myTextBox;
+            private bool myScrollingPending;
 
             public Capture(TextBox textBox)
             {
-                TextBox = textBox;
-                TextBox.TextChanged += OnTextBoxOnTextChanged;
+                myTextBox = textBox;
+                myTextBox.TextChanged += OnTextBoxOnTextChanged;
             }
 
             private void OnTextBoxOnTextChanged(object sender, TextChangedEventArgs args)
             {
-                TextBox.ScrollToEnd();
+                // in order to avoid blocking the UI we queue the scrolling into the Dispatcher
+                // but only if there is no pending scrolling
+                if(!myScrollingPending)
+                {
+                    myScrollingPending = true;
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        myTextBox.ScrollToEnd();
+                        myScrollingPending = false;
+                    }));
+                }
             }
 
             public void Dispose()
             {
-                TextBox.TextChanged -= OnTextBoxOnTextChanged;
+                myTextBox.TextChanged -= OnTextBoxOnTextChanged;
             }
         }
 

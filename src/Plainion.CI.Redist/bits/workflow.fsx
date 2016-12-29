@@ -132,15 +132,20 @@ Target "AssemblyInfo" (fun _ ->
 let runScript (script:string) args =
     let ret = 
         if script.EndsWith(".fsx", StringComparison.OrdinalIgnoreCase) then
-            shellExec { Program = "fake.exe"
-                        Args = []
-                        WorkingDirectory = projectRoot
-                        CommandLine = ("--fsiargs \"--define:FAKE\" " + script + " " + args) }
+            let x =
+                { Program = "fake.exe"
+                  Args = []
+                  WorkingDirectory = projectRoot
+                  CommandLine = ("--fsiargs \"--define:FAKE\" " + script + " " + args) }
+            trace (sprintf "FAKE: %s" x.CommandLine)
+            x
+            |> shellExec
         elif script.EndsWith(".msbuild", StringComparison.OrdinalIgnoreCase) || script.EndsWith(".targets", StringComparison.OrdinalIgnoreCase) then
-            shellExec { Program = @"C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
-                        Args = []
-                        WorkingDirectory = projectRoot
-                        CommandLine = (sprintf "/p:OutputPath=%s %s %s" outputPath args script) }
+            { Program = @"C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
+              Args = []
+              WorkingDirectory = projectRoot
+              CommandLine = (sprintf "/p:OutputPath=%s %s %s" outputPath args script) }
+            |> shellExec 
         else
             failwithf "Unknown script type: %s" script
 
