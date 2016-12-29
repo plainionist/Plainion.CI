@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
@@ -35,32 +34,6 @@ namespace Plainion.CI.Services.SourceControl
             if ( fileStatus == FileStatus.Untracked ) return ChangeType.Untracked;
             if ( fileStatus == FileStatus.Missing ) return ChangeType.Missing;
             return ChangeType.Modified;
-        }
-
-        public void Commit( string workspaceRoot, IEnumerable<string> files, string comment, string name, string email )
-        {
-            using ( var repo = new Repository( workspaceRoot ) )
-            {
-                foreach ( var file in files )
-                {
-                    repo.Stage( file );
-                }
-
-                var author = new Signature( name, email, DateTime.Now );
-
-                repo.Commit( comment, author, author );
-            }
-        }
-
-        public void Push( string workspaceRoot, string name, string password )
-        {
-            using ( var repo = new Repository( workspaceRoot ) )
-            {
-                var options = new PushOptions();
-                options.CredentialsProvider = ( url, usernameFromUrl, types ) => new UsernamePasswordCredentials { Username = name, Password = password };
-
-                repo.Network.Push( repo.Network.Remotes[ "origin" ], @"refs/heads/master", options );
-            }
         }
 
         public void DiffToPrevious( string workspaceRoot, string file, string diffTool )

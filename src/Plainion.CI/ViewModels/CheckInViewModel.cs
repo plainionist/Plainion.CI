@@ -6,14 +6,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security;
-using System.Text.RegularExpressions;
 using System.Windows.Input;
-using LibGit2Sharp;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
-using Plainion.Collections;
 using Plainion.CI.Services;
 using Plainion.CI.Services.SourceControl;
+using Plainion.Collections;
 
 namespace Plainion.CI.ViewModels
 {

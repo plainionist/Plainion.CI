@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="4e7c4e7a-dfc2-4858-812c-028a17de1a5d" Created="636184312752071720" LastModified="636184313328991720">
+<Node Id="4e7c4e7a-dfc2-4858-812c-028a17de1a5d" Created="636184312752071720" LastModified="636186174087466551">
   <Caption><![CDATA[draw arch picture]]></Caption>
   <Content><![CDATA[how does plainion.CI work?
-write MD file under doc + drawing in "whiteboard" and ref from readme]]></Content>
+write MD file under doc + drawing in "whiteboard" and ref from readme
+add more details to readme.md anyway]]></Content>
 </Node>

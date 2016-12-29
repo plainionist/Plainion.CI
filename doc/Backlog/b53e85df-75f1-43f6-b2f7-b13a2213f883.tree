@@ -19,6 +19,9 @@
       <Node Id="5cd8ae90-558f-4a66-a963-24559fa8415b">
         <Caption><![CDATA[publish nuget package]]></Caption>
       </Node>
+      <Node Id="8b1be2da-7a8a-4bc6-9b83-50967a4e967c">
+        <Caption><![CDATA[move abstractshellprocess and uishellcommand to plainion.core]]></Caption>
+      </Node>
     </Node>
   </Node>
 </Tree>

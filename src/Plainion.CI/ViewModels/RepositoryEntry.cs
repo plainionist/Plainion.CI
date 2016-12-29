@@ -1,5 +1,4 @@
-﻿using LibGit2Sharp;
-using Microsoft.Practices.Prism.Mvvm;
+﻿using Microsoft.Practices.Prism.Mvvm;
 using Plainion.CI.Services.SourceControl;
 
 namespace Plainion.CI.ViewModels

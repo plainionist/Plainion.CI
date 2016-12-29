@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.Text;
 using Microsoft.Practices.Prism.Mvvm;
 
