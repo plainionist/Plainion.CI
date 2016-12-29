@@ -2,9 +2,6 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="2e4d5569-160c-4906-97ad-187eb579d7e8">
-      <Caption><![CDATA[switch own packaging hooks to fake scripts]]></Caption>
-    </Node>
     <Node Id="4e7c4e7a-dfc2-4858-812c-028a17de1a5d">
       <Caption><![CDATA[draw arch picture]]></Caption>
     </Node>
