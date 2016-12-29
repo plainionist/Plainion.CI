@@ -16,6 +16,12 @@ Target "CreatePackage" (fun _ ->
 
     !! ( outputPath </> "Plainion.CI.Redist.*" )
     |> DeleteFiles
+
+    // create a dummy nuget package for testing
+//    [
+//        ("Plainion.CI*", Some "lib", None)
+//    ]
+//    |> CreateNuGetPackage (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
 )
 
 Target "DeployPackage" (fun _ ->
@@ -24,6 +30,9 @@ Target "DeployPackage" (fun _ ->
     CleanDir releaseDir
 
     CopyRecursive outputPath releaseDir true |> ignore
+
+    // publish a dummy nuget package for testing
+//    PublishNuGetPackage (projectRoot </> "pkg")
 )
 
 RunTarget()

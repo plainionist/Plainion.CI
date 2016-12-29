@@ -5,3 +5,4 @@
 * NUnit3 support added
 * App icons added
 * build workflow modeling and execution completely handled by FAKE
+* Support for creation and publishing of NuGet packages

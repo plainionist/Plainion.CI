@@ -1,8 +1,7 @@
-# Plainion.CI
 
-Provides tools for build automation and continuous integration
+This project provides tools for build automation, continuous integration and continuous delivery.
 
-## Motivation
+# Motivation
 
 Nowadays continuous delivery is a must for every project. Short cycle times for new features and 
 bug fixes - from code change till a new release is published - are important. Automation is the key.
@@ -16,20 +15,22 @@ your project to the push of a button.
 Of course simplicitly comes with reduced flexibility. If your project grows, if the number of contributors
 increases I encourage you to switch to one of the "bigger solutions" out there.
 
-## Usage
+# Usage
 
 Just start the tool and enter all relevant information under the "build definition" tab.
 Then change to CheckIn tab, select the files you want to commit and enter a commit message and press "go".
 
 ![](doc/Overview.png)
 
-### Hints
+## Hints
 
 * specify package creation and deployment scripts relative to project root
 
-### Custom packaging scripts
+# Customization
 
-Here is an example for coding custom targets using fake
+You can write custom package creation and deployment scripts either in FAKE or in MsBuild.
+
+Here is an example for coding custom targets using FAKE:
 
 ```F#
 #r "/bin/Plainion.CI/FAKE/FakeLib.dll"
@@ -55,10 +56,52 @@ Target "DeployPackage" (fun _ ->
 RunTarget()
 ```
 
-## Design Overview
+You can create a NuGet package from your custom "CreatePackage" target like this:
 
-Plainion.CI uses [FAKE](https://fsharp.github.io/FAKE/) under the hood for modelling and executing the build workflow.
+```F#
+    [
+        ("Plainion.CI*", Some "lib", None)
+    ]
+    |> CreateNuGetPackage (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
+```
 
-The build definition specified in the UI is saved into two xml files (.gc and .gc.<user>) in your project root.
+Hint: this function assumes that you have a ChangeLog.md in the root of your project.
 
-These files are then read by the FAKE script(s) and used to model and configure the build workflow.
+A sample NuSpec could look like this
+
+```Xml
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>@project@</id>
+    <title>@project@</title>
+    <version>@build.number@</version>
+    <authors>me</authors>
+    <owners>also.me</owners>
+    <licenseUrl>http://opensource.org/licenses/BSD-3-Clause</licenseUrl>
+    <projectUrl>https://github.com/ronin4net/Plainion.CI</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      this is just a dummy template for testing
+    </description>
+    <releaseNotes>
+      @releaseNotes@
+    </releaseNotes>
+    <copyright>Copyright 2016</copyright>
+  </metadata>
+  @files@
+</package>
+```
+
+You can publish a NuGet package like this 
+
+```F#
+    PublishNuGetPackage (projectRoot </> "pkg")
+```
+
+**Hint:** Publishing NuGet packages currently only works if you once followed the instructions [here](https://docs.nuget.org/ndocs/create-packages/publish-a-package) 
+regarding APIKey and have stored your APIKey with "setApiKey". 
+
+# References
+
+* [Design overview](doc/Overview.png)
