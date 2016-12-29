@@ -132,8 +132,6 @@ Target "AssemblyInfo" (fun _ ->
 let runScript (script:string) args =
     let ret = 
         if script.EndsWith(".fsx", StringComparison.OrdinalIgnoreCase) then
-            System.Diagnostics.Debugger.Launch() |> ignore
-
             shellExec { Program = "fake.exe"
                         Args = []
                         WorkingDirectory = projectRoot

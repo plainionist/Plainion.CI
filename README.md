@@ -25,3 +25,30 @@ Then change to CheckIn tab, select the files you want to commit and enter a comm
 
 * specify package creation and deployment scripts relative to project root
 
+### Custom packaging scripts
+
+Here is an example for coding custom targets using fake
+
+```F#
+#r "/bin/Plainion.CI/FAKE/FakeLib.dll"
+#load "/bin/Plainion.CI/bits/PlainionCI.fsx"
+
+open Fake
+open PlainionCI
+
+Target "CreatePackage" (fun _ ->
+    !! ( outputPath </> "*.*Tests.*" )
+    ++ ( outputPath </> "*nunit*" )
+    |> DeleteFiles
+)
+
+Target "DeployPackage" (fun _ ->
+    let releaseDir = @"\bin\Plainion.CI"
+
+    DeleteDir releaseDir
+
+    CopyRecursive outputPath releaseDir true |> ignore
+)
+
+RunTarget()
+```
