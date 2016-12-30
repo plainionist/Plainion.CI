@@ -49,7 +49,6 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Git.fs" />
     <None Include="packages.config" />
-    <Compile Include="GitHub.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LibGit2Sharp">

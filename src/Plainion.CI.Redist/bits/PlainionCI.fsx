@@ -126,6 +126,9 @@ module PGitHub =
         let user = buildDefinition.User.Login
         let pwd = buildDefinition.User.Password.ToUnsecureString()
 
+        try
+            Branches.deleteTag "" release.NugetVersion
+        with | _ -> ()
         Branches.tag "" release.NugetVersion
         PGit.Push projectRoot (user, pwd)
     
