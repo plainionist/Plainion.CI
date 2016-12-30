@@ -1,11 +1,5 @@
 ﻿#load "PlainionCI.fsx"
 
-#if FAKE
-#r "../Plainion.CI.Tasks.dll"
-#else
-#r "../../../bin/Debug/Plainion.CI.Tasks.dll"
-#endif
-
 open System
 open System.IO
 open Fake
@@ -97,7 +91,7 @@ Target "Push" (fun _ ->
 )
 
 Target "AssemblyInfo" (fun _ ->
-    let release = LoadReleaseNotes releaseNotesFile
+    let release = getChangeLog()
     
     let getAssemblyInfoAttributes vsProjName =
         [ Attribute.Title (vsProjName)
@@ -170,7 +164,7 @@ Target "DeployPackage" (fun _ ->
 
 "Clean"
     ==> "RestoreNugetPackages"
-    =?> ("AssemblyInfo", releaseNotesFile |> File.Exists)
+    =?> ("AssemblyInfo", changeLogFile |> File.Exists)
     ==> "Build"
     =?> ("GenerateApiDoc", buildDefinition.GenerateAPIDoc)
     =?> ("RunNUnitTests", buildDefinition.RunTests)

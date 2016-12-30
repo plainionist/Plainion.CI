@@ -17,11 +17,13 @@ Target "CreatePackage" (fun _ ->
     !! ( outputPath </> "Plainion.CI.Redist.*" )
     |> DeleteFiles
 
+//    let zip = createZipRelease()
+
     // create a dummy nuget package for testing
-    [
-        ("Plainion.CI*", Some "lib", None)
-    ]
-    |> PNuGet.Pack (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
+//    [
+//        ("Plainion.CI*", Some "lib", None)
+//    ]
+//    |> PNuGet.Pack (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
 )
 
 Target "DeployPackage" (fun _ ->
@@ -31,8 +33,10 @@ Target "DeployPackage" (fun _ ->
 
     CopyRecursive outputPath releaseDir true |> ignore
 
+//    PGitHub.Release [ zip ]
+
     // publish a dummy nuget package for testing
-    PNuGet.Publish (projectRoot </> "pkg")
+//    PNuGet.Publish (projectRoot </> "pkg")
 )
 
 RunTarget()

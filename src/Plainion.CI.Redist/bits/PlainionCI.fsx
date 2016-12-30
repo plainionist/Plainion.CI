@@ -4,10 +4,12 @@
 #r "../FAKE/FakeLib.dll"
 #r "../Plainion.CI.Core.dll"
 #r "../Plainion.Core.dll"
+#r "../Plainion.CI.Tasks.dll"
 #else
 #r "../../../bin/Debug/FAKE/FakeLib.dll"
 #r "../../../bin/Debug/Plainion.Core.dll"
 #r "../../../bin/Debug/Plainion.CI.Core.dll"
+#r "../../../bin/Debug/Plainion.CI.Tasks.dll"
 #endif
 
 open System
@@ -40,7 +42,18 @@ let projectRoot = buildDefinition.RepositoryRoot
 let outputPath = buildDefinition.GetOutputPath()
 
 let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
-let releaseNotesFile = projectRoot </> "ChangeLog.md"
+let changeLogFile = projectRoot </> "ChangeLog.md"
+
+let private changeLog = lazy ( match fileExists changeLogFile with
+                               | true -> ReleaseNotesHelper.LoadReleaseNotes changeLogFile |> Some
+                               | false -> None
+                             )
+
+/// Returns the parsed ChangeLog.md if exists
+let getChangeLog () = 
+    match changeLog.Value with
+    | Some cl -> cl
+    | None -> failwith "No ChangeLog.md found in project root"
 
 let setParams defaults =
     { defaults with
@@ -51,12 +64,20 @@ let setParams defaults =
                      ]
     }
 
+/// Creates a zip from all content of the outputpath with current version backed in
+let createZipRelease targetZipFile = 
+    let release = getChangeLog()
+    let zip = outputPath </> ".." </> (sprintf "%s.%s.zip" projectName release.NugetVersion)
+
+    [ "", !! ( outputPath </> "*" ) ]
+    |> ZipOfIncludes targetZipFile
+
 module PNuGet =
     /// Creates a nuget package with the given files and nuspec at the packageOut folder.
     /// Version is taken from changelog.md
     let Pack nuspec packageOut files =
-        let release = ReleaseNotesHelper.LoadReleaseNotes releaseNotesFile
-
+        let release = getChangeLog()
+        
         CreateDir packageOut
         CleanDir packageOut
 
@@ -69,9 +90,11 @@ module PNuGet =
                                                    |> Seq.map ((+) "- ")
                                                    |> String.concat Environment.NewLine
                                     Files = files }) 
-                    
+    
+    /// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
+    /// to nuget (https://www.nuget.org/api/v2/package)              
     let Publish packageOut =
-        let release = ReleaseNotesHelper.LoadReleaseNotes releaseNotesFile
+        let release = getChangeLog()
 
         NuGetPublish  (fun p -> {p with OutputPath = packageOut
                                         WorkingDir = projectRoot
@@ -81,6 +104,27 @@ module PNuGet =
                                         Publish = true }) 
 
 module PGitHub =
-    let Release () =
-        //https://github.com/fsprojects/ProjectScaffold/blob/master/build.template
-        ()
+    open Fake.Git
+    open Plainion.CI.Tasks
+
+    /// Publishes a new release to GitHub with the current version of ChangeLog.md and
+    /// the given files
+    let Release files =
+        if buildDefinition.User.Password = null then
+            failwith "!! NO PASSWORD PROVIDED !!"
+    
+        let release = getChangeLog()
+
+        let user = buildDefinition.User.Login
+        let pwd = buildDefinition.User.Password.ToUnsecureString()
+
+        Branches.tag "" release.NugetVersion
+        PGit.Push projectRoot (user, pwd)
+    
+        // release on github
+        
+        PGitHub.createDraft user pwd projectName release.NugetVersion (release.SemVer.PreRelease <> None) release.Notes 
+        |> PGitHub.uploadFiles files  
+        |> PGitHub.releaseDraft
+        |> Async.RunSynchronously
+

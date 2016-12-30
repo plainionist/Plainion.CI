@@ -6,3 +6,4 @@
 * App icons added
 * build workflow modeling and execution completely handled by FAKE
 * Support for creation and publishing of NuGet packages
+* Support for publishing releases to GitHub
