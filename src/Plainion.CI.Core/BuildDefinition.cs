@@ -187,7 +187,7 @@ namespace Plainion.CI
     
         public string GetOutputPath()
         {
-            return Path.Combine( RepositoryRoot, "bin", "gc" );
+            return Path.Combine( RepositoryRoot, "bin", "pCI" );
         }
     
         public string GetSolutionPath()

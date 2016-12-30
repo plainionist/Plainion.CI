@@ -64,13 +64,21 @@ let setParams defaults =
                      ]
     }
 
-/// Creates a zip from all content of the outputpath with current version backed in
-let createZipRelease targetZipFile = 
-    let release = getChangeLog()
-    let zip = outputPath </> ".." </> (sprintf "%s.%s.zip" projectName release.NugetVersion)
+module PZip =
+    let private getReleaseName() =
+        let release = getChangeLog()
+        sprintf "%s-%s" projectName release.NugetVersion
 
-    [ "", !! ( outputPath </> "*" ) ]
-    |> ZipOfIncludes targetZipFile
+    let GetReleaseFile () =
+        outputPath </> ".." </> (sprintf "%s.zip" (getReleaseName()))
+
+    /// Creates a zip from all content of the outputpath with current version backed in
+    let PackRelease() = 
+        let zip = GetReleaseFile()
+        let releaseName = getReleaseName()
+
+        !! ( outputPath </> "**/*.*" )
+        |> Zip outputPath zip
 
 module PNuGet =
     /// Creates a nuget package with the given files and nuspec at the packageOut folder.

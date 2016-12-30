@@ -102,6 +102,12 @@ You can publish a NuGet package like this
 **Hint:** Publishing NuGet packages currently only works if you once followed the instructions [here](https://docs.nuget.org/ndocs/create-packages/publish-a-package) 
 regarding APIKey and have stored your APIKey with "setApiKey". 
 
+You can publish a release to GitHub like this
+
+```F#
+    PGitHub.Release [ zip ]
+```
+
 # References
 
 * [Design overview](doc/Design.md)

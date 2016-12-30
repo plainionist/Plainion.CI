@@ -11,19 +11,17 @@ Target "CreatePackage" (fun _ ->
     ++ ( outputPath </> "TestResult.xml" )
     |> DeleteFiles
 
-    !! ( outputPath </> "TestData" )
-    |> DeleteDirs
-
     !! ( outputPath </> "Plainion.CI.Redist.*" )
+    ++ ( outputPath </> "**/*.pdb" )
     |> DeleteFiles
 
-//    let zip = createZipRelease()
+    PZip.PackRelease()
 
     // create a dummy nuget package for testing
-//    [
-//        ("Plainion.CI*", Some "lib", None)
-//    ]
-//    |> PNuGet.Pack (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
+    //[
+    //    ("Plainion.CI*", Some "lib", None)
+    //]
+    //|> PNuGet.Pack (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
 )
 
 Target "DeployPackage" (fun _ ->
@@ -31,12 +29,15 @@ Target "DeployPackage" (fun _ ->
 
     CleanDir releaseDir
 
-    CopyRecursive outputPath releaseDir true |> ignore
+    // always deploy through the zip also locally to test zip which gets uploaded to github then
+    let zip = PZip.GetReleaseFile()
 
-//    PGitHub.Release [ zip ]
+    Unzip releaseDir zip
+
+    PGitHub.Release [ zip ]
 
     // publish a dummy nuget package for testing
-//    PNuGet.Publish (projectRoot </> "pkg")
+    //PNuGet.Publish (projectRoot </> "pkg")
 )
 
 RunTarget()
