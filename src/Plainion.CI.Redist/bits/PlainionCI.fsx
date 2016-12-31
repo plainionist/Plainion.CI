@@ -12,6 +12,8 @@
 #r "../../../bin/Debug/Plainion.CI.Tasks.dll"
 #endif
 
+#load "GitHub.fsx"
+
 open System
 open System.IO
 open Fake
@@ -134,7 +136,11 @@ module PGitHub =
     
         // release on github
         
-        PGitHub.createDraft user pwd projectName release.NugetVersion (release.SemVer.PreRelease <> None) release.Notes 
+        let releaseNotes =  release.Notes 
+                            |> Seq.map ((+) "- ")
+                            |> List.ofSeq
+
+        PGitHub.createDraft user pwd projectName release.NugetVersion (release.SemVer.PreRelease <> None) releaseNotes 
         |> PGitHub.uploadFiles files  
         |> PGitHub.releaseDraft
         |> Async.RunSynchronously

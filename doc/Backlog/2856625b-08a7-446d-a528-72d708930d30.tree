@@ -2,9 +2,6 @@
 <Tree>
   <Node Id="2856625b-08a7-446d-a528-72d708930d30">
     <Caption><![CDATA[Backlog]]></Caption>
-    <Node Id="326ea4ac-6aef-44f6-81de-af15d77e3791">
-      <Caption><![CDATA[improve UI (esp. doc)]]></Caption>
-    </Node>
     <Node Id="bfb9edf2-ead9-4fab-84d5-e24e42402d5d">
       <Caption><![CDATA[make it more extensible]]></Caption>
     </Node>
@@ -13,9 +10,6 @@
     </Node>
     <Node Id="2caf4a85-0095-4425-adcb-99f22e4a9dd0">
       <Caption><![CDATA[log window does hang on fast binding update]]></Caption>
-    </Node>
-    <Node Id="8b1be2da-7a8a-4bc6-9b83-50967a4e967c">
-      <Caption><![CDATA[move abstractshellprocess and uishellcommand to plainion.core]]></Caption>
     </Node>
     <Node Id="c7b6ab57-b413-4ec9-9631-40399ccc042f">
       <Caption><![CDATA[better modeling of the workflow]]></Caption>
