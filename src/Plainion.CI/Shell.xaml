@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Plainion - CI" 
         Icon="images/ci.png"
-        Width="1000" Height="460">
+        Width="800" Height="600">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

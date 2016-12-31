@@ -5,190 +5,221 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:l="clr-namespace:Plainion.CI.Views"
              mc:Ignorable="d" d:DesignWidth="700">
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-            <GroupBox Header="Repository" Grid.Row="0">
+        <Border Grid.Row="0" BorderBrush="Gray" BorderThickness="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Root" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding BuildDefinition.RepositoryRoot}" Margin="5,0,0,0"/>
-                </Grid>
-            </GroupBox>
-
-            <GroupBox Header="Build" Grid.Row="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Solution" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding BuildDefinition.Solution}" Margin="5,2,0,0"/>
+                    <GroupBox Header="Repository" Grid.Row="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Configuration" VerticalAlignment="Center"/>
-                    <ComboBox Grid.Row="1" Grid.Column="1" Margin="5,2,0,0" ItemsSource="{Binding Configurations}" 
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Root" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding BuildDefinition.RepositoryRoot}" Margin="5,0,0,0" Tag="RepositoryRoot"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Header="Build" Grid.Row="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Solution" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding BuildDefinition.Solution}" Margin="5,2,0,0" Tag="Solution"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Configuration" VerticalAlignment="Center"/>
+                            <ComboBox Grid.Row="1" Grid.Column="1" Margin="5,2,0,0" ItemsSource="{Binding Configurations}" 
                               SelectedItem="{Binding BuildDefinition.Configuration}" Width="100" HorizontalAlignment="Left"/>
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Platform" VerticalAlignment="Center"/>
-                    <ComboBox Grid.Row="2" Grid.Column="1" Margin="5,2,0,0" ItemsSource="{Binding Platforms}" 
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Platform" VerticalAlignment="Center"/>
+                            <ComboBox Grid.Row="2" Grid.Column="1" Margin="5,2,0,0" ItemsSource="{Binding Platforms}" 
                               SelectedItem="{Binding BuildDefinition.Platform}" Width="100" HorizontalAlignment="Left"/>
-                </Grid>
-            </GroupBox>
+                        </Grid>
+                    </GroupBox>
 
-            <GroupBox Header="ApiDoc" Grid.Row="2">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                    <GroupBox Header="ApiDoc" Grid.Row="2">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Generator" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.ApiDocGenExecutable}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Generator" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.ApiDocGenExecutable}" Tag="ApiDocGenExecutable"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Arguments" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.ApiDocGenArguments}"/>
-                    <TextBlock Grid.Row="2" Grid.Column="1" Margin="5,2,0,0"
-                               Text="Use %1 for the assembly"/>
-                </Grid>
-            </GroupBox>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Arguments" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.ApiDocGenArguments}" Tag="ApiDocGenArguments"/>
+                        </Grid>
+                    </GroupBox>
 
-            <GroupBox Header="Test" Grid.Row="3">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                    <GroupBox Header="Test" Grid.Row="3">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Test assembly pattern" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.TestAssemblyPattern}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Test assembly pattern" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.TestAssemblyPattern}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Runner executable" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.TestRunnerExecutable}"/>
-                </Grid>
-            </GroupBox>
-            
-            <GroupBox Header="Create package" Grid.Row="4">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Runner executable" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.TestRunnerExecutable}"/>
+                        </Grid>
+                    </GroupBox>
 
-                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
-                        <TextBlock Text="Script"/>
-                        <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Currently only Msbuild scripts are supported. The file may end with .msbuild or .targets"/>
-                    </StackPanel>
-                    <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageScript}"/>
+                    <GroupBox Header="Create package" Grid.Row="4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Arguments" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageArguments}"/>
-                </Grid>
-            </GroupBox>
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
+                                <TextBlock Text="Script"/>
+                                <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Currently only Msbuild scripts are supported. The file may end with .msbuild or .targets"/>
+                            </StackPanel>
+                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageScript}"/>
 
-            <GroupBox Header="Deploy package" Grid.Row="5">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Arguments" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageArguments}"/>
+                        </Grid>
+                    </GroupBox>
 
-                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
-                        <TextBlock Text="Script"/>
-                        <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Currently only Msbuild scripts are supported. The file may end with .msbuild or .targets"/>
-                    </StackPanel>
-                    <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.DeployPackageScript}"/>
+                    <GroupBox Header="Deploy package" Grid.Row="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Arguments" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.DeployPackageArguments}"/>
-                </Grid>
-            </GroupBox>
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
+                                <TextBlock Text="Script"/>
+                                <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Currently only Msbuild scripts are supported. The file may end with .msbuild or .targets"/>
+                            </StackPanel>
+                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.DeployPackageScript}"/>
 
-            <GroupBox Header="User" Grid.Row="6">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Arguments" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.DeployPackageArguments}"/>
+                        </Grid>
+                    </GroupBox>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.User.Login}" Width="150" HorizontalAlignment="Left"/>
+                    <GroupBox Header="User" Grid.Row="6">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="E-Mail" VerticalAlignment="Center"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.User.EMail}" Width="200" HorizontalAlignment="Left"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.User.Login}" Width="150" HorizontalAlignment="Left"/>
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Password" VerticalAlignment="Center"/>
-                    <PasswordBox Grid.Row="2" Grid.Column="1" Margin="5,2,0,0" Width="200" HorizontalAlignment="Left" 
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="E-Mail" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.User.EMail}" Width="200" HorizontalAlignment="Left"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Password" VerticalAlignment="Center"/>
+                            <PasswordBox Grid.Row="2" Grid.Column="1" Margin="5,2,0,0" Width="200" HorizontalAlignment="Left" 
                                  l:PasswordBinder.Attach="True" l:PasswordBinder.Password="{Binding BuildDefinition.User.Password, Mode=TwoWay}" />
-                </Grid>
-            </GroupBox>
+                        </Grid>
+                    </GroupBox>
 
-            <GroupBox Header="Tools" Grid.Row="7">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                    <GroupBox Header="Tools" Grid.Row="7">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
-                        <TextBlock Text="Compare"/>
-                        <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Specify executable including arguments"/>
-                    </StackPanel>
-                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.DiffTool}"/>
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
+                                <TextBlock Text="Compare"/>
+                                <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Specify executable including arguments"/>
+                            </StackPanel>
+                            <TextBox Grid.Row="0" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.DiffTool}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="1" Margin="5,2,0,0"
+                            <TextBlock Grid.Row="1" Grid.Column="1" Margin="5,2,0,0"
                                Text="Use %base for the base and %mine for the locally modified file"/>
+                        </Grid>
+                    </GroupBox>
                 </Grid>
-            </GroupBox>
-        </Grid>
-    </ScrollViewer>
+            </ScrollViewer>
+        </Border>
+
+        <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Height="70" Margin="0,5,0,0">
+            <Grid Name="Help" Margin="3">
+                <TextBlock Name="RepositoryRoot" Visibility="Collapsed">
+                    <Run FontWeight="Bold">Repository</Run>
+                    <LineBreak/>
+                    <Run>Enter the path to the root of your local repository</Run>
+                </TextBlock>
+                <TextBlock Name="Solution" Visibility="Collapsed">
+                    <Run FontWeight="Bold">Solution</Run>
+                    <LineBreak/>
+                    <Run>Name of the solution. It is expected to be existing in repository root directly.</Run>
+                </TextBlock>
+                <TextBlock Name="ApiDocGenExecutable" Visibility="Collapsed">
+                    <Run FontWeight="Bold">ApiDoc Generator</Run>
+                    <LineBreak/>
+                    <Run>Full path to the API doc generator</Run>
+                </TextBlock>
+                <TextBlock Name="ApiDocGenArguments" Visibility="Collapsed">
+                    <Run FontWeight="Bold">ApiDoc Arguments</Run>
+                    <LineBreak/>
+                    <Run>Arguments passed to the API doc generator. Use %1 for the assembly.</Run>
+                </TextBlock>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>
