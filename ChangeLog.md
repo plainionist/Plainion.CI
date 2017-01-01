@@ -1,4 +1,4 @@
-## 1.2 - Unreleased
+## 1.2 - 2017-01-01
 
 - Help system (Build Definition) improved
 

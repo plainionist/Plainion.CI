@@ -96,10 +96,10 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Test assembly pattern" VerticalAlignment="Center"/>
-                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.TestAssemblyPattern}"/>
+                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.TestAssemblyPattern}" Tag="TestAssemblyPattern"/>
 
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="Runner executable" VerticalAlignment="Center"/>
-                            <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.TestRunnerExecutable}"/>
+                            <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.TestRunnerExecutable}" Tag="TestRunnerExecutable"/>
                         </Grid>
                     </GroupBox>
 
@@ -118,10 +118,10 @@
                                 <TextBlock Text="Script"/>
                                 <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Currently only Msbuild scripts are supported. The file may end with .msbuild or .targets"/>
                             </StackPanel>
-                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageScript}"/>
+                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageScript}" Tag="CreatePackageScript"/>
 
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="Arguments" VerticalAlignment="Center"/>
-                            <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageArguments}"/>
+                            <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageArguments}" Tag="CreatePackageArguments"/>
                         </Grid>
                     </GroupBox>
 
@@ -140,10 +140,10 @@
                                 <TextBlock Text="Script"/>
                                 <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Currently only Msbuild scripts are supported. The file may end with .msbuild or .targets"/>
                             </StackPanel>
-                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.DeployPackageScript}"/>
+                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.DeployPackageScript}" Tag="DeployPackageScript"/>
 
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="Arguments" VerticalAlignment="Center"/>
-                            <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.DeployPackageArguments}"/>
+                            <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.DeployPackageArguments}" Tag="DeployPackageArguments"/>
                         </Grid>
                     </GroupBox>
 
@@ -160,14 +160,14 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" VerticalAlignment="Center"/>
-                            <TextBox Grid.Row="0" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.User.Login}" Width="150" HorizontalAlignment="Left"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.User.Login}" Width="150" HorizontalAlignment="Left" Tag="UserLogin"/>
 
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="E-Mail" VerticalAlignment="Center"/>
-                            <TextBox Grid.Row="1" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.User.EMail}" Width="200" HorizontalAlignment="Left"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.User.EMail}" Width="200" HorizontalAlignment="Left" Tag="UserEMail"/>
 
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Password" VerticalAlignment="Center"/>
                             <PasswordBox Grid.Row="2" Grid.Column="1" Margin="5,2,0,0" Width="200" HorizontalAlignment="Left" 
-                                 l:PasswordBinder.Attach="True" l:PasswordBinder.Password="{Binding BuildDefinition.User.Password, Mode=TwoWay}" />
+                                 l:PasswordBinder.Attach="True" l:PasswordBinder.Password="{Binding BuildDefinition.User.Password, Mode=TwoWay}" Tag="UserPassword"/>
                         </Grid>
                     </GroupBox>
 
@@ -177,20 +177,9 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
-                                <TextBlock Text="Compare"/>
-                                <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Specify executable including arguments"/>
-                            </StackPanel>
-                            <TextBox Grid.Row="0" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.DiffTool}"/>
-
-                            <TextBlock Grid.Row="1" Grid.Column="1" Margin="5,2,0,0"
-                               Text="Use %base for the base and %mine for the locally modified file"/>
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Compare"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.DiffTool}" Tag="DiffTool"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
@@ -199,25 +188,75 @@
 
         <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Height="70" Margin="0,5,0,0">
             <Grid Name="Help" Margin="3">
-                <TextBlock Name="RepositoryRoot" Visibility="Collapsed">
+                <TextBlock Name="RepositoryRoot" Visibility="Collapsed" TextWrapping="Wrap">
                     <Run FontWeight="Bold">Repository</Run>
                     <LineBreak/>
                     <Run>Enter the path to the root of your local repository</Run>
                 </TextBlock>
-                <TextBlock Name="Solution" Visibility="Collapsed">
+                <TextBlock Name="Solution" Visibility="Collapsed" TextWrapping="Wrap">
                     <Run FontWeight="Bold">Solution</Run>
                     <LineBreak/>
                     <Run>Name of the solution. It is expected to be existing in repository root directly.</Run>
                 </TextBlock>
-                <TextBlock Name="ApiDocGenExecutable" Visibility="Collapsed">
+                <TextBlock Name="ApiDocGenExecutable" Visibility="Collapsed" TextWrapping="Wrap">
                     <Run FontWeight="Bold">ApiDoc Generator</Run>
                     <LineBreak/>
                     <Run>Full path to the API doc generator</Run>
                 </TextBlock>
-                <TextBlock Name="ApiDocGenArguments" Visibility="Collapsed">
+                <TextBlock Name="ApiDocGenArguments" Visibility="Collapsed" TextWrapping="Wrap">
                     <Run FontWeight="Bold">ApiDoc Arguments</Run>
                     <LineBreak/>
                     <Run>Arguments passed to the API doc generator. Use %1 for the assembly.</Run>
+                </TextBlock>
+                <TextBlock Name="TestAssemblyPattern" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">Test assembly pattern</Run>
+                    <LineBreak/>
+                    <Run>Pattern to match test assemblies. Supports '*' as wildcard.</Run>
+                </TextBlock>
+                <TextBlock Name="TestRunnerExecutable" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">Test runner executable</Run>
+                    <LineBreak/>
+                    <Run>Full path to the test runner. Currently only NUnit runners are supported.</Run>
+                </TextBlock>
+                <TextBlock Name="CreatePackageScript" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">Create package script</Run>
+                    <LineBreak/>
+                    <Run>Relative path from repository root to a build script which contains the target for creating a package. MsBuild and FAKE scripts supported.</Run>
+                </TextBlock>
+                <TextBlock Name="CreatePackageArguments" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">Create package script arguments</Run>
+                    <LineBreak/>
+                    <Run>Arguments for the package creation script, e.g. targets for FAKE scripts</Run>
+                </TextBlock>
+                <TextBlock Name="DeployPackageScript" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">Deploy package script</Run>
+                    <LineBreak/>
+                    <Run>Relative path from repository root to a build script which contains the target for deploying a package. MsBuild and FAKE scripts supported.</Run>
+                </TextBlock>
+                <TextBlock Name="DeployPackageArguments" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">Deploy package script arguments</Run>
+                    <LineBreak/>
+                    <Run>Arguments for the package deploy script, e.g. targets for FAKE scripts</Run>
+                </TextBlock>
+                <TextBlock Name="UserLogin" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">User name</Run>
+                    <LineBreak/>
+                    <Run>Your user name/login. Used for Git commit and push to default remote repository.</Run>
+                </TextBlock>
+                <TextBlock Name="UserEMail" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">User E-Mail</Run>
+                    <LineBreak/>
+                    <Run>Your email address used for Git commits.</Run>
+                </TextBlock>
+                <TextBlock Name="UserPassword" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">User password</Run>
+                    <LineBreak/>
+                    <Run>Your password required to push to default remote repository (e.g. GitHub). Is stored encrypted in the user part of the build definition.</Run>
+                </TextBlock>
+                <TextBlock Name="DiffTool" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">Tools Compare</Run>
+                    <LineBreak/>
+                    <Run>Executable including arguments used to compare pending changes with repository latest. Use %base for the base and %mine for the locally modified file.</Run>
                 </TextBlock>
             </Grid>
         </Border>

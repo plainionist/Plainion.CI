@@ -2,9 +2,6 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="326ea4ac-6aef-44f6-81de-af15d77e3791">
-      <Caption><![CDATA[improve UI (esp. doc)]]></Caption>
-    </Node>
     <Node Id="8b1be2da-7a8a-4bc6-9b83-50967a4e967c">
       <Caption><![CDATA[move abstractshellprocess and uishellcommand to plainion.core]]></Caption>
     </Node>
