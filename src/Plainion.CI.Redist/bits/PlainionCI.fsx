@@ -103,15 +103,20 @@ module PNuGet =
     
     /// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
     /// to nuget (https://www.nuget.org/api/v2/package)              
-    let Publish packageOut =
+    let PublishPackage packageName packageOut =
         let release = getChangeLog()
 
         NuGetPublish  (fun p -> {p with OutputPath = packageOut
                                         WorkingDir = projectRoot
-                                        Project = projectName
+                                        Project = packageName
                                         Version = release.AssemblyVersion
                                         PublishUrl = "https://www.nuget.org/api/v2/package"
                                         Publish = true }) 
+
+    /// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
+    /// to nuget (https://www.nuget.org/api/v2/package)              
+    let Publish packageOut =
+        PublishPackage projectName packageOut
 
 module PGitHub =
     open Fake.Git

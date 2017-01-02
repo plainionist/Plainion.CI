@@ -100,7 +100,12 @@ You can publish a NuGet package like this
 ```
 
 **Hint:** Publishing NuGet packages currently only works if you once followed the instructions [here](https://docs.nuget.org/ndocs/create-packages/publish-a-package) 
-regarding APIKey and have stored your APIKey with "setApiKey". 
+regarding APIKey and have stored your APIKey with "setApiKey":
+
+```cmd
+NuGet.exe setapikey <your api key> -source https://www.nuget.org/api/v2/package
+```
+
 
 You can publish a release to GitHub like this
 
