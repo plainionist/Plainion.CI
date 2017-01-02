@@ -97,7 +97,6 @@ module PNuGet =
                                     Project = projectName
                                     Version = release.AssemblyVersion
                                     ReleaseNotes = release.Notes 
-                                                   |> Seq.map ((+) "- ")
                                                    |> String.concat Environment.NewLine
                                     Files = files }) 
     
@@ -142,7 +141,6 @@ module PGitHub =
         // release on github
         
         let releaseNotes =  release.Notes 
-                            |> Seq.map ((+) "- ")
                             |> List.ofSeq
 
         PGitHub.createDraft user pwd projectName release.NugetVersion (release.SemVer.PreRelease <> None) releaseNotes 

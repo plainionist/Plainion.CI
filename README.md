@@ -25,6 +25,7 @@ Then change to CheckIn tab, select the files you want to commit and enter a comm
 ## Hints
 
 * specify package creation and deployment scripts relative to project root
+* use "-" in you ChangeLog.md for bullet lists - other bullet list signs currently not supported
 
 # Customization
 

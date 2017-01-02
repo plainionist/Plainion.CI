@@ -1,3 +1,7 @@
+## 1.3 - Unreleased
+
+- bullet list handling in changelog.md fixed
+
 ## 1.2 - 2017-01-01
 
 - Help system (Build Definition) improved
