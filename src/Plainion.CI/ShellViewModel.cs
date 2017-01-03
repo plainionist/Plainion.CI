@@ -18,6 +18,7 @@ namespace Plainion.CI
         private BuildService myBuildService;
         private int mySelectedTab;
         private bool myIsBusy;
+        private string myTitle;
 
         [ImportingConstructor]
         public ShellViewModel( BuildService buildService, ISourceControl sourceControl )
@@ -35,6 +36,26 @@ namespace Plainion.CI
             {
                 myBuildService.InitializeBuildDefinition( null );
             }
+
+            myBuildService.BuildDefinitionChanged += myBuildService_BuildDefinitionChanged;
+
+            UpdateTitle();
+        }
+
+        private void myBuildService_BuildDefinitionChanged()
+        {
+            UpdateTitle();
+        }
+
+        private void UpdateTitle()
+        {
+            Title = string.Format( "Plainion.CI - {0}", myBuildService.BuildDefinition.GetProjectName() );
+        }
+
+        public string Title
+        {
+            get { return myTitle; }
+            set { SetProperty( ref myTitle, value ); }
         }
 
         [Import]

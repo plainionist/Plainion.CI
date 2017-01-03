@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Plainion.CI.Shell"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Plainion - CI" 
+        Title="{Binding Title}" 
         Icon="images/ci.png"
         Width="800" Height="600">
     <Grid Margin="5">

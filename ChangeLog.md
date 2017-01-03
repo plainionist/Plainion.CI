@@ -1,6 +1,7 @@
 ## 1.4 - 2017-01-03
 
 - mapping assemblies to source folders fixed
+- project name displayed in title
 
 ## 1.3 - 2017-01-03
 

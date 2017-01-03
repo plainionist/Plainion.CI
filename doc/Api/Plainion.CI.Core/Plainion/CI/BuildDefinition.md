@@ -65,3 +65,5 @@ Saved in different file and therefore no DataMember.
 ### System.String GetOutputPath()
 
 ### System.String GetSolutionPath()
+
+### System.String GetProjectName()

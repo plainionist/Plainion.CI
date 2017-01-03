@@ -194,5 +194,10 @@ namespace Plainion.CI
         {
             return Path.Combine( RepositoryRoot, Solution );
         }
+
+        public string GetProjectName()
+        {
+            return Path.GetFileNameWithoutExtension( Solution );
+        }
     }
 }
