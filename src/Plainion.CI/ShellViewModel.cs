@@ -49,7 +49,7 @@ namespace Plainion.CI
 
         private void UpdateTitle()
         {
-            Title = string.Format( "Plainion.CI - {0}", myBuildService.BuildDefinition.GetProjectName() );
+            Title = string.Format( "Project: {0}", myBuildService.BuildDefinition.GetProjectName() );
         }
 
         public string Title
