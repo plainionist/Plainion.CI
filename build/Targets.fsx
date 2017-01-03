@@ -34,7 +34,7 @@ Target "DeployPackage" (fun _ ->
 
     Unzip releaseDir zip
 
-    PGitHub.Release [ zip ]
+    //PGitHub.Release [ zip ]
 
     // publish a dummy nuget package for testing
     //PNuGet.Publish (projectRoot </> "pkg")

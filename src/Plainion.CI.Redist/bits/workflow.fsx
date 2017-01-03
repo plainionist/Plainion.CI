@@ -59,26 +59,23 @@ Target "GenerateApiDoc" (fun _ ->
         |> dict
 
     let getAssemblySources assembly =
-        System.Diagnostics.Debugger.Launch() |> ignore
         Path.GetDirectoryName(assemblyToSourcesMap.[assembly])
 
     let genApiDoc assembly =
-        let args = (buildDefinition.ApiDocGenArguments).Replace("%1", assembly).Replace("%2", getAssemblySources assembly)
+        let args = 
+            buildDefinition.ApiDocGenArguments
+            |> replace "%1"  (Path.Combine(outputPath, assembly))
+            |> replace "%2" (getAssemblySources assembly)
+
+        printfn "Running %s with %s" buildDefinition.ApiDocGenExecutable args
+
         shellExec { Program = buildDefinition.ApiDocGenExecutable
                     Args = []
                     WorkingDirectory =  projectRoot
                     CommandLine = args}
     
-    let assemblies = 
-        assemblyToSourcesMap.Keys
-        |> Seq.map(fun asm -> Path.Combine(outputPath, asm))
-        |> List.ofSeq
-
-    printfn "Assemblies:"
-    assemblies |> Seq.iter(fun x -> printfn " - %s" x)
-
     let ret = 
-        assemblies
+        assemblyToSourcesMap.Keys
         |> Seq.map genApiDoc
         |> Seq.forall(fun x -> x = 0)
 
