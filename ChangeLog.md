@@ -1,7 +1,8 @@
-## 1.3 - Unreleased
+## 1.3 - 2017-01-03
 
 - bullet list handling in changelog.md fixed
 - support for IronDoc "-sources" switch added
+- PNuGet.PublishPackage added
 
 ## 1.2 - 2017-01-01
 

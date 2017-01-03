@@ -1,7 +1,6 @@
 **/bin/**
 **/obj/**
 *.pdb
-/doc/Api/**
 /*.suo
 /packages/Expression.Blend.Sdk.1.0.2
 /packages/LibGit2Sharp.0.22.0-pre20150716071016
