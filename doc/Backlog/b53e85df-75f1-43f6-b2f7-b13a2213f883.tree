@@ -5,5 +5,8 @@
     <Node Id="8b1be2da-7a8a-4bc6-9b83-50967a4e967c">
       <Caption><![CDATA[move abstractshellprocess and uishellcommand to plainion.core]]></Caption>
     </Node>
+    <Node Id="f763511a-82da-497f-bee3-4b539ae429af">
+      <Caption><![CDATA[how to automatically include api doc output in currently running commit?]]></Caption>
+    </Node>
   </Node>
 </Tree>

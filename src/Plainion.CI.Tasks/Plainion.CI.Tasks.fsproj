@@ -47,6 +47,8 @@
   </Target>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Foundation.fs" />
+    <Compile Include="MsBuild.fs" />
     <Compile Include="Git.fs" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -67,5 +69,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
 </Project>

@@ -206,7 +206,7 @@
                 <TextBlock Name="ApiDocGenArguments" Visibility="Collapsed" TextWrapping="Wrap">
                     <Run FontWeight="Bold">ApiDoc Arguments</Run>
                     <LineBreak/>
-                    <Run>Arguments passed to the API doc generator. Use %1 for the assembly.</Run>
+                    <Run>Arguments passed to the API doc generator. Use %1 for the assembly. Use %2 for the sources folder of the respective assembly.</Run>
                 </TextBlock>
                 <TextBlock Name="TestAssemblyPattern" Visibility="Collapsed" TextWrapping="Wrap">
                     <Run FontWeight="Bold">Test assembly pattern</Run>

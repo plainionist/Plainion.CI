@@ -1,6 +1,7 @@
 ## 1.3 - Unreleased
 
 - bullet list handling in changelog.md fixed
+- support for IronDoc "-sources" switch added
 
 ## 1.2 - 2017-01-01
 

@@ -50,17 +50,28 @@ Target "RunNUnitTests" (fun _ ->
 )
 
 Target "GenerateApiDoc" (fun _ ->
+    let projects = PMsBuild.GetProjectFiles(buildDefinition.GetSolutionPath())
+
+    let assemblyToSourcesMap = 
+        projects
+        |> Seq.map PMsBuild.LoadProject
+        |> Seq.map(fun proj -> proj.Assembly, proj.Location)
+        |> dict
+
+    let getAssemblySources assembly =
+        System.Diagnostics.Debugger.Launch() |> ignore
+        Path.GetDirectoryName(assemblyToSourcesMap.[assembly])
+
     let genApiDoc assembly =
-        let args = (buildDefinition.ApiDocGenArguments).Replace("%1", assembly)
+        let args = (buildDefinition.ApiDocGenArguments).Replace("%1", assembly).Replace("%2", getAssemblySources assembly)
         shellExec { Program = buildDefinition.ApiDocGenExecutable
                     Args = []
                     WorkingDirectory =  projectRoot
                     CommandLine = args}
     
     let assemblies = 
-        !! ( outputPath </> "*.dll" )
-        ++ ( outputPath </> "*.exe" )
-        |> Seq.filter(fun f -> Path.GetFileName(f).StartsWith(projectName, StringComparison.OrdinalIgnoreCase))
+        assemblyToSourcesMap.Keys
+        |> Seq.map(fun asm -> Path.Combine(outputPath, asm))
         |> List.ofSeq
 
     printfn "Assemblies:"
