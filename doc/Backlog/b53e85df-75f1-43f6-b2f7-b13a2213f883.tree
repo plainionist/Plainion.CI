@@ -8,5 +8,8 @@
     <Node Id="f763511a-82da-497f-bee3-4b539ae429af">
       <Caption><![CDATA[how to automatically include api doc output in currently running commit?]]></Caption>
     </Node>
+    <Node Id="9ce3cc56-0da4-4001-a3e4-13929d65f8fb">
+      <Caption><![CDATA[custom parameter for "deploy" to diff between local and global publish]]></Caption>
+    </Node>
   </Node>
 </Tree>
