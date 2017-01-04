@@ -22,7 +22,6 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <GroupBox Header="Repository" Grid.Row="0">
@@ -103,7 +102,7 @@
                         </Grid>
                     </GroupBox>
 
-                    <GroupBox Header="Create package" Grid.Row="4">
+                    <GroupBox Header="Packaging" Grid.Row="4">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -112,42 +111,25 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
-                                <TextBlock Text="Script"/>
-                                <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Currently only Msbuild scripts are supported. The file may end with .msbuild or .targets"/>
-                            </StackPanel>
-                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageScript}" Tag="CreatePackageScript"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Script" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.PackagingScript}" Tag="PackagingScript"/>
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Arguments" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Create arguments" VerticalAlignment="Center"/>
                             <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.CreatePackageArguments}" Tag="CreatePackageArguments"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Deploy arguments" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="2" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.DeployPackageArguments}" Tag="DeployPackageArguments"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Publish arguments" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="3" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.PublishPackageArguments}" Tag="PublishPackageArguments"/>
                         </Grid>
                     </GroupBox>
 
-                    <GroupBox Header="Deploy package" Grid.Row="5">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" >
-                                <TextBlock Text="Script"/>
-                                <TextBlock Text="?" Margin="10,0,0,0" Foreground="Gray" ToolTip="Currently only Msbuild scripts are supported. The file may end with .msbuild or .targets"/>
-                            </StackPanel>
-                            <TextBox Grid.Row="0" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.DeployPackageScript}" Tag="DeployPackageScript"/>
-
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Arguments" VerticalAlignment="Center"/>
-                            <TextBox Grid.Row="1" Grid.Column="1"  Margin="5,2,0,0" Text="{Binding BuildDefinition.DeployPackageArguments}" Tag="DeployPackageArguments"/>
-                        </Grid>
-                    </GroupBox>
-
-                    <GroupBox Header="User" Grid.Row="6">
+                    <GroupBox Header="User" Grid.Row="5">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -171,7 +153,7 @@
                         </Grid>
                     </GroupBox>
 
-                    <GroupBox Header="Tools" Grid.Row="7">
+                    <GroupBox Header="Tools" Grid.Row="6">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -218,25 +200,25 @@
                     <LineBreak/>
                     <Run>Full path to the test runner. Currently only NUnit runners are supported.</Run>
                 </TextBlock>
-                <TextBlock Name="CreatePackageScript" Visibility="Collapsed" TextWrapping="Wrap">
-                    <Run FontWeight="Bold">Create package script</Run>
+                <TextBlock Name="PackagingScript" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">Packaging script</Run>
                     <LineBreak/>
-                    <Run>Relative path from repository root to a build script which contains the target for creating a package. MsBuild and FAKE scripts supported.</Run>
+                    <Run>Relative path from repository root to a build script which contains targets for packaging of your project. MsBuild and FAKE scripts supported.</Run>
                 </TextBlock>
                 <TextBlock Name="CreatePackageArguments" Visibility="Collapsed" TextWrapping="Wrap">
-                    <Run FontWeight="Bold">Create package script arguments</Run>
+                    <Run FontWeight="Bold">Create package arguments</Run>
                     <LineBreak/>
-                    <Run>Arguments for the package creation script, e.g. targets for FAKE scripts</Run>
-                </TextBlock>
-                <TextBlock Name="DeployPackageScript" Visibility="Collapsed" TextWrapping="Wrap">
-                    <Run FontWeight="Bold">Deploy package script</Run>
-                    <LineBreak/>
-                    <Run>Relative path from repository root to a build script which contains the target for deploying a package. MsBuild and FAKE scripts supported.</Run>
+                    <Run>Arguments (e.g. target) passed to the packaging script to create a package</Run>
                 </TextBlock>
                 <TextBlock Name="DeployPackageArguments" Visibility="Collapsed" TextWrapping="Wrap">
-                    <Run FontWeight="Bold">Deploy package script arguments</Run>
+                    <Run FontWeight="Bold">Deploy package arguments</Run>
                     <LineBreak/>
-                    <Run>Arguments for the package deploy script, e.g. targets for FAKE scripts</Run>
+                    <Run>Arguments (e.g. target) passed to the packaging script to deploy/install a package</Run>
+                </TextBlock>
+                <TextBlock Name="PublishPackageArguments" Visibility="Collapsed" TextWrapping="Wrap">
+                    <Run FontWeight="Bold">Publish package arguments</Run>
+                    <LineBreak/>
+                    <Run>Arguments (e.g. target) passed to the packaging script to publish a package (e.g. on NuGet or GitHub)</Run>
                 </TextBlock>
                 <TextBlock Name="UserLogin" Visibility="Collapsed" TextWrapping="Wrap">
                     <Run FontWeight="Bold">User name</Run>

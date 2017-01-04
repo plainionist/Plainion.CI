@@ -19,6 +19,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
@@ -94,7 +95,11 @@
         </Grid>
 
         <Grid Grid.Row="8" Margin="0,3,0,0">
-            <CheckBox Content="Deploy package" IsChecked="{Binding BuildDefinition.DeployPackage}" VerticalAlignment="Center"/>
+            <CheckBox Content="Deploy package" IsChecked="{Binding BuildDefinition.DeployPackage}" VerticalAlignment="Center" ToolTip="Install package using custom script"/>
+        </Grid>
+
+        <Grid Grid.Row="9" Margin="0,3,0,0">
+            <CheckBox Content="Publish package" IsChecked="{Binding BuildDefinition.PublishPackage}" VerticalAlignment="Center" ToolTip="Publish a release using custom script"/>
         </Grid>
     </Grid>
 </UserControl>

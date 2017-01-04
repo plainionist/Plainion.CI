@@ -1,3 +1,7 @@
+## 1.5 - 2017-01-03
+
+- separated "deploy" and "publish" of releases
+
 ## 1.4 - 2017-01-03
 
 - mapping assemblies to source folders fixed

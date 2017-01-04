@@ -154,20 +154,25 @@ let runScript (script:string) args =
     | _-> failwithf "script execution failed: %s" script
 
 
-Target "CreatePackage" (fun _ ->
-    let script = projectRoot </> buildDefinition.CreatePackageScript
+let private getPackagingScript() =
+    let script = projectRoot </> buildDefinition.PackagingScript
     if script |> File.Exists |> not then
-        failwithf "Package creation script does not exist: %s" buildDefinition.CreatePackageScript
-    
+        failwithf "Packaging script does not exist: %s" buildDefinition.PackagingScript
+    script
+
+Target "CreatePackage" (fun _ ->
+    let script = getPackagingScript()    
     runScript script buildDefinition.CreatePackageArguments
 )
 
 Target "DeployPackage" (fun _ ->
-    let script = projectRoot </> buildDefinition.DeployPackageScript
-    if script |> File.Exists |> not then
-        failwithf "Package deployment script does not exist: %s" buildDefinition.DeployPackageScript
-    
+    let script = getPackagingScript()        
     runScript script buildDefinition.DeployPackageArguments
+)
+
+Target "PublishPackage" (fun _ ->
+    let script = getPackagingScript()    
+    runScript script buildDefinition.PublishPackageArguments
 )
 
 "Clean"
@@ -180,6 +185,7 @@ Target "DeployPackage" (fun _ ->
     =?> ("Push", buildDefinition.Push)
     =?> ("CreatePackage", buildDefinition.CreatePackage)
     =?> ("DeployPackage", buildDefinition.DeployPackage)
+    =?> ("PublishPackage", buildDefinition.PublishPackage)
     ==> "All"
 
 RunTarget()

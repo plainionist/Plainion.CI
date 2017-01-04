@@ -17,16 +17,17 @@ namespace Plainion.CI
         private bool myCheckIn;
         private bool myPush;
         private bool myDeploy;
+        private bool myPublish;
         private string myConfiguration;
         private string myPlatform;
         private string myApiDocGenExecutable;
         private string myApiDocGenArguments;
         private string myTestRunnerExecutable;
         private string myTestAssemblyPattern;
-        private string myCreatePackageScript;
+        private string myPackagingScript;
         private string myCreatePackageArguments;
-        private string myDeployPackageScript;
         private string myDeployPackageArguments;
+        private string myPublishPackageArguments;
         private User myUser;
         private string myDiffTool;
         private string myNuGetExecutable;
@@ -92,6 +93,13 @@ namespace Plainion.CI
         }
 
         [DataMember]
+        public bool PublishPackage
+        {
+            get { return myPublish; }
+            set { SetProperty( ref myPublish, value ); }
+        }
+
+        [DataMember]
         public string Configuration
         {
             get { return myConfiguration; }
@@ -133,11 +141,11 @@ namespace Plainion.CI
             set { SetProperty( ref myTestAssemblyPattern, value ); }
         }
 
-        [DataMember]
-        public string CreatePackageScript
+        [DataMember(Name="CreatePackageScript")]
+        public string PackagingScript
         {
-            get { return myCreatePackageScript; }
-            set { SetProperty( ref myCreatePackageScript, value ); }
+            get { return myPackagingScript; }
+            set { SetProperty( ref myPackagingScript, value ); }
         }
 
         [DataMember]
@@ -148,10 +156,10 @@ namespace Plainion.CI
         }
 
         [DataMember]
-        public string DeployPackageScript
+        public string PublishPackageArguments
         {
-            get { return myDeployPackageScript; }
-            set { SetProperty( ref myDeployPackageScript, value ); }
+            get { return myPublishPackageArguments; }
+            set { SetProperty( ref myPublishPackageArguments, value ); }
         }
 
         [DataMember]
