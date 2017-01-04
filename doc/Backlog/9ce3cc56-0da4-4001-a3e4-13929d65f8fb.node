@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="9ce3cc56-0da4-4001-a3e4-13929d65f8fb" Created="636190517736434802" LastModified="636190518434974756">
-  <Caption><![CDATA[custom parameter for "deploy" to diff between local and global publish]]></Caption>
-  <Content><![CDATA[- sometimes we may only want to publish locally (private publish, draft)
-- we could introduce a "draft" checkmark and pass it to the deploy target
-- the custom deploy script could then decide to publish to e.g. github or not]]></Content>
-</Node>
