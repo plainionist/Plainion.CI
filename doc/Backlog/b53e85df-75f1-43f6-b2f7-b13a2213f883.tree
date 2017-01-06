@@ -11,5 +11,8 @@
     <Node Id="96625e85-bd2c-4126-bf0a-fb233ec0646c">
       <Caption><![CDATA[add "add to ignore" menu entry]]></Caption>
     </Node>
+    <Node Id="b6628ac2-b833-4f13-aaeb-a32e7b43cd8e">
+      <Caption><![CDATA[automatically manage dependencies in nuspec]]></Caption>
+    </Node>
   </Node>
 </Tree>
