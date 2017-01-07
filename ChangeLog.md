@@ -2,7 +2,8 @@
 
 - exclude test assemblies from api doc generation
 - files generated during build are automatically considered for check-in
-- checked that generated assemblyInfo files are also included in projectss
+- checked that generated assemblyInfo files are also included in projects
+- added "Ignore" context menu entry
 
 ## 1.5 - 2017-01-03
 

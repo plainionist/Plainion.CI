@@ -5,10 +5,12 @@ namespace Plainion.CI.Services.SourceControl
 {
     interface ISourceControl
     {
-        Task<IEnumerable<Change>> GetPendingChangesAsync( string workspaceRoot );
-        
-        void Revert( string workspaceRoot, string file );
+        Task<IEnumerable<Change>> GetPendingChangesAsync(string workspaceRoot);
 
-        void DiffToPrevious( string workspaceRoot, string file, string diffTool );
+        void Revert(string workspaceRoot, string file);
+
+        void DiffToPrevious(string workspaceRoot, string file, string diffTool);
+
+        void Ignore(string workspaceRoot, string pattern);
     }
 }

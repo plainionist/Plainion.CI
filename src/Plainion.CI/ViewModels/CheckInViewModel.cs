@@ -25,39 +25,44 @@ namespace Plainion.CI.ViewModels
         private PendingChangesObserver myPendingChangesObserver;
 
         [ImportingConstructor]
-        public CheckInViewModel( BuildService buildService, ISourceControl sourceControl )
+        public CheckInViewModel(BuildService buildService, ISourceControl sourceControl)
         {
             myBuildService = buildService;
             mySourceControl = sourceControl;
 
             Files = new ObservableCollection<RepositoryEntry>();
 
-            RefreshCommand = new DelegateCommand( RefreshPendingChanges );
-            RevertCommand = new DelegateCommand<string>( OnRevert );
-            DiffToPreviousCommand = new DelegateCommand( OnDiffToPrevious, CanDiffToPrevious );
+            RefreshCommand = new DelegateCommand(RefreshPendingChanges);
+            RevertCommand = new DelegateCommand<string>(OnRevert);
 
-            myPendingChangesObserver = new PendingChangesObserver( mySourceControl, OnPendingChangesChanged );
+            IgnoreFileCommand = new DelegateCommand<string>(OnIgnoreFile);
+            IgnoreExtensionCommand = new DelegateCommand<string>(OnIgnoreExtension);
+            IgnoreDirectoryCommand = new DelegateCommand<string>(OnIgnoreDirectory);
+
+            DiffToPreviousCommand = new DelegateCommand(OnDiffToPrevious, CanDiffToPrevious);
+
+            myPendingChangesObserver = new PendingChangesObserver(mySourceControl, OnPendingChangesChanged);
 
             buildService.BuildDefinitionChanged += OnBuildDefinitionChanged;
             OnBuildDefinitionChanged();
         }
 
-        private void OnPendingChangesChanged( IEnumerable<Change> pendingChanges )
+        private void OnPendingChangesChanged(IEnumerable<Change> pendingChanges)
         {
-            Debug.WriteLine( "Updating pending changes" );
+            Debug.WriteLine("Updating pending changes");
 
             Files.Clear();
 
             var files = pendingChanges
-                .Select( e => new RepositoryEntry( e ) { IsChecked = true } )
-                .OrderBy( e => e.File );
+                .Select(e => new RepositoryEntry(e) { IsChecked = true })
+                .OrderBy(e => e.File);
 
-            Files.AddRange( files );
+            Files.AddRange(files);
         }
 
         private void OnBuildDefinitionChanged()
         {
-            if( BuildDefinition != null )
+            if(BuildDefinition != null)
             {
                 BuildDefinition.PropertyChanged -= BuildDefinition_PropertyChanged;
             }
@@ -65,9 +70,9 @@ namespace Plainion.CI.ViewModels
             myPendingChangesObserver.Stop();
 
             BuildDefinition = myBuildService.BuildDefinition;
-            OnPropertyChanged( () => BuildDefinition );
+            OnPropertyChanged(() => BuildDefinition);
 
-            if( BuildDefinition != null )
+            if(BuildDefinition != null)
             {
                 BuildDefinition.PropertyChanged += BuildDefinition_PropertyChanged;
                 OnRepositoryRootChanged();
@@ -76,13 +81,13 @@ namespace Plainion.CI.ViewModels
             DiffToPreviousCommand.RaiseCanExecuteChanged();
         }
 
-        private void BuildDefinition_PropertyChanged( object sender, PropertyChangedEventArgs e )
+        private void BuildDefinition_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if( e.PropertyName == PropertySupport.ExtractPropertyName( () => BuildDefinition.RepositoryRoot ) )
+            if(e.PropertyName == PropertySupport.ExtractPropertyName(() => BuildDefinition.RepositoryRoot))
             {
                 OnRepositoryRootChanged();
             }
-            else if( e.PropertyName == PropertySupport.ExtractPropertyName( () => BuildDefinition.DiffTool ) )
+            else if(e.PropertyName == PropertySupport.ExtractPropertyName(() => BuildDefinition.DiffTool))
             {
                 DiffToPreviousCommand.RaiseCanExecuteChanged();
             }
@@ -92,9 +97,9 @@ namespace Plainion.CI.ViewModels
         {
             myPendingChangesObserver.Stop();
 
-            if( !string.IsNullOrEmpty( BuildDefinition.RepositoryRoot ) && Directory.Exists( BuildDefinition.RepositoryRoot ) )
+            if(!string.IsNullOrEmpty(BuildDefinition.RepositoryRoot) && Directory.Exists(BuildDefinition.RepositoryRoot))
             {
-                myPendingChangesObserver.Start( myBuildService.BuildDefinition.RepositoryRoot );
+                myPendingChangesObserver.Start(myBuildService.BuildDefinition.RepositoryRoot);
             }
         }
 
@@ -105,13 +110,13 @@ namespace Plainion.CI.ViewModels
         public RepositoryEntry SelectedFile
         {
             get { return mySelectedFile; }
-            set { SetProperty( ref mySelectedFile, value ); }
+            set { SetProperty(ref mySelectedFile, value); }
         }
 
         public string CheckInComment
         {
             get { return myCheckInComment; }
-            set { SetProperty( ref myCheckInComment, value ); }
+            set { SetProperty(ref myCheckInComment, value); }
         }
 
         public SecureString SecurePassword { get; set; }
@@ -120,35 +125,54 @@ namespace Plainion.CI.ViewModels
 
         public async void RefreshPendingChanges()
         {
-            if( string.IsNullOrEmpty( BuildDefinition.RepositoryRoot ) || !Directory.Exists( BuildDefinition.RepositoryRoot ) )
+            if(string.IsNullOrEmpty(BuildDefinition.RepositoryRoot) || !Directory.Exists(BuildDefinition.RepositoryRoot))
             {
                 return;
             }
 
-            var pendingChanges = await mySourceControl.GetPendingChangesAsync( BuildDefinition.RepositoryRoot );
+            var pendingChanges = await mySourceControl.GetPendingChangesAsync(BuildDefinition.RepositoryRoot);
 
-            OnPendingChangesChanged( pendingChanges );
+            OnPendingChangesChanged(pendingChanges);
         }
 
         public ICommand RevertCommand { get; private set; }
 
-        private void OnRevert( string file )
+        private void OnRevert(string file)
         {
-            Debug.WriteLine( "Reverting changes on '" + file + "'" );
+            mySourceControl.Revert(BuildDefinition.RepositoryRoot, file);
+        }
 
-            mySourceControl.Revert( BuildDefinition.RepositoryRoot, file );
+        public ICommand IgnoreFileCommand { get; private set; }
+
+        private void OnIgnoreFile(string file)
+        {
+            mySourceControl.Ignore(BuildDefinition.RepositoryRoot, "/" + file);
+        }
+
+        public ICommand IgnoreExtensionCommand { get; private set; }
+
+        private void OnIgnoreExtension(string file)
+        {
+            mySourceControl.Ignore(BuildDefinition.RepositoryRoot, "*" + Path.GetExtension(file));
+        }
+
+        public ICommand IgnoreDirectoryCommand { get; private set; }
+
+        private void OnIgnoreDirectory(string file)
+        {
+            mySourceControl.Ignore(BuildDefinition.RepositoryRoot, "/" + Path.GetDirectoryName(file));
         }
 
         public DelegateCommand DiffToPreviousCommand { get; private set; }
 
         private bool CanDiffToPrevious()
         {
-            return BuildDefinition != null && !string.IsNullOrEmpty( BuildDefinition.DiffTool );
+            return BuildDefinition != null && !string.IsNullOrEmpty(BuildDefinition.DiffTool);
         }
 
         public void OnDiffToPrevious()
         {
-            mySourceControl.DiffToPrevious( BuildDefinition.RepositoryRoot, SelectedFile.File, BuildDefinition.DiffTool );
+            mySourceControl.DiffToPrevious(BuildDefinition.RepositoryRoot, SelectedFile.File, BuildDefinition.DiffTool);
         }
     }
 }

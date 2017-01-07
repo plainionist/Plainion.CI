@@ -4,6 +4,7 @@
              xmlns:pn="http://github.com/ronin4net/plainion"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:sc="clr-namespace:Plainion.CI.Services.SourceControl"
+             xmlns:l="clr-namespace:Plainion.CI.Views"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              mc:Ignorable="d" 
@@ -57,6 +58,15 @@
                             </TextBlock.Style>
                             <TextBlock.ContextMenu>
                                 <ContextMenu>
+                                    <ContextMenu.Resources>
+                                        <l:FileExtensionConverter x:Key="FileExtConverter"/>
+                                        <l:FileDirectoryConverter x:Key="FileDirConverter"/>
+                                    </ContextMenu.Resources>
+                                    <MenuItem Header="Ignore">
+                                        <MenuItem Header="{Binding File}" Command="{Binding Data.IgnoreFileCommand, Source={StaticResource RootDataContext}}" CommandParameter="{Binding File}"/>
+                                        <MenuItem Header="{Binding File, Converter={StaticResource FileExtConverter}}" Command="{Binding Data.IgnoreExtensionCommand, Source={StaticResource RootDataContext}}" CommandParameter="{Binding File}"/>
+                                        <MenuItem Header="{Binding File, Converter={StaticResource FileDirConverter}}" Command="{Binding Data.IgnoreDirectoryCommand, Source={StaticResource RootDataContext}}" CommandParameter="{Binding File}"/>
+                                    </MenuItem>
                                     <MenuItem Header="Revert" Command="{Binding Data.RevertCommand, Source={StaticResource RootDataContext}}" CommandParameter="{Binding File}"/>
                                 </ContextMenu>
                             </TextBlock.ContextMenu>

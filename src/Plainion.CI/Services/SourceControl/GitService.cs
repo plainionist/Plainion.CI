@@ -12,75 +12,75 @@ namespace Plainion.CI.Services.SourceControl
     /// <summary>
     /// Thread-safe and re-entrent
     /// </summary>
-    [Export( typeof( ISourceControl ) )]
+    [Export(typeof(ISourceControl))]
     class GitService : ISourceControl
     {
-        public Task<IEnumerable<Change>> GetPendingChangesAsync( string workspaceRoot )
+        public Task<IEnumerable<Change>> GetPendingChangesAsync(string workspaceRoot)
         {
-            return Task<IEnumerable<Change>>.Run( () =>
+            return Task<IEnumerable<Change>>.Run(() =>
             {
-                using ( var repo = new Repository( workspaceRoot ) )
+                using(var repo = new Repository(workspaceRoot))
                 {
                     return (IEnumerable<Change>)repo.RetrieveStatus()
-                        .Where( e => ( e.State & FileStatus.Ignored ) == 0 )
-                        .Select( e => new Change( e.FilePath, GetChangeType( e.State ) ) )
+                        .Where(e => (e.State & FileStatus.Ignored) == 0)
+                        .Select(e => new Change(e.FilePath, GetChangeType(e.State)))
                         .ToList();
                 }
-            } );
+            });
         }
 
-        private ChangeType GetChangeType( FileStatus fileStatus )
+        private ChangeType GetChangeType(FileStatus fileStatus)
         {
-            if ( fileStatus == FileStatus.Untracked ) return ChangeType.Untracked;
-            if ( fileStatus == FileStatus.Missing ) return ChangeType.Missing;
+            if(fileStatus == FileStatus.Untracked) return ChangeType.Untracked;
+            if(fileStatus == FileStatus.Missing) return ChangeType.Missing;
             return ChangeType.Modified;
         }
 
-        public void DiffToPrevious( string workspaceRoot, string file, string diffTool )
+        public void DiffToPrevious(string workspaceRoot, string file, string diffTool)
         {
-            var headFile = GetHeadOf( workspaceRoot, file );
+            var headFile = GetHeadOf(workspaceRoot, file);
 
-            var parts = Regex.Matches( diffTool, @"[\""].+?[\""]|[^ ]+" )
+            var parts = Regex.Matches(diffTool, @"[\""].+?[\""]|[^ ]+")
                             .Cast<Match>()
-                            .Select( m => m.Value )
+                            .Select(m => m.Value)
                             .ToList();
 
-            var executable = parts.First().Trim( '"' );
-            var args = string.Join( " ", parts.Skip( 1 ) )
-                .Replace( "%base", headFile )
-                .Replace( "%mine", Path.Combine( workspaceRoot, file ) );
+            var executable = parts.First().Trim('"');
+            var args = string.Join(" ", parts.Skip(1))
+                .Replace("%base", headFile)
+                .Replace("%mine", Path.Combine(workspaceRoot, file));
 
-            Process.Start( executable, args );
+            Process.Start(executable, args);
         }
 
         /// <summary>
         /// Returns path to a temp file which contains the HEAD version of the given file.
         /// The caller has to take care to delete the file.
         /// </summary>
-        private string GetHeadOf( string workspaceRoot, string relativePath )
+        private string GetHeadOf(string workspaceRoot, string relativePath)
         {
-            using ( var repo = new Repository( workspaceRoot ) )
+            using(var repo = new Repository(workspaceRoot))
             {
-                var log = repo.Commits.QueryBy( relativePath );
-                if ( log == null || !log.Any() )
+                var log = repo.Commits.QueryBy(relativePath);
+                if(log == null || !log.Any())
                 {
                     // file not yet tracked -> ignore
                     return null;
                 }
 
                 var head = log.First();
-                var treeEntry = head.Commit.Tree[ relativePath ];
+                var treeEntry = head.Commit.Tree[relativePath];
                 var blob = (Blob)treeEntry.Target;
 
-                var file = Path.Combine( Path.GetTempPath(), Path.GetFileName( relativePath ) + ".head" );
+                var file = Path.Combine(Path.GetTempPath(), Path.GetFileName(relativePath) + ".head");
 
-                using ( var reader = new StreamReader( blob.GetContentStream() ) )
+                using(var reader = new StreamReader(blob.GetContentStream()))
                 {
-                    using ( var writer = new StreamWriter( file ) )
+                    using(var writer = new StreamWriter(file))
                     {
-                        while ( !reader.EndOfStream )
+                        while(!reader.EndOfStream)
                         {
-                            writer.WriteLine( reader.ReadLine() );
+                            writer.WriteLine(reader.ReadLine());
                         }
                     }
                 }
@@ -89,16 +89,21 @@ namespace Plainion.CI.Services.SourceControl
             }
         }
 
-        public void Revert( string workspaceRoot, string file )
+        public void Revert(string workspaceRoot, string file)
         {
-            using ( var repo = new Repository( workspaceRoot ) )
+            using(var repo = new Repository(workspaceRoot))
             {
                 var options = new CheckoutOptions
                 {
                     CheckoutModifiers = CheckoutModifiers.Force
                 };
-                repo.CheckoutPaths( "HEAD", new[] { file }, options );
+                repo.CheckoutPaths("HEAD", new[] { file }, options);
             }
+        }
+
+        public void Ignore(string workspaceRoot, string pattern)
+        {
+            File.AppendAllLines(Path.Combine(workspaceRoot, ".gitignore"), new[] { pattern.Replace('\\', '/') });
         }
     }
 }
