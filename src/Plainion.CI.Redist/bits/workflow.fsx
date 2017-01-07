@@ -110,7 +110,8 @@ Target "Commit" (fun _ ->
         |> Seq.filter (isExcluded >> not)
         |> List.ofSeq
 
-    System.Diagnostics.Debugger.Launch() |> ignore
+    files
+    |> Seq.iter (sprintf "Commiting file %s" >> trace)
 
     PGit.Commit projectRoot (files, buildRequest.CheckInComment, buildDefinition.User.Login, buildDefinition.User.EMail)
 )
