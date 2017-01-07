@@ -1,6 +1,8 @@
 ## 1.6 - 2017-01-07
 
 - exclude test assemblies from api doc generation
+- files generated during build are automatically considered for check-in
+- checked that generated assemblyInfo files are also included in projectss
 
 ## 1.5 - 2017-01-03
 
