@@ -193,7 +193,7 @@
                 <TextBlock Name="TestAssemblyPattern" Visibility="Collapsed" TextWrapping="Wrap">
                     <Run FontWeight="Bold">Test assembly pattern</Run>
                     <LineBreak/>
-                    <Run>Pattern to match test assemblies. Supports '*' as wildcard.</Run>
+                    <Run>Semi colon separated list of patterns to match test assemblies. Supports '*' as wildcard.</Run>
                 </TextBlock>
                 <TextBlock Name="TestRunnerExecutable" Visibility="Collapsed" TextWrapping="Wrap">
                     <Run FontWeight="Bold">Test runner executable</Run>

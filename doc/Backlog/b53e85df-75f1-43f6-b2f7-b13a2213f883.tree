@@ -5,8 +5,5 @@
     <Node Id="b6628ac2-b833-4f13-aaeb-a32e7b43cd8e">
       <Caption><![CDATA[automatically manage dependencies in nuspec]]></Caption>
     </Node>
-    <Node Id="6a9f3342-4e94-4c8e-b56d-16bd419a16b4">
-      <Caption><![CDATA[start thinking about acceptance tests]]></Caption>
-    </Node>
   </Node>
 </Tree>

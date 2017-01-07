@@ -4,6 +4,7 @@
 - files generated during build are automatically considered for check-in
 - checked that generated assemblyInfo files are also included in projects
 - added "Ignore" context menu entry
+- support for ";" separated test assemblies added
 
 ## 1.5 - 2017-01-03
 

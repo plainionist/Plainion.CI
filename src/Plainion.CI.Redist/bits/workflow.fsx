@@ -30,19 +30,30 @@ Target "RestoreNugetPackages" (fun _ ->
              Retries = 1 })
 )
 
+let private testAssemblyIncludes () =     
+    if buildDefinition.TestAssemblyPattern |> String.IsNullOrEmpty then
+        failwith "!! NO TEST ASSEMBLY PATTERN PROVIDED !!"
+
+    let testAssemblyPatterns = 
+        buildDefinition.TestAssemblyPattern.Split(';')
+        |> Seq.map ((</>) outputPath)
+
+    testAssemblyPatterns
+    |> Seq.skip 1
+    |> Seq.fold (++) (!! (testAssemblyPatterns |> Seq.head))
+
 Target "RunNUnitTests" (fun _ ->
-    let assemblies = !! ( outputPath </> buildDefinition.TestAssemblyPattern )
     let toolPath = Path.GetDirectoryName( buildDefinition.TestRunnerExecutable )
 
     if fileExists ( toolPath </> "nunit-console.exe" ) then
-        assemblies
+        testAssemblyIncludes()
         // "parallel" version does not show test output
         |> NUnit (fun p -> 
             { p with
                 ToolPath = toolPath
                 DisableShadowCopy = true })
     else
-        assemblies
+        testAssemblyIncludes()
         |> NUnit3 (fun p -> 
             { p with
                 ToolPath = toolPath </> "nunit3-console.exe"
@@ -65,18 +76,14 @@ Target "GenerateApiDoc" (fun _ ->
         Path.GetDirectoryName(assemblyToSourcesMap.[assembly])
 
     let genApiDoc assembly =
-        let relevantAssembly =
-            !!( outputPath </> assembly)
-            -- ( outputPath </> buildDefinition.TestAssemblyPattern )
-            |> List.ofSeq
-
-        match relevantAssembly with
-        | [] -> trace (sprintf "Ignoring test assembly: %s" assembly)
-                0
-        | [x] ->
+        let assemblyFile = outputPath </> assembly
+        if testAssemblyIncludes() |> Seq.exists ((=) assemblyFile) then
+            trace (sprintf "Ignoring test assembly: %s" assembly)
+            0
+        else
             let args = 
                 buildDefinition.ApiDocGenArguments
-                |> replace "%1"  (outputPath </> assembly)
+                |> replace "%1"  assemblyFile
                 |> replace "%2" (getAssemblySources assembly)
 
             printfn "Running %s with %s" buildDefinition.ApiDocGenExecutable args
@@ -85,7 +92,6 @@ Target "GenerateApiDoc" (fun _ ->
                         Args = []
                         WorkingDirectory =  projectRoot
                         CommandLine = args}
-        | _ -> failwith "Only one assembly expected"    
         
     let ret = 
         assemblyToSourcesMap.Keys
