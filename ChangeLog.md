@@ -1,3 +1,7 @@
+## 1.6 - 2017-01-07
+
+- exclude test assemblies from api doc generation
+
 ## 1.5 - 2017-01-03
 
 - separated "deploy" and "publish" of releases

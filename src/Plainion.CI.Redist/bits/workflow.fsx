@@ -50,6 +50,9 @@ Target "RunNUnitTests" (fun _ ->
 )
 
 Target "GenerateApiDoc" (fun _ ->
+    if File.Exists buildDefinition.ApiDocGenExecutable |> not then
+        failwithf "!! ApiDocGenExecutable not found: %s !!" buildDefinition.ApiDocGenExecutable
+
     let projects = PMsBuild.GetProjectFiles(buildDefinition.GetSolutionPath())
 
     let assemblyToSourcesMap = 
@@ -62,18 +65,28 @@ Target "GenerateApiDoc" (fun _ ->
         Path.GetDirectoryName(assemblyToSourcesMap.[assembly])
 
     let genApiDoc assembly =
-        let args = 
-            buildDefinition.ApiDocGenArguments
-            |> replace "%1"  (Path.Combine(outputPath, assembly))
-            |> replace "%2" (getAssemblySources assembly)
+        let relevantAssembly =
+            !!( outputPath </> assembly)
+            -- ( outputPath </> buildDefinition.TestAssemblyPattern )
+            |> List.ofSeq
 
-        printfn "Running %s with %s" buildDefinition.ApiDocGenExecutable args
+        match relevantAssembly with
+        | [] -> trace (sprintf "Ignoring test assembly: %s" assembly)
+                0
+        | [x] ->
+            let args = 
+                buildDefinition.ApiDocGenArguments
+                |> replace "%1"  (outputPath </> assembly)
+                |> replace "%2" (getAssemblySources assembly)
 
-        shellExec { Program = buildDefinition.ApiDocGenExecutable
-                    Args = []
-                    WorkingDirectory =  projectRoot
-                    CommandLine = args}
-    
+            printfn "Running %s with %s" buildDefinition.ApiDocGenExecutable args
+
+            shellExec { Program = buildDefinition.ApiDocGenExecutable
+                        Args = []
+                        WorkingDirectory =  projectRoot
+                        CommandLine = args}
+        | _ -> failwith "Only one assembly expected"    
+        
     let ret = 
         assemblyToSourcesMap.Keys
         |> Seq.map genApiDoc

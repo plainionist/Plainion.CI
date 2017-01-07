@@ -17,8 +17,8 @@
     <Node Id="6a9f3342-4e94-4c8e-b56d-16bd419a16b4">
       <Caption><![CDATA[start thinking about acceptance tests]]></Caption>
     </Node>
-    <Node Id="e072eeb9-0850-4804-87c1-d9ff069f9c83">
-      <Caption><![CDATA[exclude test assemblies from api doc generation]]></Caption>
+    <Node Id="92e7ddf3-0846-4f86-8dc1-a3a1e9914049">
+      <Caption><![CDATA[compile in parallel]]></Caption>
     </Node>
   </Node>
 </Tree>
