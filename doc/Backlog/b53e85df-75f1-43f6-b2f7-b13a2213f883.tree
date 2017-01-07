@@ -8,11 +8,11 @@
     <Node Id="b6628ac2-b833-4f13-aaeb-a32e7b43cd8e">
       <Caption><![CDATA[automatically manage dependencies in nuspec]]></Caption>
     </Node>
-    <Node Id="15aaa455-fca1-4625-8f4a-f22a8aab64cf">
-      <Caption><![CDATA[ensure that assembly info is also referenced in project]]></Caption>
-    </Node>
     <Node Id="6a9f3342-4e94-4c8e-b56d-16bd419a16b4">
       <Caption><![CDATA[start thinking about acceptance tests]]></Caption>
+    </Node>
+    <Node Id="c4d5ed88-52d4-4fba-8201-af8b9f829ec4">
+      <Caption><![CDATA[add "revert" context menu entry]]></Caption>
     </Node>
   </Node>
 </Tree>

@@ -148,12 +148,23 @@ Target "AssemblyInfo" (fun _ ->
         | f when f.EndsWith("csproj", StringComparison.OrdinalIgnoreCase) -> Csproj
         | _  -> failwith (sprintf "Project file %s not supported. Unknown project type." projFileName)
 
+    let verifyAssemblyInfoIsIncludedInProject projectFile assemblyInfoFile =
+        let assemblyInfoIsIncluded =
+            projectFile
+            |> File.ReadAllLines
+            |> Seq.exists (contains assemblyInfoFile)
+        if assemblyInfoIsIncluded then () else failwithf "AssemblyInfo file NOT included in project %s" projectFile
+
     !! ( projectRoot </> "src/**/*.??proj" )
     |> Seq.map getProjectDetails
     |> Seq.iter (fun (projFileName, projectName, folderName, attributes) ->
         match projFileName with
-        | Fsproj -> CreateFSharpAssemblyInfo (folderName </> "AssemblyInfo.fs") attributes
-        | Csproj -> CreateCSharpAssemblyInfo ((folderName </> "Properties") </> "AssemblyInfo.cs") attributes
+        | Fsproj -> let assemblyInfo = folderName </> "AssemblyInfo.fs"
+                    CreateFSharpAssemblyInfo assemblyInfo attributes
+                    verifyAssemblyInfoIsIncludedInProject projFileName "AssemblyInfo.fs"
+        | Csproj -> let assemblyInfo = folderName </> "Properties" </> "AssemblyInfo.cs"
+                    CreateCSharpAssemblyInfo assemblyInfo attributes
+                    verifyAssemblyInfoIsIncludedInProject projFileName "AssemblyInfo.cs"
         )
 )
 
