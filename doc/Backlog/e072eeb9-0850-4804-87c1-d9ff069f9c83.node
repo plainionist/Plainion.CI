@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="e072eeb9-0850-4804-87c1-d9ff069f9c83" Created="636193993708106048" LastModified="636193993807021705">
+  <Caption><![CDATA[exclude test assemblies from api doc generation]]></Caption>
+  <Content><![CDATA[]]></Content>
+</Node>
