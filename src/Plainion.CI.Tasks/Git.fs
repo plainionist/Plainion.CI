@@ -23,3 +23,11 @@ let Push workspaceRoot (name, password) =
                                                                      credentials :> Credentials)
 
     repo.Network.Push( repo.Network.Remotes.[ "origin" ], @"refs/heads/master", options )
+
+let PendingChanges workspaceRoot =
+    use repo = new Repository( workspaceRoot )
+
+    repo.RetrieveStatus()
+    |> Seq.filter(fun e -> e.State.HasFlag( FileStatus.Ignored ) |> not )
+    |> Seq.map(fun e -> e.FilePath)
+    |> List.ofSeq

@@ -2,9 +2,6 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="f763511a-82da-497f-bee3-4b539ae429af">
-      <Caption><![CDATA[how to automatically include api doc output in currently running commit?]]></Caption>
-    </Node>
     <Node Id="96625e85-bd2c-4126-bf0a-fb233ec0646c">
       <Caption><![CDATA[add "add to ignore" menu entry]]></Caption>
     </Node>
@@ -16,9 +13,6 @@
     </Node>
     <Node Id="6a9f3342-4e94-4c8e-b56d-16bd419a16b4">
       <Caption><![CDATA[start thinking about acceptance tests]]></Caption>
-    </Node>
-    <Node Id="92e7ddf3-0846-4f86-8dc1-a3a1e9914049">
-      <Caption><![CDATA[compile in parallel]]></Caption>
     </Node>
   </Node>
 </Tree>

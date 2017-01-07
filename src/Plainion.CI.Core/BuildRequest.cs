@@ -12,6 +12,6 @@ namespace Plainion.CI
         public string CheckInComment { get; set; }
 
         [DataMember]
-        public string[] Files { get; set; }
+        public string[] FilesExcludedFromCheckIn { get; set; }
     }
 }

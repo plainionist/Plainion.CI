@@ -101,7 +101,18 @@ Target "Commit" (fun _ ->
     if buildRequest.CheckInComment |> String.IsNullOrEmpty then
         failwith "!! NO CHECKIN COMMENT PROVIDED !!"
     
-    PGit.Commit projectRoot (buildRequest.Files |> List.ofSeq, buildRequest.CheckInComment, buildDefinition.User.Login, buildDefinition.User.EMail)
+    let isExcluded file =
+        buildRequest.FilesExcludedFromCheckIn
+        |> Seq.exists ((=) file)
+
+    let files =
+        PGit.PendingChanges projectRoot
+        |> Seq.filter (isExcluded >> not)
+        |> List.ofSeq
+
+    System.Diagnostics.Debugger.Launch() |> ignore
+
+    PGit.Commit projectRoot (files, buildRequest.CheckInComment, buildDefinition.User.Login, buildDefinition.User.EMail)
 )
 
 Target "Push" (fun _ ->

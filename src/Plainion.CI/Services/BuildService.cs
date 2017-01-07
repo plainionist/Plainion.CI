@@ -44,11 +44,6 @@ namespace Plainion.CI.Services
         {
             Contract.Invariant( BuildDefinition != null, "BuildDefinition not loaded" );
 
-            request.Files = request.Files
-                .Concat( new[] { BuildDefinitionSerializer.GetLocation( BuildDefinition ) } )
-                .Distinct()
-                .ToArray();
-
             BuildRequestSerializer.Serialize( request );
             BuildDefinitionSerializer.Serialize( BuildDefinition );
 

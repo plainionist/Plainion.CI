@@ -103,8 +103,8 @@ namespace Plainion.CI
             var request = new BuildRequest
             {
                 CheckInComment = CheckInViewModel.CheckInComment,
-                Files = CheckInViewModel.Files
-                    .Where( e => e.IsChecked )
+                FilesExcludedFromCheckIn = CheckInViewModel.Files
+                    .Where( e => !e.IsChecked )
                     .Select( e => e.File )
                     .ToArray(),
             };
