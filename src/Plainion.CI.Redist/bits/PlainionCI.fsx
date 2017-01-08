@@ -67,7 +67,7 @@ let private assemblyProjects = lazy (   let projects = PMsBuild.GetProjectFiles(
                                     )
 
 /// Returns a dictionary mapping assembly names to their project files based on the project solution
-let getAssemblyProjects() =
+let getAssemblyProjectMap() =
     assemblyProjects.Value
 
 let setParams defaults =
@@ -104,15 +104,18 @@ module PNuGet =
         CreateDir packageOut
         CleanDir packageOut
 
-        System.Diagnostics.Debugger.Launch() |> ignore
+        let assemblies = 
+            files 
+            |> Seq.map(fun (source,target,exclude) -> source)
+            |> Seq.collect(fun pattern -> !! (outputPath </> pattern))
+            |> Seq.map filename
+            |> List.ofSeq
+
+        assemblies
+        |> Seq.iter( fun a -> trace (sprintf "Adding file %s to package" a))
 
         let dependencies =
-            let assemblies = 
-                files 
-                |> Seq.map(fun (source,target,exclude) -> source)
-                |> Seq.collect(fun pattern -> !! (outputPath </> pattern))
-                |> List.ofSeq
-            getAssemblyProjects()
+            getAssemblyProjectMap()
             |> Seq.filter(fun e -> assemblies |> List.exists ((=)e.Key))
             |> Seq.map(fun e -> (directory e.Value) </> "packages.config")
             |> Seq.collect(fun x -> x |> getDependencies )
