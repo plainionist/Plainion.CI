@@ -1,4 +1,4 @@
-## 1.6 - 2017-01-07
+## 1.6 - 2017-01-08
 
 - exclude test assemblies from api doc generation
 - files generated during build are automatically considered for check-in

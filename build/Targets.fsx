@@ -18,10 +18,10 @@ Target "CreatePackage" (fun _ ->
     PZip.PackRelease()
 
     // create a dummy nuget package for testing
-    [
-        ("Plainion.CI*", Some "lib", None)
-    ]
-    |> PNuGet.Pack (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
+//    [
+//        ("Plainion.CI*", Some "lib", None)
+//    ]
+//    |> PNuGet.Pack (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
 )
 
 Target "Deploy" (fun _ ->
