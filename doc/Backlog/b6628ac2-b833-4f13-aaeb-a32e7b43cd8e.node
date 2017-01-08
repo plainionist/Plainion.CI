@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="b6628ac2-b833-4f13-aaeb-a32e7b43cd8e" Created="636193094857051079" LastModified="636193094979638091">
-  <Caption><![CDATA[automatically manage dependencies in nuspec]]></Caption>
-  <Content><![CDATA[from pacakge.config]]></Content>
-</Node>

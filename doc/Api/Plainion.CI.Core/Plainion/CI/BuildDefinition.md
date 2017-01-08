@@ -29,6 +29,8 @@
 
 ### System.Boolean DeployPackage
 
+### System.Boolean PublishPackage
+
 ### System.String Configuration
 
 ### System.String Platform
@@ -41,11 +43,11 @@
 
 ### System.String TestAssemblyPattern
 
-### System.String CreatePackageScript
+### System.String PackagingScript
 
 ### System.String CreatePackageArguments
 
-### System.String DeployPackageScript
+### System.String PublishPackageArguments
 
 ### System.String DeployPackageArguments
 

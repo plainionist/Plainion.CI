@@ -64,16 +64,7 @@ Target "GenerateApiDoc" (fun _ ->
     if File.Exists buildDefinition.ApiDocGenExecutable |> not then
         failwithf "!! ApiDocGenExecutable not found: %s !!" buildDefinition.ApiDocGenExecutable
 
-    let projects = PMsBuild.GetProjectFiles(buildDefinition.GetSolutionPath())
-
-    let assemblyToSourcesMap = 
-        projects
-        |> Seq.map PMsBuild.LoadProject
-        |> Seq.map(fun proj -> proj.Assembly, proj.Location)
-        |> dict
-
-    let getAssemblySources assembly =
-        Path.GetDirectoryName(assemblyToSourcesMap.[assembly])
+    let assemblyProjectMap = getAssemblyProjectMap()
 
     let genApiDoc assembly =
         let assemblyFile = outputPath </> assembly
@@ -84,7 +75,7 @@ Target "GenerateApiDoc" (fun _ ->
             let args = 
                 buildDefinition.ApiDocGenArguments
                 |> replace "%1"  assemblyFile
-                |> replace "%2" (getAssemblySources assembly)
+                |> replace "%2" (Path.GetDirectoryName(assemblyProjectMap.[assembly]))
 
             printfn "Running %s with %s" buildDefinition.ApiDocGenExecutable args
 
@@ -94,7 +85,7 @@ Target "GenerateApiDoc" (fun _ ->
                         CommandLine = args}
         
     let ret = 
-        assemblyToSourcesMap.Keys
+        assemblyProjectMap.Keys
         |> Seq.map genApiDoc
         |> Seq.forall(fun x -> x = 0)
 

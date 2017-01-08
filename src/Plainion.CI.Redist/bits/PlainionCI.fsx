@@ -18,6 +18,7 @@ open System
 open System.IO
 open Fake
 open Plainion.CI
+open Plainion.CI.Tasks
 
 let getProperty name =
    match getBuildParamOrDefault name null with
@@ -57,6 +58,18 @@ let getChangeLog () =
     | Some cl -> cl
     | None -> failwith "No ChangeLog.md found in project root"
 
+
+let private assemblyProjects = lazy (   let projects = PMsBuild.GetProjectFiles(buildDefinition.GetSolutionPath())
+                                        projects
+                                        |> Seq.map PMsBuild.LoadProject
+                                        |> Seq.map(fun proj -> proj.Assembly, proj.Location)
+                                        |> dict
+                                    )
+
+/// Returns a dictionary mapping assembly names to their project files based on the project solution
+let getAssemblyProjects() =
+    assemblyProjects.Value
+
 let setParams defaults =
     { defaults with
         Targets = ["Build"]
@@ -91,10 +104,29 @@ module PNuGet =
         CreateDir packageOut
         CleanDir packageOut
 
+        System.Diagnostics.Debugger.Launch() |> ignore
+
+        let dependencies =
+            let assemblies = 
+                files 
+                |> Seq.map(fun (source,target,exclude) -> source)
+                |> Seq.collect(fun pattern -> !! (outputPath </> pattern))
+                |> List.ofSeq
+            getAssemblyProjects()
+            |> Seq.filter(fun e -> assemblies |> List.exists ((=)e.Key))
+            |> Seq.map(fun e -> (directory e.Value) </> "packages.config")
+            |> Seq.collect(fun x -> x |> getDependencies )
+            |> Seq.distinct
+            |> List.ofSeq
+
+        dependencies
+        |> Seq.iter( fun d -> trace (sprintf "Package dependency detected: %A" d))
+
         nuspec 
         |> NuGet (fun p ->  {p with OutputPath = packageOut
                                     WorkingDir = outputPath
                                     Project = projectName
+                                    Dependencies = dependencies
                                     Version = release.AssemblyVersion
                                     ReleaseNotes = release.Notes 
                                                    |> String.concat Environment.NewLine

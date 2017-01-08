@@ -3,6 +3,7 @@
 open System
 open LibGit2Sharp
 
+/// Commits the given files to git repository
 let Commit workspaceRoot ((files:string list), comment, name, email) =
     use repo = new Repository( workspaceRoot ) 
 
@@ -13,6 +14,7 @@ let Commit workspaceRoot ((files:string list), comment, name, email) =
 
     repo.Commit( comment, author, author ) |> ignore
 
+/// Pushes the local repository to the default remote one
 let Push workspaceRoot (name, password) =
     use repo = new Repository( workspaceRoot )
 
@@ -24,6 +26,7 @@ let Push workspaceRoot (name, password) =
 
     repo.Network.Push( repo.Network.Remotes.[ "origin" ], @"refs/heads/master", options )
 
+/// Returns all non-ignored pending changes
 let PendingChanges workspaceRoot =
     use repo = new Repository( workspaceRoot )
 

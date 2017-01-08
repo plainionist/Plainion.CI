@@ -5,6 +5,7 @@
 - checked that generated assemblyInfo files are also included in projects
 - added "Ignore" context menu entry
 - support for ";" separated test assemblies added
+- dependencies for nuspec automatically detected from the package.config files of the given assemblies
 
 ## 1.5 - 2017-01-03
 

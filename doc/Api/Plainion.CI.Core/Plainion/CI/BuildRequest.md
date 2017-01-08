@@ -15,4 +15,4 @@
 
 ### System.String CheckInComment
 
-### System.String[] Files
+### System.String[] FilesExcludedFromCheckIn

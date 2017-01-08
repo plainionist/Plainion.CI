@@ -2,8 +2,8 @@
 <Tree>
   <Node Id="b53e85df-75f1-43f6-b2f7-b13a2213f883">
     <Caption><![CDATA[Planning]]></Caption>
-    <Node Id="b6628ac2-b833-4f13-aaeb-a32e7b43cd8e">
-      <Caption><![CDATA[automatically manage dependencies in nuspec]]></Caption>
+    <Node Id="a11c3e61-7c09-495e-8140-85b18951b1dc">
+      <Caption><![CDATA[document the APIs provided to custom fake scripts]]></Caption>
     </Node>
   </Node>
 </Tree>
