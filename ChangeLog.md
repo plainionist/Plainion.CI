@@ -1,3 +1,7 @@
+## 1.1 - 2017-08-2
+
+- dependencies updated to support VS 2017
+
 ## 1.6 - 2017-01-08
 
 - exclude test assemblies from api doc generation
