@@ -3,8 +3,8 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using Microsoft.Practices.Prism.Mvvm;
 using Plainion.CI.Services;
+using Plainion.Windows.Mvvm;
 
 namespace Plainion.CI.ViewModels
 {
@@ -33,7 +33,7 @@ namespace Plainion.CI.ViewModels
             }
 
             BuildDefinition = myBuildService.BuildDefinition;
-            OnPropertyChanged( () => BuildDefinition );
+            OnPropertyChanged(nameof(BuildDefinition));
 
             if (BuildDefinition != null)
             {
@@ -44,7 +44,7 @@ namespace Plainion.CI.ViewModels
 
         private void BuildDefinition_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == PropertySupport.ExtractPropertyName(() => BuildDefinition.RepositoryRoot))
+            if (e.PropertyName == nameof(BuildDefinition.RepositoryRoot))
             {
                 OnRepositoryRootChanged();
             }

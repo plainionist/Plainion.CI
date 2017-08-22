@@ -2,13 +2,12 @@
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Mvvm;
 using Plainion.CI.Services;
 using Plainion.CI.Services.SourceControl;
 using Plainion.CI.ViewModels;
 using Plainion.Windows;
 using Plainion.Windows.Controls;
+using Plainion.Windows.Mvvm;
 
 namespace Plainion.CI
 {

@@ -31,8 +31,8 @@ namespace Plainion.CI.Services.SourceControl
 
         private ChangeType GetChangeType(FileStatus fileStatus)
         {
-            if(fileStatus == FileStatus.Untracked) return ChangeType.Untracked;
-            if(fileStatus == FileStatus.Missing) return ChangeType.Missing;
+            if(fileStatus == FileStatus.NewInWorkdir) return ChangeType.Untracked;
+            if(fileStatus == FileStatus.DeletedFromWorkdir) return ChangeType.Missing;
             return ChangeType.Modified;
         }
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "@Solution Items", "@Solution Items", "{EC1701D9-D349-4B12-BCAE-B0C7B66B5FAE}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,11 +17,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.CI.Redist", "src\Plainion.CI.Redist\Plainion.CI.Redist.csproj", "{24C2DF25-B953-4CA3-B9FE-B958D7B6685D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.CI.Tests", "src\Plainion.CI.Tests\Plainion.CI.Tests.csproj", "{72FFCC77-96EE-4067-BAF7-246DD065620A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F9FD5081-8DBD-4113-927F-1716DC380D7C}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Plainion.CI.Tasks", "src\Plainion.CI.Tasks\Plainion.CI.Tasks.fsproj", "{817A039F-E292-4F79-85B6-A0A0189A2E90}"
 EndProject
@@ -56,5 +51,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CBBF3EAA-3DCA-4C86-87D9-A3A2D51515A8}
 	EndGlobalSection
 EndGlobal

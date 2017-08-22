@@ -7,11 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Windows.Input;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Mvvm;
 using Plainion.CI.Services;
 using Plainion.CI.Services.SourceControl;
 using Plainion.Collections;
+using Plainion.Windows.Mvvm;
 
 namespace Plainion.CI.ViewModels
 {
@@ -70,7 +69,7 @@ namespace Plainion.CI.ViewModels
             myPendingChangesObserver.Stop();
 
             BuildDefinition = myBuildService.BuildDefinition;
-            OnPropertyChanged(() => BuildDefinition);
+            OnPropertyChanged(nameof(BuildDefinition));
 
             if(BuildDefinition != null)
             {
@@ -83,11 +82,11 @@ namespace Plainion.CI.ViewModels
 
         private void BuildDefinition_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == PropertySupport.ExtractPropertyName(() => BuildDefinition.RepositoryRoot))
+            if(e.PropertyName == nameof(BuildDefinition.RepositoryRoot))
             {
                 OnRepositoryRootChanged();
             }
-            else if(e.PropertyName == PropertySupport.ExtractPropertyName(() => BuildDefinition.DiffTool))
+            else if(e.PropertyName == nameof(BuildDefinition.DiffTool))
             {
                 DiffToPreviousCommand.RaiseCanExecuteChanged();
             }

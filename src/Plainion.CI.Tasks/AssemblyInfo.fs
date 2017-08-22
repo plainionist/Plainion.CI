@@ -6,8 +6,8 @@ open System.Reflection
 [<assembly: AssemblyProductAttribute("Plainion.CI")>]
 [<assembly: AssemblyDescriptionAttribute("Plainion.CI")>]
 [<assembly: AssemblyCopyrightAttribute("Copyright @ 2017")>]
-[<assembly: AssemblyVersionAttribute("1.6")>]
-[<assembly: AssemblyFileVersionAttribute("1.6")>]
+[<assembly: AssemblyVersionAttribute("1.7")>]
+[<assembly: AssemblyFileVersionAttribute("1.7")>]
 do ()
 
 module internal AssemblyVersionInformation =
@@ -15,5 +15,5 @@ module internal AssemblyVersionInformation =
     let [<Literal>] AssemblyProduct = "Plainion.CI"
     let [<Literal>] AssemblyDescription = "Plainion.CI"
     let [<Literal>] AssemblyCopyright = "Copyright @ 2017"
-    let [<Literal>] AssemblyVersion = "1.6"
-    let [<Literal>] AssemblyFileVersion = "1.6"
+    let [<Literal>] AssemblyVersion = "1.7"
+    let [<Literal>] AssemblyFileVersion = "1.7"

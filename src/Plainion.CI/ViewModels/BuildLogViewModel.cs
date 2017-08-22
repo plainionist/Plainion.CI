@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using System.Text;
-using Microsoft.Practices.Prism.Mvvm;
+using Plainion.Windows.Mvvm;
 
 namespace Plainion.CI.ViewModels
 {
@@ -20,10 +20,10 @@ namespace Plainion.CI.ViewModels
             get { return myLog.ToString(); }
         }
 
-        public void Append( string line )
+        public void Append(string line)
         {
-            myLog.AppendLine( line );
-            OnPropertyChanged( () => Log );
+            myLog.AppendLine(line);
+            OnPropertyChanged(nameof(Log));
         }
 
         public void Clear()
@@ -34,7 +34,7 @@ namespace Plainion.CI.ViewModels
         public bool? Succeeded
         {
             get { return mySucceeded; }
-            set { SetProperty( ref mySucceeded, value ); }
+            set { SetProperty(ref mySucceeded, value); }
         }
     }
 }

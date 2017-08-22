@@ -1,5 +1,5 @@
-﻿using Microsoft.Practices.Prism.Mvvm;
-using Plainion.CI.Services.SourceControl;
+﻿using Plainion.CI.Services.SourceControl;
+using Plainion.Windows.Mvvm;
 
 namespace Plainion.CI.ViewModels
 {
