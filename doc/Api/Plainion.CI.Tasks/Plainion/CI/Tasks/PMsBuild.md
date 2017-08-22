@@ -36,6 +36,8 @@ Loads the visual studio project from given location
 
 #### Methods
 
+##### System.String ToString()
+
 ##### System.Int32 CompareTo(Plainion.CI.Tasks.PMsBuild+VsProject obj)
 
 ##### System.Int32 CompareTo(System.Object obj)
