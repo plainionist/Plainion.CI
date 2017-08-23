@@ -5,7 +5,7 @@ namespace Plainion.CI.Services.SourceControl
 {
     interface ISourceControl
     {
-        Task<IEnumerable<Change>> GetPendingChangesAsync(string workspaceRoot);
+        Task<IReadOnlyCollection<Change>> GetPendingChangesAsync(string workspaceRoot);
 
         void Revert(string workspaceRoot, string file);
 

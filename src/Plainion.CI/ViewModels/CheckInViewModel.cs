@@ -48,20 +48,22 @@ namespace Plainion.CI.ViewModels
 
         private void OnPendingChangesChanged(IEnumerable<Change> pendingChanges)
         {
-            Debug.WriteLine("Updating pending changes");
-
-            Files.Clear();
+            var uncheckedFiles = Files
+                .Where(f => !f.IsChecked)
+                .Select(f => f.File)
+                .ToList();
 
             var files = pendingChanges
-                .Select(e => new RepositoryEntry(e) { IsChecked = true })
+                .Select(e => new RepositoryEntry(e) { IsChecked = !uncheckedFiles.Contains(e.Path) })
                 .OrderBy(e => e.File);
 
+            Files.Clear();
             Files.AddRange(files);
         }
 
         private void OnBuildDefinitionChanged()
         {
-            if(BuildDefinition != null)
+            if (BuildDefinition != null)
             {
                 BuildDefinition.PropertyChanged -= BuildDefinition_PropertyChanged;
             }
@@ -71,7 +73,7 @@ namespace Plainion.CI.ViewModels
             BuildDefinition = myBuildService.BuildDefinition;
             OnPropertyChanged(nameof(BuildDefinition));
 
-            if(BuildDefinition != null)
+            if (BuildDefinition != null)
             {
                 BuildDefinition.PropertyChanged += BuildDefinition_PropertyChanged;
                 OnRepositoryRootChanged();
@@ -82,11 +84,11 @@ namespace Plainion.CI.ViewModels
 
         private void BuildDefinition_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(BuildDefinition.RepositoryRoot))
+            if (e.PropertyName == nameof(BuildDefinition.RepositoryRoot))
             {
                 OnRepositoryRootChanged();
             }
-            else if(e.PropertyName == nameof(BuildDefinition.DiffTool))
+            else if (e.PropertyName == nameof(BuildDefinition.DiffTool))
             {
                 DiffToPreviousCommand.RaiseCanExecuteChanged();
             }
@@ -96,7 +98,7 @@ namespace Plainion.CI.ViewModels
         {
             myPendingChangesObserver.Stop();
 
-            if(!string.IsNullOrEmpty(BuildDefinition.RepositoryRoot) && Directory.Exists(BuildDefinition.RepositoryRoot))
+            if (!string.IsNullOrEmpty(BuildDefinition.RepositoryRoot) && Directory.Exists(BuildDefinition.RepositoryRoot))
             {
                 myPendingChangesObserver.Start(myBuildService.BuildDefinition.RepositoryRoot);
             }
@@ -124,7 +126,7 @@ namespace Plainion.CI.ViewModels
 
         public async void RefreshPendingChanges()
         {
-            if(string.IsNullOrEmpty(BuildDefinition.RepositoryRoot) || !Directory.Exists(BuildDefinition.RepositoryRoot))
+            if (string.IsNullOrEmpty(BuildDefinition.RepositoryRoot) || !Directory.Exists(BuildDefinition.RepositoryRoot))
             {
                 return;
             }

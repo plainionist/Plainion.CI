@@ -15,13 +15,13 @@ namespace Plainion.CI.Services.SourceControl
     [Export(typeof(ISourceControl))]
     class GitService : ISourceControl
     {
-        public Task<IEnumerable<Change>> GetPendingChangesAsync(string workspaceRoot)
+        public Task<IReadOnlyCollection<Change>> GetPendingChangesAsync(string workspaceRoot)
         {
-            return Task<IEnumerable<Change>>.Run(() =>
+            return Task<IReadOnlyCollection<Change>>.Run(() =>
             {
                 using(var repo = new Repository(workspaceRoot))
                 {
-                    return (IEnumerable<Change>)repo.RetrieveStatus()
+                    return (IReadOnlyCollection<Change>)repo.RetrieveStatus()
                         .Where(e => (e.State & FileStatus.Ignored) == 0)
                         .Select(e => new Change(e.FilePath, GetChangeType(e.State)))
                         .ToList();

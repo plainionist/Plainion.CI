@@ -1,3 +1,7 @@
+## 1.8 - 2017-08-23
+
+- fixed updating pending changes
+
 ## 1.7 - 2017-08-22
 
 - dependencies updated to support VS 2017
