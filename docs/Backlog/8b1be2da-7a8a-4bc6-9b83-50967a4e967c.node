@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Node Id="8b1be2da-7a8a-4bc6-9b83-50967a4e967c" Created="636186173623089991" LastModified="636193113955623455" Origin="b53e85df-75f1-43f6-b2f7-b13a2213f883">
+  <Caption><![CDATA[move abstractshellprocess and uishellcommand to plainion.core]]></Caption>
+  <Content><![CDATA[]]></Content>
+</Node>

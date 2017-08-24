@@ -1,4 +1,6 @@
 
+# Plainion.CI: Micro Continiuous Deployment
+
 This project provides tools for build automation, continuous integration and continuous delivery.
 
 # Motivation
