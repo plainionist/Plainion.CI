@@ -1,3 +1,7 @@
+## 1.9 - 2017-08-24
+
+- keep UI responsive even if many text is logged
+
 ## 1.8 - 2017-08-23
 
 - fixed updating pending changes
