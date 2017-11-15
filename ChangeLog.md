@@ -1,3 +1,7 @@
+## 1.10 - 2017-11-15
+
+- downgraded libgit2sharp to get http proxy support again
+
 ## 1.9 - 2017-08-24
 
 - keep UI responsive even if many text is logged
