@@ -5,7 +5,7 @@ open System.Reflection
 [<assembly: AssemblyTitleAttribute("Plainion.CI.Tasks")>]
 [<assembly: AssemblyProductAttribute("Plainion.CI")>]
 [<assembly: AssemblyDescriptionAttribute("Plainion.CI")>]
-[<assembly: AssemblyCopyrightAttribute("Copyright @ 2017")>]
+[<assembly: AssemblyCopyrightAttribute("Copyright @ 2018")>]
 [<assembly: AssemblyVersionAttribute("1.10")>]
 [<assembly: AssemblyFileVersionAttribute("1.10")>]
 do ()
@@ -14,6 +14,6 @@ module internal AssemblyVersionInformation =
     let [<Literal>] AssemblyTitle = "Plainion.CI.Tasks"
     let [<Literal>] AssemblyProduct = "Plainion.CI"
     let [<Literal>] AssemblyDescription = "Plainion.CI"
-    let [<Literal>] AssemblyCopyright = "Copyright @ 2017"
+    let [<Literal>] AssemblyCopyright = "Copyright @ 2018"
     let [<Literal>] AssemblyVersion = "1.10"
     let [<Literal>] AssemblyFileVersion = "1.10"

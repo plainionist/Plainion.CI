@@ -4,7 +4,7 @@ using System.Reflection;
 [assembly: AssemblyTitleAttribute("Plainion.CI.Core")]
 [assembly: AssemblyProductAttribute("Plainion.CI")]
 [assembly: AssemblyDescriptionAttribute("Plainion.CI")]
-[assembly: AssemblyCopyrightAttribute("Copyright @ 2017")]
+[assembly: AssemblyCopyrightAttribute("Copyright @ 2018")]
 [assembly: AssemblyVersionAttribute("1.10")]
 [assembly: AssemblyFileVersionAttribute("1.10")]
 namespace System {
@@ -12,7 +12,7 @@ namespace System {
         internal const System.String AssemblyTitle = "Plainion.CI.Core";
         internal const System.String AssemblyProduct = "Plainion.CI";
         internal const System.String AssemblyDescription = "Plainion.CI";
-        internal const System.String AssemblyCopyright = "Copyright @ 2017";
+        internal const System.String AssemblyCopyright = "Copyright @ 2018";
         internal const System.String AssemblyVersion = "1.10";
         internal const System.String AssemblyFileVersion = "1.10";
     }

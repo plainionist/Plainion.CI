@@ -5,5 +5,11 @@
     <Node Id="a11c3e61-7c09-495e-8140-85b18951b1dc">
       <Caption><![CDATA[document the APIs provided to custom fake scripts]]></Caption>
     </Node>
+    <Node Id="2461f430-9c1a-4249-89e9-ce2601454a00">
+      <Caption><![CDATA[document motivation and main usecases on web site]]></Caption>
+    </Node>
+    <Node Id="be8bebd5-ecb6-4368-adc0-7e3c0660359e">
+      <Caption><![CDATA[integrate irondoc.spec generation]]></Caption>
+    </Node>
   </Node>
 </Tree>
