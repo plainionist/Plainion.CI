@@ -5,12 +5,6 @@
     <Node Id="6a9f3342-4e94-4c8e-b56d-16bd419a16b4">
       <Caption><![CDATA[start thinking about acceptance tests]]></Caption>
     </Node>
-    <Node Id="bfb9edf2-ead9-4fab-84d5-e24e42402d5d">
-      <Caption><![CDATA[make it more extensible]]></Caption>
-    </Node>
-    <Node Id="c5acb1fc-0a1a-4457-936b-721c66bc1bbc">
-      <Caption><![CDATA[release doc at github pages]]></Caption>
-    </Node>
     <Node Id="c7b6ab57-b413-4ec9-9631-40399ccc042f">
       <Caption><![CDATA[better modeling of the workflow]]></Caption>
     </Node>
