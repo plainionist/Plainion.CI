@@ -25,7 +25,3 @@ Configure Windows to open Plainion.CI on double click next time.
 * specify package creation and deployment scripts relative to project root
 * use "-" in you ChangeLog.md for bullet lists - other bullet list signs currently not supported
 
-# Customization
-
-See [Customization](Customization.md) to learn how to configure your packaging and deployment steps.
-

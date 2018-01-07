@@ -74,7 +74,7 @@ A sample NuSpec could look like this
 You can publish a NuGet package like this 
 
 ```F#
-    PNuGet.Publish (projectRoot </> "pkg")
+PNuGet.Publish (projectRoot </> "pkg")
 ```
 
 **Hint:** Publishing NuGet packages currently only works if you once followed the instructions [here](https://docs.nuget.org/ndocs/create-packages/publish-a-package) 
@@ -87,6 +87,6 @@ NuGet.exe setapikey <your api key> -source https://www.nuget.org/api/v2/package
 You can publish a release to GitHub like this
 
 ```F#
-    PGitHub.Release [ zip ]
+PGitHub.Release [ zip ]
 ```
 
