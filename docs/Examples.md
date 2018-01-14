@@ -12,7 +12,7 @@ Here are some examples how I use Plainion.CI to automate my deployments.
 [Plainion.Windows](https://github.com/plainionist/Plainion.Windows) is a .NET library extending WPF for simplicity and completeness.
 It provides API documentation and is available on [NuGet](https://www.nuget.org/packages/Plainion.Windows).
 
-***Configuration***
+**Configuration**
 
 - [Build Definition](https://github.com/plainionist/Plainion.Windows/blob/master/Plainion.Windows.gc)
 - [Deployment Targets](https://github.com/plainionist/Plainion.Windows/blob/master/build/Targets.fsx)
@@ -24,7 +24,7 @@ It provides API documentation and is available on [NuGet](https://www.nuget.org/
 [Plainion.GraphViz](http://plainionist.github.io/Plainion.GraphViz/) is the tamer of complex graphs and even galaxies.
 It is released on GitHub.
 
-***Configuration***
+**Configuration**
 
 - [Build Definition](https://github.com/plainionist/Plainion.GraphViz/blob/master/Plainion.GraphViz.gc)
 - [Deployment Targets](https://github.com/plainionist/Plainion.GraphViz/blob/master/build/Targets.fsx)
@@ -34,7 +34,7 @@ It is released on GitHub.
 I even release my blog with Plainion.CI ;-)
 It is hosted on GitHub Pages.
 
-***Configuration***
+**Configuration**
 
 - [Build Definition](https://github.com/plainionist/plainionist.github.io/blob/master/plainionist.github.io.gc)
   - Hint: to make this work I created a "dummy" Visual Studio project which contains all the blog files and a solution file
