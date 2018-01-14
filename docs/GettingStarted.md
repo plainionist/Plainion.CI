@@ -53,7 +53,7 @@ Swtich to the "CheckIn" tab and enable the check boxes for the steps you want to
 
 When you press the GO button the build will start and your configuration will be stored in your project root.
 
-- <Project>.gc stores all non-user related settings. You should check this file in.
-- <Project>.gc.<user> stores all user related settings. Usually you dont check in that file.
+- [Project].gc stores all non-user related settings. You should check this file in.
+- [Project].gc.[user] stores all user related settings. Usually you dont check in that file.
 
 DONE ... your personal "micro deployment pipeline" is running ;-)
