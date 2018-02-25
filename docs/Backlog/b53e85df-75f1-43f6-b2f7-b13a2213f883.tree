@@ -8,5 +8,8 @@
     <Node Id="be8bebd5-ecb6-4368-adc0-7e3c0660359e">
       <Caption><![CDATA[integrate irondoc.spec generation]]></Caption>
     </Node>
+    <Node Id="cac2ee39-766e-43e8-a429-3a943b100a23">
+      <Caption><![CDATA[Open Issues]]></Caption>
+    </Node>
   </Node>
 </Tree>
