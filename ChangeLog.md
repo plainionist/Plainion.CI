@@ -1,6 +1,6 @@
 ## 1.11 - 2018-02-25
 
-- use git.exe from command line for push to workaroundlibgit2sharp issues
+- Use git.exe from command line for push to workaroundlibgit2sharp issues
 - Plainion.Core updated
 - Plainion.Windows updated
 - FAKE updated
