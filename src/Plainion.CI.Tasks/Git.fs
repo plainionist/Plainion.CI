@@ -23,7 +23,8 @@ let Push workspaceRoot (name, password) =
     // - https://github.com/libgit2/libgit2/issues/4546
     // therefore we use a the command line "git" if found
     let cmdLineGit =
-        Environment.GetEnvironmentVariable("PATH").Split([|':'|])
+        Environment.GetEnvironmentVariable("PATH").Split([|';'|])
+        |> Seq.map(fun path -> path.Trim())
         |> Seq.map(fun path -> Path.Combine(path, "git.exe"))
         |> Seq.tryFind File.Exists
 
