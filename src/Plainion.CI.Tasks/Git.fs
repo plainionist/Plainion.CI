@@ -3,6 +3,7 @@
 open System
 open LibGit2Sharp
 open System.Diagnostics
+open System.IO
 
 /// Commits the given files to git repository
 let Commit workspaceRoot ((files:string list), comment, name, email) =
@@ -17,15 +18,27 @@ let Commit workspaceRoot ((files:string list), comment, name, email) =
 
 /// Pushes the local repository to the default remote one
 let Push workspaceRoot (name, password) =
-    use repo = new Repository( workspaceRoot )
+    // there are currently 2 blocking issues open with libgit2sharp and push related to windows and network:
+    // - https://github.com/libgit2/libgit2sharp/issues/1429
+    // - https://github.com/libgit2/libgit2/issues/4546
+    // therefore we use a the command line "git" if found
+    let cmdLineGit =
+        Environment.GetEnvironmentVariable("PATH").Split([|':'|])
+        |> Seq.map(fun path -> Path.Combine(path, "git.exe"))
+        |> Seq.tryFind File.Exists
 
-    let options = new PushOptions()
-    options.CredentialsProvider <- (fun url usernameFromUrl types -> let credentials = new UsernamePasswordCredentials()
-                                                                     credentials.Username <- name
-                                                                     credentials.Password <- password
-                                                                     credentials :> Credentials)
+    match cmdLineGit with
+    | Some exe -> Process.Start(exe).WaitForExit()
+    | None ->
+        use repo = new Repository( workspaceRoot )
 
-    repo.Network.Push( repo.Network.Remotes.[ "origin" ], @"refs/heads/master", options )
+        let options = new PushOptions()
+        options.CredentialsProvider <- (fun url usernameFromUrl types -> let credentials = new UsernamePasswordCredentials()
+                                                                         credentials.Username <- name
+                                                                         credentials.Password <- password
+                                                                         credentials :> Credentials)
+
+        repo.Network.Push( repo.Network.Remotes.[ "origin" ], @"refs/heads/master", options )
 
 /// Returns all non-ignored pending changes
 let PendingChanges workspaceRoot =
