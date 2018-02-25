@@ -10,7 +10,7 @@ let Commit workspaceRoot ((files:string list), comment, name, email) =
     use repo = new Repository( workspaceRoot ) 
 
     files
-    |> Seq.iter(fun file -> repo.Stage( file ) )
+    |> Seq.iter(fun file -> Commands.Stage(repo, file ) )
 
     let author = new Signature( name, email, DateTimeOffset.Now )
 
