@@ -58,12 +58,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Services\AbstractShellProcess.cs" />
     <Compile Include="Services\SourceControl\Change.cs" />
     <Compile Include="Services\SourceControl\ChangeType.cs" />
     <Compile Include="Services\SourceControl\ISourceControl.cs" />
     <Compile Include="Services\SourceControl\PendingChangesObserver.cs" />
-    <Compile Include="Services\UiShellCommand.cs" />
     <Compile Include="ViewModels\BuildDefinitionViewModel.cs" />
     <Compile Include="ViewModels\RepositoryEntry.cs" />
     <Compile Include="Services\SourceControl\GitService.cs" />

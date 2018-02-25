@@ -1,9 +1,9 @@
 ﻿module Plainion.CI.Tasks.PGit
 
 open System
-open LibGit2Sharp
-open System.Diagnostics
 open System.IO
+open LibGit2Sharp
+open Plainion.CI
 
 /// Commits the given files to git repository
 let Commit workspaceRoot ((files:string list), comment, name, email) =
@@ -29,7 +29,11 @@ let Push workspaceRoot (name, password) =
         |> Seq.tryFind File.Exists
 
     match cmdLineGit with
-    | Some exe -> Process.Start(exe).WaitForExit()
+    | Some exe -> 
+        let cmd = new RedirectShellCommand(exe, workspaceRoot)
+        cmd.Execute [||]
+        if cmd.ExitCode <> 0 then
+            failwith "Failed to push using command line git.exe"
     | None ->
         use repo = new Repository( workspaceRoot )
 

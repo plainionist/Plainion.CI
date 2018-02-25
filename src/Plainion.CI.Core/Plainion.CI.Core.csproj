@@ -33,12 +33,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractShellProcess.cs" />
     <Compile Include="BuildDefinition.cs" />
     <Compile Include="BuildRequestSerializer.cs" />
     <Compile Include="BuildDefinitionSerializer.cs" />
     <Compile Include="BuildRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecureStringExtensions.cs" />
+    <Compile Include="RedirectShellCommand.cs" />
+    <Compile Include="UiShellCommand.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
