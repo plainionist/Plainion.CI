@@ -31,7 +31,7 @@ let Push workspaceRoot (name, password) =
     match cmdLineGit with
     | Some exe -> 
         let cmd = new RedirectShellCommand(exe, workspaceRoot)
-        cmd.Execute [||]
+        cmd.Execute [| "push" |]
         if cmd.ExitCode <> 0 then
             failwith "Failed to push using command line git.exe"
     | None ->
