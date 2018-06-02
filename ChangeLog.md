@@ -1,4 +1,4 @@
-## 1.1 - 2018-06-02
+## 1.12 - 2018-06-02
 
 - Pass correct username and password to git.exe when pushing
 
