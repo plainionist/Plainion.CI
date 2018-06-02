@@ -1,3 +1,7 @@
+## 1.1 - 2018-06-02
+
+- Pass correct username and password to git.exe when pushing
+
 ## 1.11 - 2018-02-25
 
 - Use git.exe from command line for push to workaroundlibgit2sharp issues

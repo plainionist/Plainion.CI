@@ -28,22 +28,31 @@ let Push workspaceRoot (name, password) =
         |> Seq.map(fun path -> Path.Combine(path, "git.exe"))
         |> Seq.tryFind File.Exists
 
+    use repo = new Repository( workspaceRoot )
+    let origin = repo.Network.Remotes.[ "origin" ]
+
     match cmdLineGit with
     | Some exe -> 
+        // "https://github.com/plainionist/Plainion.CI.git"
+        // https://stackoverflow.com/questions/29776439/username-and-password-in-command-for-git-push
+        let uri = new Uri(origin.Url)
+        let builder = new UriBuilder(uri)
+        builder.UserName <- name
+        builder.Password <- password
+        
         let cmd = new RedirectShellCommand(exe, workspaceRoot)
-        cmd.Execute [| "push" |]
+        cmd.Execute [| "push"; builder.Uri.ToString() |]
+
         if cmd.ExitCode <> 0 then
             failwith "Failed to push using command line git.exe"
     | None ->
-        use repo = new Repository( workspaceRoot )
-
         let options = new PushOptions()
         options.CredentialsProvider <- (fun url usernameFromUrl types -> let credentials = new UsernamePasswordCredentials()
                                                                          credentials.Username <- name
                                                                          credentials.Password <- password
                                                                          credentials :> Credentials)
 
-        repo.Network.Push( repo.Network.Remotes.[ "origin" ], @"refs/heads/master", options )
+        repo.Network.Push( origin, @"refs/heads/master", options )
 
 /// Returns all non-ignored pending changes
 let PendingChanges workspaceRoot =
