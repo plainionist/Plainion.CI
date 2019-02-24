@@ -1,6 +1,7 @@
 ## 1.13 - 2019-02-24
 
 - Support .Net Core: do not specify output path for "nuget restore"
+- Updated to latest FAKE
 
 ## 1.12 - 2018-06-02
 

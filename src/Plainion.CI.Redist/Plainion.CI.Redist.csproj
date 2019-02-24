@@ -17,11 +17,11 @@
   </ItemGroup>
   <ItemGroup>
     <!-- http://stackoverflow.com/questions/19478775/add-native-files-from-nuget-package-to-project-output-directory -->
-    <None Include="..\..\packages\FAKE.4.64.6\tools\**\*">
+    <None Include="..\..\packages\FAKE.5.8.4\tools\**\*">
       <Link>FAKE\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\packages\NuGet.CommandLine.4.5.1\tools\*.*">
+    <None Include="..\..\packages\NuGet.CommandLine.4.9.3\tools\*.*">
       <Link>NuGet\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -34,7 +34,9 @@
     <Content Include="bits\GitHub.fsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
