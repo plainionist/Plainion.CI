@@ -26,7 +26,8 @@ Target "RestoreNugetPackages" (fun _ ->
     buildDefinition.GetSolutionPath()
     |> RestoreMSSolutionPackages (fun p ->
          { p with
-             OutputPath = projectRoot </> "packages"
+             // do not specify OutputPath directly otherwise we will re-download all dependencies even for .Net Core projects
+             //OutputPath = projectRoot </> "packages"
              Retries = 1 })
 )
 

@@ -4,16 +4,16 @@ using System.Reflection;
 [assembly: AssemblyTitleAttribute("Plainion.CI.Core")]
 [assembly: AssemblyProductAttribute("Plainion.CI")]
 [assembly: AssemblyDescriptionAttribute("Plainion.CI")]
-[assembly: AssemblyCopyrightAttribute("Copyright @ 2018")]
-[assembly: AssemblyVersionAttribute("1.12")]
-[assembly: AssemblyFileVersionAttribute("1.12")]
+[assembly: AssemblyCopyrightAttribute("Copyright @ 2019")]
+[assembly: AssemblyVersionAttribute("1.13")]
+[assembly: AssemblyFileVersionAttribute("1.13")]
 namespace System {
     internal static class AssemblyVersionInformation {
         internal const System.String AssemblyTitle = "Plainion.CI.Core";
         internal const System.String AssemblyProduct = "Plainion.CI";
         internal const System.String AssemblyDescription = "Plainion.CI";
-        internal const System.String AssemblyCopyright = "Copyright @ 2018";
-        internal const System.String AssemblyVersion = "1.12";
-        internal const System.String AssemblyFileVersion = "1.12";
+        internal const System.String AssemblyCopyright = "Copyright @ 2019";
+        internal const System.String AssemblyVersion = "1.13";
+        internal const System.String AssemblyFileVersion = "1.13";
     }
 }
