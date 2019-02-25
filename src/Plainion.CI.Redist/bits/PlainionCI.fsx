@@ -16,24 +16,25 @@
 
 open System
 open System.IO
-open Fake
 open Plainion.CI
 open Plainion.CI.Tasks
+open Fake.Core
+open Fake.IO
+open Fake.IO.FileSystemOperators
+open Fake.IO.Globbing.Operators
+open Fake.DotNet
 
 let getProperty name =
-   match getBuildParamOrDefault name null with
-   | null -> 
-        match environVarOrNone name with
-        | Some x -> x
-        | None -> failwith "Property not found: " + name
-   | x -> x
+    match name |> Environment.environVarOrNone with
+    | Some x -> x
+    | None -> failwith "Property not found: " + name
 
 let getPropertyAndTrace name =
     let value = getProperty name
-    name + "=" + value |> trace 
+    name + "=" + value |> Trace.trace 
     value
 
-/// get get environment variable given by Plainion.CI engine
+/// get environment variable given by Plainion.CI engine
 let (!%) = getProperty
 
 let toolsHome = getProperty "ToolsHome"
@@ -47,8 +48,8 @@ let outputPath = buildDefinition.GetOutputPath()
 let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
 let changeLogFile = projectRoot </> "ChangeLog.md"
 
-let private changeLog = lazy ( match fileExists changeLogFile with
-                               | true -> ReleaseNotesHelper.LoadReleaseNotes changeLogFile |> Some
+let private changeLog = lazy ( match File.exists changeLogFile with
+                               | true -> changeLogFile |> ReleaseNotes.load |> Some
                                | false -> None
                              )
 
@@ -70,7 +71,7 @@ let private assemblyProjects = lazy (   let projects = PMsBuild.GetProjectFiles(
 let getAssemblyProjectMap() =
     assemblyProjects.Value
 
-let setParams defaults =
+let setParams (defaults:MSBuildParams) =
     { defaults with
         Targets = ["Build"]
         Properties = [ "OutputPath", outputPath
@@ -87,74 +88,76 @@ module PZip =
     let GetReleaseFile () =
         outputPath </> ".." </> (sprintf "%s.zip" (getReleaseName()))
 
-    /// Creates a zip from all content of the outputpath with current version backed in
+    /// Creates a zip from all content of the OutputPath with current version backed in
     let PackRelease() = 
         let zip = GetReleaseFile()
         let releaseName = getReleaseName()
 
         !! ( outputPath </> "**/*.*" )
-        |> Zip outputPath zip
+        |> Zip.zip outputPath zip
 
 module PNuGet =
-    /// Creates a nuget package with the given files and nuspec at the packageOut folder.
+    open Fake.DotNet.NuGet
+
+    /// Creates a NuGet package with the given files and NuSpec at the packageOut folder.
     /// Version is taken from changelog.md
     let Pack nuspec packageOut files =
         let release = getChangeLog()
         
-        CreateDir packageOut
-        CleanDir packageOut
+        Directory.create packageOut
+        Shell.cleanDir packageOut
 
         let assemblies = 
             files 
-            |> Seq.map(fun (source,target,exclude) -> source)
+            |> Seq.map(fun (source,_,_) -> source)
             |> Seq.collect(fun pattern -> !! (outputPath </> pattern))
-            |> Seq.map filename
+            |> Seq.map Path.GetFileName
             |> List.ofSeq
 
         assemblies
-        |> Seq.iter( fun a -> trace (sprintf "Adding file %s to package" a))
+        |> Seq.iter( fun a -> Trace.trace (sprintf "Adding file %s to package" a))
 
         let dependencies =
             getAssemblyProjectMap()
             |> Seq.filter(fun e -> assemblies |> List.exists ((=)e.Key))
-            |> Seq.map(fun e -> (directory e.Value) </> "packages.config")
-            |> Seq.collect(fun x -> x |> getDependencies )
+            |> Seq.map(fun e -> (Path.GetDirectoryName e.Value) </> "packages.config")
+            |> Seq.collect(fun x -> x |> Fake.DotNet.NuGet.NuGet.getDependencies)
             |> Seq.distinct
             |> List.ofSeq
 
         dependencies
-        |> Seq.iter( fun d -> trace (sprintf "Package dependency detected: %A" d))
+        |> Seq.iter( fun d -> Trace.trace (sprintf "Package dependency detected: %A" d))
 
         nuspec 
-        |> NuGet (fun p ->  {p with OutputPath = packageOut
-                                    WorkingDir = outputPath
-                                    Project = projectName
-                                    Dependencies = dependencies
-                                    Version = release.AssemblyVersion
-                                    ReleaseNotes = release.Notes 
-                                                   |> String.concat Environment.NewLine
-                                    Files = files }) 
+        |>  NuGet.NuGet (fun p ->  {p with OutputPath = packageOut
+                                           WorkingDir = outputPath
+                                           Project = projectName
+                                           Dependencies = dependencies |> List.map(fun d -> d.Id,d.Version.AsString)
+                                           Version = release.AssemblyVersion
+                                           ReleaseNotes = release.Notes 
+                                                          |> String.concat Environment.NewLine
+                                           Files = files }) 
     
     /// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
-    /// to nuget (https://www.nuget.org/api/v2/package)              
+    /// to NuGet (https://www.nuget.org/api/v2/package)              
     let PublishPackage packageName packageOut =
         let release = getChangeLog()
 
-        NuGetPublish  (fun p -> {p with OutputPath = packageOut
-                                        WorkingDir = projectRoot
-                                        Project = packageName
-                                        Version = release.AssemblyVersion
-                                        PublishUrl = "https://www.nuget.org/api/v2/package"
-                                        Publish = true }) 
+        NuGet.NuGetPublish (fun p -> {p with OutputPath = packageOut
+                                             WorkingDir = projectRoot
+                                             Project = packageName
+                                             Version = release.AssemblyVersion
+                                             PublishUrl = "https://www.nuget.org/api/v2/package"
+                                             Publish = true }) 
 
     /// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
-    /// to nuget (https://www.nuget.org/api/v2/package)              
+    /// to NuGet (https://www.nuget.org/api/v2/package)              
     let Publish packageOut =
         PublishPackage projectName packageOut
 
 module PGitHub =
-    open Fake.Git
     open Plainion.CI.Tasks
+    open Fake.Tools.Git
 
     /// Publishes a new release to GitHub with the current version of ChangeLog.md and
     /// the given files
@@ -170,10 +173,11 @@ module PGitHub =
         try
             Branches.deleteTag "" release.NugetVersion
         with | _ -> ()
+        
         Branches.tag "" release.NugetVersion
         PGit.Push projectRoot (user, pwd)
     
-        // release on github
+        // release on GitHub
         
         let releaseNotes =  release.Notes 
                             |> List.ofSeq

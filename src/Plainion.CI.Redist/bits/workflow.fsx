@@ -2,29 +2,33 @@
 
 open System
 open System.IO
-open Fake
-open Fake.Testing.NUnit3
-open Fake.AssemblyInfoFile
-open Fake.ReleaseNotesHelper
 open Plainion.CI
 open Plainion.CI.Tasks
 open PlainionCI
+open Fake.Core
+open Fake.Core.TargetOperators
+open Fake.DotNet
+open Fake.DotNet.NuGet
+open Fake.DotNet.Testing
+open Fake.IO
+open Fake.IO.FileSystemOperators
+open Fake.IO.Globbing.Operators
 
-Target "All" (fun _ ->
-    trace "--- Plainion.CI - DONE ---"
+Target.create "All" (fun _ ->
+    Trace.trace "--- Plainion.CI - DONE ---"
 )
 
-Target "Clean" (fun _ ->
-    CleanDir outputPath
+Target.create "Clean" (fun _ ->
+    Shell.cleanDir outputPath
 )
 
-Target "Build" (fun _ ->
-    build setParams (buildDefinition.GetSolutionPath())
+Target.create "Build" (fun _ ->
+    MSBuild.build setParams (buildDefinition.GetSolutionPath())
 )
 
-Target "RestoreNugetPackages" (fun _ ->
+Target.create "RestoreNugetPackages" (fun _ ->
     buildDefinition.GetSolutionPath()
-    |> RestoreMSSolutionPackages (fun p ->
+    |> Restore.RestoreMSSolutionPackages (fun p ->
          { p with
              // do not specify OutputPath directly otherwise we will re-download all dependencies even for .Net Core projects
              //OutputPath = projectRoot </> "packages"
@@ -43,25 +47,25 @@ let private testAssemblyIncludes () =
     |> Seq.skip 1
     |> Seq.fold (++) (!! (testAssemblyPatterns |> Seq.head))
 
-Target "RunNUnitTests" (fun _ ->
+Target.create "RunNUnitTests" (fun _ ->
     let toolPath = Path.GetDirectoryName( buildDefinition.TestRunnerExecutable )
 
-    if fileExists ( toolPath </> "nunit-console.exe" ) then
+    if File.Exists ( toolPath </> "nunit-console.exe" ) then
         testAssemblyIncludes()
         // "parallel" version does not show test output
-        |> NUnit (fun p -> 
+        |> NUnit.Sequential.run (fun p -> 
             { p with
                 ToolPath = toolPath
                 DisableShadowCopy = true })
     else
         testAssemblyIncludes()
-        |> NUnit3 (fun p -> 
+        |> NUnit3.run (fun p -> 
             { p with
                 ToolPath = toolPath </> "nunit3-console.exe"
                 ShadowCopy = false })
 )
 
-Target "GenerateApiDoc" (fun _ ->
+Target.create "GenerateApiDoc" (fun _ ->
     if File.Exists buildDefinition.ApiDocGenExecutable |> not then
         failwithf "!! ApiDocGenExecutable not found: %s !!" buildDefinition.ApiDocGenExecutable
 
@@ -70,7 +74,7 @@ Target "GenerateApiDoc" (fun _ ->
     let genApiDoc assembly =
         let assemblyFile = outputPath </> assembly
         if testAssemblyIncludes() |> Seq.exists ((=) assemblyFile) then
-            trace (sprintf "Ignoring test assembly: %s" assembly)
+            Trace.trace (sprintf "Ignoring test assembly: %s" assembly)
             0
         else
             let args = 
@@ -80,10 +84,10 @@ Target "GenerateApiDoc" (fun _ ->
 
             printfn "Running %s with %s" buildDefinition.ApiDocGenExecutable args
 
-            shellExec { Program = buildDefinition.ApiDocGenExecutable
-                        Args = []
-                        WorkingDirectory =  projectRoot
-                        CommandLine = args}
+            Process.shellExec { Program = buildDefinition.ApiDocGenExecutable
+                                Args = []
+                                WorkingDir =  projectRoot
+                                CommandLine = args}
         
     let ret = 
         assemblyProjectMap.Keys
@@ -95,7 +99,7 @@ Target "GenerateApiDoc" (fun _ ->
     | false -> failwith "ApiDoc generation failed"
 )
 
-Target "Commit" (fun _ ->
+Target.create "Commit" (fun _ ->
     if buildRequest.CheckInComment |> String.IsNullOrEmpty then
         failwith "!! NO CHECKIN COMMENT PROVIDED !!"
     
@@ -109,28 +113,28 @@ Target "Commit" (fun _ ->
         |> List.ofSeq
 
     files
-    |> Seq.iter (sprintf "Commiting file %s" >> trace)
+    |> Seq.iter (sprintf "Committing file %s" >> Trace.trace)
 
     PGit.Commit projectRoot (files, buildRequest.CheckInComment, buildDefinition.User.Login, buildDefinition.User.EMail)
 )
 
-Target "Push" (fun _ ->
+Target.create "Push" (fun _ ->
     if buildDefinition.User.Password = null then
         failwith "!! NO PASSWORD PROVIDED !!"
     
     PGit.Push projectRoot (buildDefinition.User.Login, buildDefinition.User.Password.ToUnsecureString())
 )
 
-Target "AssemblyInfo" (fun _ ->
+Target.create "AssemblyInfo" (fun _ ->
     let release = getChangeLog()
     
     let getAssemblyInfoAttributes vsProjName =
-        [ Attribute.Title (vsProjName)
-          Attribute.Product projectName
-          Attribute.Description projectName
-          Attribute.Copyright (sprintf "Copyright @ %i" DateTime.UtcNow.Year)
-          Attribute.Version release.AssemblyVersion
-          Attribute.FileVersion release.AssemblyVersion ]
+        [ AssemblyInfo.Title (vsProjName)
+          AssemblyInfo.Product projectName
+          AssemblyInfo.Description projectName
+          AssemblyInfo.Copyright (sprintf "Copyright @ %i" DateTime.UtcNow.Year)
+          AssemblyInfo.Version release.AssemblyVersion
+          AssemblyInfo.FileVersion release.AssemblyVersion ]
 
     let getProjectDetails projectPath =
         let projectName = Path.GetFileNameWithoutExtension(projectPath)
@@ -158,10 +162,10 @@ Target "AssemblyInfo" (fun _ ->
     |> Seq.iter (fun (projFileName, projectName, folderName, attributes) ->
         match projFileName with
         | Fsproj -> let assemblyInfo = folderName </> "AssemblyInfo.fs"
-                    CreateFSharpAssemblyInfo assemblyInfo attributes
+                    AssemblyInfoFile.createFSharp assemblyInfo attributes
                     verifyAssemblyInfoIsIncludedInProject projFileName "AssemblyInfo.fs"
         | Csproj -> let assemblyInfo = folderName </> "Properties" </> "AssemblyInfo.cs"
-                    CreateCSharpAssemblyInfo assemblyInfo attributes
+                    AssemblyInfoFile.createCSharp assemblyInfo attributes
                     verifyAssemblyInfoIsIncludedInProject projFileName "AssemblyInfo.cs"
         )
 )
@@ -171,15 +175,15 @@ let runScript (script:string) args =
         if script.EndsWith(".fsx", StringComparison.OrdinalIgnoreCase) then
             { Program = "fake.exe"
               Args = []
-              WorkingDirectory = projectRoot
+              WorkingDir = projectRoot
               CommandLine = (args + " --fsiargs \"--define:FAKE\" " + script ) }
-            |> shellExec
+            |> Process.shellExec
         elif script.EndsWith(".msbuild", StringComparison.OrdinalIgnoreCase) || script.EndsWith(".targets", StringComparison.OrdinalIgnoreCase) then
             { Program = @"C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
               Args = []
-              WorkingDirectory = projectRoot
+              WorkingDir = projectRoot
               CommandLine = (sprintf "/p:OutputPath=%s %s %s" outputPath args script) }
-            |> shellExec 
+            |> Process.shellExec 
         else
             failwithf "Unknown script type: %s" script
 
@@ -194,17 +198,17 @@ let private getPackagingScript() =
         failwithf "Packaging script does not exist: %s" buildDefinition.PackagingScript
     script
 
-Target "CreatePackage" (fun _ ->
+Target.create "CreatePackage" (fun _ ->
     let script = getPackagingScript()    
     runScript script buildDefinition.CreatePackageArguments
 )
 
-Target "DeployPackage" (fun _ ->
+Target.create "DeployPackage" (fun _ ->
     let script = getPackagingScript()        
     runScript script buildDefinition.DeployPackageArguments
 )
 
-Target "PublishPackage" (fun _ ->
+Target.create "PublishPackage" (fun _ ->
     let script = getPackagingScript()    
     runScript script buildDefinition.PublishPackageArguments
 )
@@ -222,4 +226,4 @@ Target "PublishPackage" (fun _ ->
     =?> ("PublishPackage", buildDefinition.PublishPackage)
     ==> "All"
 
-RunTarget()
+Target.runOrDefault ""

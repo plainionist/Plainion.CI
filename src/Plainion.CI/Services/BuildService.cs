@@ -12,16 +12,16 @@ namespace Plainion.CI.Services
         private ISourceControl mySourceControl;
 
         [ImportingConstructor]
-        public BuildService( ISourceControl sourceControl )
+        public BuildService(ISourceControl sourceControl)
         {
             mySourceControl = sourceControl;
         }
 
         public void Dispose()
         {
-            if( BuildDefinition != null && BuildDefinition.RepositoryRoot != null )
+            if (BuildDefinition != null && BuildDefinition.RepositoryRoot != null)
             {
-                BuildDefinitionSerializer.Serialize( BuildDefinition );
+                BuildDefinitionSerializer.Serialize(BuildDefinition);
             }
         }
 
@@ -29,84 +29,84 @@ namespace Plainion.CI.Services
 
         public event Action BuildDefinitionChanged;
 
-        public void InitializeBuildDefinition( string buildDefinitionFile )
+        public void InitializeBuildDefinition(string buildDefinitionFile)
         {
-            BuildDefinition = BuildDefinitionSerializer.TryDeserialize( buildDefinitionFile );
+            BuildDefinition = BuildDefinitionSerializer.TryDeserialize(buildDefinitionFile);
 
-            if( BuildDefinitionChanged != null )
+            if (BuildDefinitionChanged != null)
             {
                 BuildDefinitionChanged();
             }
         }
 
-        public Task<bool> ExecuteAsync( BuildRequest request, IProgress<string> progress )
+        public Task<bool> ExecuteAsync(BuildRequest request, IProgress<string> progress)
         {
-            Contract.Invariant( BuildDefinition != null, "BuildDefinition not loaded" );
+            Contract.Invariant(BuildDefinition != null, "BuildDefinition not loaded");
 
-            BuildRequestSerializer.Serialize( request );
-            BuildDefinitionSerializer.Serialize( BuildDefinition );
+            BuildRequestSerializer.Serialize(request);
+            BuildDefinitionSerializer.Serialize(BuildDefinition);
 
-            var toolsHome = Path.GetDirectoryName( GetType().Assembly.Location );
+            var toolsHome = Path.GetDirectoryName(GetType().Assembly.Location);
             var repositoryRoot = BuildDefinition.RepositoryRoot;
-            var buildDefinitionFile = BuildDefinitionSerializer.GetLocation( BuildDefinition );
+            var buildDefinitionFile = BuildDefinitionSerializer.GetLocation(BuildDefinition);
             var outputPath = BuildDefinition.GetOutputPath();
 
-            return Task<bool>.Run( () =>
-            {
-                try
-                {
-                    var script = Path.Combine( toolsHome, "bits", "Workflow.fsx" );
+            return Task<bool>.Run(() =>
+           {
+               try
+               {
+                   var script = Path.Combine(toolsHome, "bits", "Workflow.fsx");
 
-                    if( !Path.IsPathRooted( script ) )
-                    {
-                        script = Path.Combine( repositoryRoot, script );
-                    }
+                   if (!Path.IsPathRooted(script))
+                   {
+                       script = Path.Combine(repositoryRoot, script);
+                   }
 
-                    var home = Path.GetDirectoryName( GetType().Assembly.Location );
-                    var interpreter = Path.Combine( home, "FAKE", "fake.exe" );
+                   var home = Path.GetDirectoryName(GetType().Assembly.Location);
+                   var interpreter = Path.Combine(home, "FAKE", "fake.exe");
 
-                    var process = new UiShellCommand( interpreter, progress );
+                   var process = new UiShellCommand(interpreter, progress);
 
-                    var PATH = Environment.GetEnvironmentVariable( "PATH" );
+                   var PATH = Environment.GetEnvironmentVariable("PATH");
 
                     // extend PATH so that FAKE targets can find the tools
-                    process.Environment[ "PATH" ] = Path.Combine( toolsHome, "FAKE" )
-                        + Path.PathSeparator + Path.Combine( toolsHome, "NuGet" )
-                        + Path.PathSeparator + PATH;
+                    process.Environment["PATH"] = Path.Combine(toolsHome, "FAKE")
+                       + Path.PathSeparator + Path.Combine(toolsHome, "NuGet")
+                       + Path.PathSeparator + PATH;
 
-                    process.Environment[ "ToolsHome" ] = toolsHome;
-                    process.Environment[ "BuildDefinitionFile" ] = buildDefinitionFile;
-                    process.Environment[ "ProjectRoot" ] = repositoryRoot;
-                    process.Environment[ "outputPath " ] = outputPath;
+                   process.Environment["ToolsHome"] = toolsHome;
+                   process.Environment["BuildDefinitionFile"] = buildDefinitionFile;
+                   process.Environment["ProjectRoot"] = repositoryRoot;
+                   process.Environment["outputPath "] = outputPath;
 
-                    var compiledArguments = new[] { 
+                   var compiledArguments = new[] {
                         "All",
                         "--fsiargs \"--define:FAKE\"",
                         script,
-                    };
+                   };
 
-                    process.Execute( compiledArguments );
+                   process.Execute(compiledArguments);
 
-                    var success = process.ExitCode == 0;
+                   var success = process.ExitCode == 0;
 
-                    if( success )
-                    {
-                        progress.Report( "--- WORKFLOW SUCCEEDED ---" );
-                    }
-                    else
-                    {
-                        progress.Report( "--- WORKFLOW FAILED ---" );
-                    }
+                   if (success)
+                   {
+                       progress.Report("--- WORKFLOW SUCCEEDED ---");
+                   }
+                   else
+                   {
+                       progress.Report("--- WORKFLOW FAILED ---");
+                   }
 
-                    return success;
-                }
-                catch( Exception ex )
-                {
-                    progress.Report( "ERROR: " + ex.Message );
-                    progress.Report( "--- WORKFLOW FAILED ---" );
-                    return false;
-                }
-            } );
+                   return success;
+               }
+               catch (Exception ex)
+               {
+                   progress.Report("ERROR: " + ex.Message);
+                   progress.Report("--- WORKFLOW FAILED ---");
+                   return false;
+               }
+           });
         }
     }
 }
