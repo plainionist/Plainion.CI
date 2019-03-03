@@ -26,15 +26,6 @@ Target.create "Build" (fun _ ->
     MSBuild.build setParams (buildDefinition.GetSolutionPath())
 )
 
-Target.create "RestoreNugetPackages" (fun _ ->
-    buildDefinition.GetSolutionPath()
-    |> Restore.RestoreMSSolutionPackages (fun p ->
-         { p with
-             // do not specify OutputPath directly otherwise we will re-download all dependencies even for .Net Core projects
-             //OutputPath = projectRoot </> "packages"
-             Retries = 1 })
-)
-
 let private testAssemblyIncludes () =     
     if buildDefinition.TestAssemblyPattern |> String.IsNullOrEmpty then
         failwith "!! NO TEST ASSEMBLY PATTERN PROVIDED !!"
@@ -214,7 +205,6 @@ Target.create "PublishPackage" (fun _ ->
 )
 
 "Clean"
-    ==> "RestoreNugetPackages"
     =?> ("AssemblyInfo", changeLogFile |> File.Exists)
     ==> "Build"
     =?> ("GenerateApiDoc", buildDefinition.GenerateAPIDoc)

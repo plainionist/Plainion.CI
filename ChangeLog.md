@@ -1,7 +1,8 @@
-## 1.13 - 2019-02-24
+## 2.0 - 2019-03-03
 
-- Support .Net Core: do not specify output path for "nuget restore"
 - Updated to latest FAKE
+- "nuget restore" no longer explicitly as this is now fully integrated in msbuild and 
+  would download dependencies for .Net Core projects locally instead of centrally
 
 ## 1.12 - 2018-06-02
 
