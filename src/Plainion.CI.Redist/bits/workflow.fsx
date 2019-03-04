@@ -174,7 +174,7 @@ let runScript (script:string) args =
             { Program = "fake.exe"
               Args = []
               WorkingDir = projectRoot
-              CommandLine = (args + "--removeLegacyFakeWarning --fsiargs \"--define:FAKE\" " + script ) }
+              CommandLine = (args + " --fsiargs \"--define:FAKE\" --removeLegacyFakeWarning " + script ) }
             |> Process.shellExec
         elif script.EndsWith(".msbuild", StringComparison.OrdinalIgnoreCase) || script.EndsWith(".targets", StringComparison.OrdinalIgnoreCase) then
             { Program = @"C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
