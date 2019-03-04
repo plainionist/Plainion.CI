@@ -38,7 +38,7 @@ let private testAssemblyIncludes () =
     |> Seq.skip 1
     |> Seq.fold (++) (!! (testAssemblyPatterns |> Seq.head))
 
-Target.create "RunNUnitTests" (fun _ ->
+Target.create "RunTests" (fun _ ->
     let toolPath = Path.GetDirectoryName( buildDefinition.TestRunnerExecutable )
 
     if File.Exists ( toolPath </> "nunit-console.exe" ) then
@@ -48,12 +48,20 @@ Target.create "RunNUnitTests" (fun _ ->
             { p with
                 ToolPath = toolPath
                 DisableShadowCopy = true })
-    else
+    elif File.Exists ( toolPath </> "nunit3-console.exe" ) then
         testAssemblyIncludes()
         |> NUnit3.run (fun p -> 
             { p with
                 ToolPath = toolPath </> "nunit3-console.exe"
                 ShadowCopy = false })
+    else // e.g. "dotnet test"
+        let ret = 
+            Process.shellExec { Program = buildDefinition.TestRunnerExecutable
+                                Args = []
+                                WorkingDir =  projectRoot
+                                CommandLine = buildDefinition.TestAssemblyPattern }
+        if ret <> 0 then
+            failwith "Test execution failed"
 )
 
 Target.create "GenerateApiDoc" (fun _ ->
@@ -78,7 +86,7 @@ Target.create "GenerateApiDoc" (fun _ ->
             Process.shellExec { Program = buildDefinition.ApiDocGenExecutable
                                 Args = []
                                 WorkingDir =  projectRoot
-                                CommandLine = args}
+                                CommandLine = args }
         
     let ret = 
         assemblyProjectMap.Keys
@@ -208,7 +216,7 @@ Target.create "PublishPackage" (fun _ ->
     =?> ("AssemblyInfo", changeLogFile |> File.Exists)
     ==> "Build"
     =?> ("GenerateApiDoc", buildDefinition.GenerateAPIDoc)
-    =?> ("RunNUnitTests", buildDefinition.RunTests)
+    =?> ("RunTests", buildDefinition.RunTests)
     =?> ("Commit", buildDefinition.CheckIn)
     =?> ("Push", buildDefinition.Push)
     =?> ("CreatePackage", buildDefinition.CreatePackage)

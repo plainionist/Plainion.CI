@@ -3,6 +3,7 @@
 - Updated to latest FAKE
 - "nuget restore" no longer explicitly as this is now fully integrated in msbuild and 
   would download dependencies for .Net Core projects locally instead of centrally
+- added support for other test runner than NUnit
 
 ## 1.12 - 2018-06-02
 
