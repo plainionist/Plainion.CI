@@ -73,12 +73,9 @@ let getAssemblyProjectMap() =
 
 let setParams (defaults:MSBuildParams) =
     { defaults with
-        Targets = ["Build"]
         Properties = [ "OutputPath", outputPath
                        "Configuration", buildDefinition.Configuration
-                       "Platform", buildDefinition.Platform
-                     ]
-    }
+                       "Platform", buildDefinition.Platform ] }
 
 module PZip =
     let private getReleaseName() =

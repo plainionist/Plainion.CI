@@ -8,7 +8,6 @@ open PlainionCI
 open Fake.Core
 open Fake.Core.TargetOperators
 open Fake.DotNet
-open Fake.DotNet.NuGet
 open Fake.DotNet.Testing
 open Fake.IO
 open Fake.IO.FileSystemOperators
@@ -158,7 +157,7 @@ Target.create "AssemblyInfo" (fun _ ->
 
     !! ( projectRoot </> "src/**/*.??proj" )
     |> Seq.map getProjectDetails
-    |> Seq.iter (fun (projFileName, projectName, folderName, attributes) ->
+    |> Seq.iter (fun (projFileName, _, folderName, attributes) ->
         match projFileName with
         | Fsproj -> let assemblyInfo = folderName </> "AssemblyInfo.fs"
                     AssemblyInfoFile.createFSharp assemblyInfo attributes
