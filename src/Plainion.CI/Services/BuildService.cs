@@ -82,6 +82,7 @@ namespace Plainion.CI.Services
                    var compiledArguments = new[] {
                         "All",
                         "--fsiargs \"--define:FAKE\"",
+                        "--removeLegacyFakeWarning",
                         script,
                    };
 
