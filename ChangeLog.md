@@ -1,4 +1,4 @@
-## 2.0 - 2019-03-03
+## 2.0 - 2019-03-04
 
 - Updated to latest FAKE
 - "nuget restore" no longer explicitly as this is now fully integrated in msbuild and 
