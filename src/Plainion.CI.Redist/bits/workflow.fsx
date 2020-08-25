@@ -148,12 +148,22 @@ Target.create "AssemblyInfo" (fun _ ->
         | f when f.EndsWith("csproj", StringComparison.OrdinalIgnoreCase) -> Csproj
         | _  -> failwith (sprintf "Project file %s not supported. Unknown project type." projFileName)
 
+    let isDotNetCore projectFile =
+        projectFile
+        |> File.ReadAllLines
+        |> Seq.find(contains ("<Project"))
+        |> contains ("Sdk=")
+
     let verifyAssemblyInfoIsIncludedInProject projectFile assemblyInfoFile =
-        let assemblyInfoIsIncluded =
-            projectFile
-            |> File.ReadAllLines
-            |> Seq.exists (contains assemblyInfoFile)
-        if assemblyInfoIsIncluded then () else failwithf "AssemblyInfo file NOT included in project %s" projectFile
+        if projectFile |> isDotNetCore then
+            ()
+        else
+            let assemblyInfoIsIncluded =
+                projectFile
+                |> File.ReadAllLines
+                |> Seq.exists (contains assemblyInfoFile)
+            if assemblyInfoIsIncluded |> not then 
+                failwithf "AssemblyInfo file NOT included in project %s" projectFile
 
     !! ( projectRoot </> "src/**/*.??proj" )
     |> Seq.map getProjectDetails

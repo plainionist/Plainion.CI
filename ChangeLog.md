@@ -1,3 +1,7 @@
+## 2.1 - 2020-08-25
+
+- Fix: don't fail if .Net Core project does not reference AssemblyInfo file 
+
 ## 2.0 - 2019-03-04
 
 - Updated to latest FAKE

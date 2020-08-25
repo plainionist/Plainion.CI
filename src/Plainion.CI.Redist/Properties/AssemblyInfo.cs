@@ -5,16 +5,16 @@ using System.Reflection;
 [assembly: AssemblyTitle("Plainion.CI.Redist")]
 [assembly: AssemblyProduct("Plainion.CI")]
 [assembly: AssemblyDescription("Plainion.CI")]
-[assembly: AssemblyCopyright("Copyright @ 2019")]
-[assembly: AssemblyVersion("2.0")]
-[assembly: AssemblyFileVersion("2.0")]
+[assembly: AssemblyCopyright("Copyright @ 2020")]
+[assembly: AssemblyVersion("2.1")]
+[assembly: AssemblyFileVersion("2.1")]
 namespace System {
     internal static class AssemblyVersionInformation {
         internal const System.String AssemblyTitle = "Plainion.CI.Redist";
         internal const System.String AssemblyProduct = "Plainion.CI";
         internal const System.String AssemblyDescription = "Plainion.CI";
-        internal const System.String AssemblyCopyright = "Copyright @ 2019";
-        internal const System.String AssemblyVersion = "2.0";
-        internal const System.String AssemblyFileVersion = "2.0";
+        internal const System.String AssemblyCopyright = "Copyright @ 2020";
+        internal const System.String AssemblyVersion = "2.1";
+        internal const System.String AssemblyFileVersion = "2.1";
     }
 }
