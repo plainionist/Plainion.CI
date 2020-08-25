@@ -27,7 +27,7 @@ open Fake.DotNet
 let getProperty name =
     match name |> Environment.environVarOrNone with
     | Some x -> x
-    | None -> failwith "Property not found: " + name
+    | None -> failwithf "Property not found: %s" name
 
 let getPropertyAndTrace name =
     let value = getProperty name
