@@ -71,12 +71,6 @@ let private assemblyProjects = lazy (   let projects = PMsBuild.GetProjectFiles(
 let getAssemblyProjectMap() =
     assemblyProjects.Value
 
-let setParams (defaults:MSBuildParams) =
-    { defaults with
-        Properties = [ "OutputPath", outputPath
-                       "Configuration", buildDefinition.Configuration
-                       "Platform", buildDefinition.Platform ] }
-
 module PZip =
     let private getReleaseName() =
         let release = getChangeLog()

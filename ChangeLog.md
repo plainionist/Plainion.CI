@@ -1,6 +1,7 @@
 ## 2.1 - 2020-08-25
 
 - Fix: don't fail if .Net Core project does not reference AssemblyInfo file 
+- Support for VS 2019 added
 
 ## 2.0 - 2019-03-04
 
