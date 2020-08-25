@@ -48,3 +48,13 @@ let LoadProject (projectFile:string) =
 
     { Location = projectFile
       Assembly = (sprintf "%s.%s" assembly assemblyExtension) }
+
+/// Returns Package References
+let GetPackageReferences(projectFile:string) =
+    let root = XElement.Load(projectFile)
+
+    root.Elements(XName.Get("ItemGroup"))
+    |> Seq.collect(fun e -> e.Elements())   
+    |> Seq.filter(fun e -> e.Name = XName.Get("PackageReference"))
+    |> Seq.map(fun e -> e.Attribute(XName.Get("Include")).Value, e.Attribute(XName.Get("Version")).Value)
+    |> List.ofSeq

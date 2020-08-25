@@ -109,10 +109,21 @@ module PNuGet =
         |> Seq.iter( fun a -> Trace.trace (sprintf "Adding file %s to package" a))
 
         let dependencies =
+            let getDependencies projectFile =
+                let packagesConfig = projectFile |> Path.GetDirectoryName </> "packages.config"
+
+                if packagesConfig |> File.exists then
+                    packagesConfig 
+                    |> Fake.DotNet.NuGet.NuGet.getDependencies
+                    |> List.map(fun d -> d.Id,d.Version.AsString)
+                else
+                    //     <PackageReference Include="System.ComponentModel" Version="4.3.0" />
+                    projectFile 
+                    |> PMsBuild.GetPackageReferences
+
             getAssemblyProjectMap()
             |> Seq.filter(fun e -> assemblies |> List.exists ((=)e.Key))
-            |> Seq.map(fun e -> (Path.GetDirectoryName e.Value) </> "packages.config")
-            |> Seq.collect(fun x -> x |> Fake.DotNet.NuGet.NuGet.getDependencies)
+            |> Seq.collect(fun e -> e.Value |> getDependencies)
             |> Seq.distinct
             |> List.ofSeq
 
@@ -123,7 +134,7 @@ module PNuGet =
         |>  NuGet.NuGet (fun p ->  {p with OutputPath = packageOut
                                            WorkingDir = outputPath
                                            Project = projectName
-                                           Dependencies = dependencies |> List.map(fun d -> d.Id,d.Version.AsString)
+                                           Dependencies = dependencies 
                                            Version = release.AssemblyVersion
                                            ReleaseNotes = release.Notes 
                                                           |> String.concat Environment.NewLine

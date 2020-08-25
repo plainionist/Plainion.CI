@@ -3,6 +3,7 @@
 - Support for .Net Core projects extended
   - don't fail if project does not reference AssemblyInfo file 
   - don't fail if project does not have "AssemblyName" or "OutputType" specified
+  - get package dependencies from MS project "PackageReference" instead of packages.config
 - Support for VS 2019 added
 
 ## 2.0 - 2019-03-04
