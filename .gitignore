@@ -7,7 +7,7 @@
 /packages/LibGit2Sharp.*
 /packages/Plainion.*
 /packages/Prism.*
-/packages/FAKE.*
+/packages/FAKE*
 /packages/NuGet.*
 /packages/NUnit.*
 /packages/FSharp.*
