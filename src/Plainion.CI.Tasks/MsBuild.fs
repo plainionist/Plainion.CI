@@ -33,13 +33,16 @@ let LoadProject (projectFile:string) =
 
     let assembly = 
         allProperties 
-        |> Seq.find(fun e -> e.Name = xn "AssemblyName")
-        |> (fun e -> e.Value)
+        |> Seq.tryFind(fun e -> e.Name = xn "AssemblyName")
+        |> Option.map(fun e -> e.Value)
+        // in .Net Core per default the project file name equals assembly name
+        |> Option.defaultValue (projectFile |> Path.GetFileNameWithoutExtension)
 
     let outputType = 
         allProperties 
-        |> Seq.find(fun e -> e.Name = xn "OutputType")
-        |> (fun e -> e.Value)
+        |> Seq.tryFind(fun e -> e.Name = xn "OutputType")
+        |> Option.map(fun e -> e.Value)
+        |> Option.defaultValue "dll" // TODO: detection does not work for .Net Core exe
 
     let assemblyExtension = if outputType = "WinExe" || outputType = "Exe" then "exe" else "dll"
 

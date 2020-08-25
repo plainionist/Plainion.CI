@@ -1,6 +1,8 @@
 ## 2.1 - 2020-08-25
 
-- Fix: don't fail if .Net Core project does not reference AssemblyInfo file 
+- Support for .Net Core projects extended
+  - don't fail if project does not reference AssemblyInfo file 
+  - don't fail if project does not have "AssemblyName" or "OutputType" specified
 - Support for VS 2019 added
 
 ## 2.0 - 2019-03-04
