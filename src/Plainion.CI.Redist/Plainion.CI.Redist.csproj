@@ -17,7 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- http://stackoverflow.com/questions/19478775/add-native-files-from-nuget-package-to-project-output-directory -->
-    <None Include="..\..\packages\FAKE.5.16.0\tools\**\*">
+    <None Include="..\..\packages\FAKE.5.8.4\tools\**\*">
       <Link>FAKE\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
