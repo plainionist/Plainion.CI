@@ -1,6 +1,7 @@
 ## 3.0 - 2020-08-
 
--  Migrated to .Net Core
+- Migrated to .Net Core
+- GitHub.fsx moved to Tasks library
 
 ## 2.1 - 2020-08-25
 

@@ -15,7 +15,10 @@
     <Compile Include="Foundation.fs" />
     <Compile Include="MsBuild.fs" />
     <Compile Include="Git.fs" />
+    <Compile Include="GitHub.fs" />
   </ItemGroup>
+
+  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />

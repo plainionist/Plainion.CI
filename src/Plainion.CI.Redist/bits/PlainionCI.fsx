@@ -12,8 +12,6 @@
 #r "../../../bin/Debug/Plainion.CI.Tasks.dll"
 #endif
 
-#load "GitHub.fsx"
-
 open System
 open System.IO
 open Plainion.CI

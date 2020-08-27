@@ -2,13 +2,7 @@
 // Hint: Octokit currently does not have signed assemblies so we have to put this code here - we would like to put it into Plainion.CI.Tasks
 module Plainion.CI.Tasks.PGitHub
 
-#if FAKE
-#r "../Octokit.dll"
-#else
-#r "../../../bin/Debug/Octokit.dll"
-#endif
-#r "System.Net.Http"
-
+open System.Net.Http
 open Octokit
 
 type Draft =
@@ -80,7 +74,7 @@ module private FromFake =
                 return captureAndReraise ex
         }
 
-    let createClient user password =
+    let createClient user (password:string) =
         async {
             let httpClient = new HttpClientWithTimeout(TimeSpan.FromMinutes 20.)
             let connection = new Connection(new ProductHeaderValue("FAKE"), httpClient)
