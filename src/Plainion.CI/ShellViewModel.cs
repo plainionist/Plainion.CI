@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Plainion.CI.Services;
@@ -20,20 +21,20 @@ namespace Plainion.CI
         private string myTitle;
 
         [ImportingConstructor]
-        public ShellViewModel( BuildService buildService, ISourceControl sourceControl )
+        public ShellViewModel(BuildService buildService, ISourceControl sourceControl)
         {
             myBuildService = buildService;
 
-            GoCommand = new DelegateCommand( OnGo, CanGo );
+            GoCommand = new DelegateCommand(OnGo, CanGo);
 
             var args = Environment.GetCommandLineArgs();
-            if( args.Length > 1 )
+            if (args.Length > 1)
             {
-                myBuildService.InitializeBuildDefinition( args[ 1 ] );
+                myBuildService.InitializeBuildDefinition(Path.GetFullPath(args[1]));
             }
             else
             {
-                myBuildService.InitializeBuildDefinition( null );
+                myBuildService.InitializeBuildDefinition(null);
             }
 
             myBuildService.BuildDefinitionChanged += myBuildService_BuildDefinitionChanged;
@@ -48,13 +49,13 @@ namespace Plainion.CI
 
         private void UpdateTitle()
         {
-            Title = string.Format( "Project: {0}", myBuildService.BuildDefinition.GetProjectName() );
+            Title = string.Format("Project: {0}", myBuildService.BuildDefinition.GetProjectName());
         }
 
         public string Title
         {
             get { return myTitle; }
-            set { SetProperty( ref myTitle, value ); }
+            set { SetProperty(ref myTitle, value); }
         }
 
         [Import]
@@ -76,7 +77,7 @@ namespace Plainion.CI
             get { return mySelectedTab; }
             set
             {
-                if( SetProperty( ref mySelectedTab, value ) )
+                if (SetProperty(ref mySelectedTab, value))
                 {
                     // force sync into view model before switching tab where view might get destroyed
                     TextBoxBinding.ForceSourceUpdate();
@@ -97,28 +98,28 @@ namespace Plainion.CI
 
             SelectedTab = 2;
 
-            var progress = new Progress<string>( p => BuildLogViewModel.Append( p ) );
+            var progress = new Progress<string>(p => BuildLogViewModel.Append(p));
 
             var request = new BuildRequest
             {
                 CheckInComment = CheckInViewModel.CheckInComment,
                 FilesExcludedFromCheckIn = CheckInViewModel.Files
-                    .Where( e => !e.IsChecked )
-                    .Select( e => e.File )
+                    .Where(e => !e.IsChecked)
+                    .Select(e => e.File)
                     .ToArray(),
             };
 
-            myBuildService.ExecuteAsync( request, progress )
+            myBuildService.ExecuteAsync(request, progress)
                 .RethrowExceptionsInUIThread()
-                .ContinueWith( t =>
-                    {
-                        BuildLogViewModel.Succeeded = t.Result;
+                .ContinueWith(t =>
+                   {
+                       BuildLogViewModel.Succeeded = t.Result;
 
-                        myIsBusy = false;
-                        GoCommand.RaiseCanExecuteChanged();
+                       myIsBusy = false;
+                       GoCommand.RaiseCanExecuteChanged();
 
-                        CheckInViewModel.RefreshPendingChanges();
-                    }, TaskScheduler.FromCurrentSynchronizationContext() );
+                       CheckInViewModel.RefreshPendingChanges();
+                   }, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

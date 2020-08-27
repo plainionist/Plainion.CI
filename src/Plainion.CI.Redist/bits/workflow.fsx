@@ -304,7 +304,7 @@ let runScript (script:string) args =
 
     match ret with
     | 0 -> ()
-    | _-> failwithf "script execution failed: %s" script
+    | _-> failwithf "Execution of script %s failed with %i" script ret
 
 
 let private getPackagingScript() =

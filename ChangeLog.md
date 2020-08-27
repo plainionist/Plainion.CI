@@ -1,3 +1,7 @@
+## 3.0 - 2020-08-
+
+-  Migrated to .Net Core
+
 ## 2.1 - 2020-08-25
 
 - Support for .Net Core projects extended
