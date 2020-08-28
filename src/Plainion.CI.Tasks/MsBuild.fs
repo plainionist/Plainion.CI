@@ -6,8 +6,11 @@ open System.Xml.Linq
 
 let private xn n = XName.Get(n,"http://schemas.microsoft.com/developer/msbuild/2003")
 
+//let msBuildExe = Fake.DotNet.MSBuildParams.Create().ToolPath
+let msBuildExe = FromFake.MsBuild.msBuildExe
+
 /// Retruns all project files referenced by the given solution
-let GetProjectFiles solution =
+let GetProjectFiles (solution:string) =
     let solutionDir = Path.GetDirectoryName(solution)
 
     // Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plainion.CI", "src\Plainion.CI\Plainion.CI.csproj", "{E81B5CDC-72D9-4DEB-AF55-9BA7409C7CBF}"

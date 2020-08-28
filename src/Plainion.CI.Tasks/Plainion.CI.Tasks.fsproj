@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591</NoWarn>
@@ -13,14 +13,15 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Foundation.fs" />
+    <Compile Include="FromFake.fs" />
     <Compile Include="MsBuild.fs" />
     <Compile Include="Git.fs" />
     <Compile Include="GitHub.fs" />
   </ItemGroup>
 
-  <ItemGroup />
-
   <ItemGroup>
+    <PackageReference Include="Fake.DotNet.MSBuild" Version="5.20.3" />
+    <PackageReference Include="Fake.Tools.Git" Version="5.20.3" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
     <PackageReference Include="Octokit" Version="0.48.0" />
   </ItemGroup>
