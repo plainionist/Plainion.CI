@@ -28,14 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="bits\PlainionCI.fsx" />
     <None Remove="bits\Workflow.fsx" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="bits\PlainionCI.fsx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="bits\Workflow.fsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
