@@ -1,6 +1,5 @@
 ﻿// TODO: temporary solution to migrate to FAKE 5 (.net core)
-[<AutoOpen>]
-module Plainion.CI.Common
+namespace Plainion.CI
 
 open System
 open System.IO
@@ -13,68 +12,70 @@ open Fake.IO.Globbing.Operators
 open Fake.DotNet
 open Fake.DotNet.Testing
 
-let getProperty name =
-    match name |> Environment.environVarOrNone with
-    | Some x -> x
-    | None -> failwithf "Property not found: %s" name
+[<AutoOpen>]
+module Common =
+    let getProperty name =
+        match name |> Environment.environVarOrNone with
+        | Some x -> x
+        | None -> failwithf "Property not found: %s" name
 
-let getPropertyAndTrace name =
-    let value = getProperty name
-    name + "=" + value |> Trace.trace 
-    value
+    let getPropertyAndTrace name =
+        let value = getProperty name
+        name + "=" + value |> Trace.trace 
+        value
 
-/// get environment variable given by Plainion.CI engine
-let (!%) = getProperty
+    /// get environment variable given by Plainion.CI engine
+    let (!%) = getProperty
 
-let toolsHome = getProperty "ToolsHome"
+    let toolsHome = getProperty "ToolsHome"
 
-let buildDefinition = BuildDefinitionSerializer.TryDeserialize( !%"BuildDefinitionFile" )
-let buildRequest = BuildRequestSerializer.Deserialize()
+    let buildDefinition = BuildDefinitionSerializer.TryDeserialize( !%"BuildDefinitionFile" )
+    let buildRequest = BuildRequestSerializer.Deserialize()
 
-let projectRoot = buildDefinition.RepositoryRoot
-let outputPath = buildDefinition.GetOutputPath()
+    let projectRoot = buildDefinition.RepositoryRoot
+    let outputPath = buildDefinition.GetOutputPath()
 
-let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
-let changeLogFile = projectRoot </> "ChangeLog.md"
+    let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
+    let changeLogFile = projectRoot </> "ChangeLog.md"
 
-let private changeLog = lazy ( match File.exists changeLogFile with
-                               | true -> changeLogFile |> ReleaseNotes.load |> Some
-                               | false -> None
-                             )
+    let private changeLog = lazy ( match File.exists changeLogFile with
+                                   | true -> changeLogFile |> ReleaseNotes.load |> Some
+                                   | false -> None
+                                 )
 
-/// Returns the parsed ChangeLog.md if exists
-let getChangeLog () = 
-    match changeLog.Value with
-    | Some cl -> cl
-    | None -> failwith "No ChangeLog.md found in project root"
+    /// Returns the parsed ChangeLog.md if exists
+    let getChangeLog () = 
+        match changeLog.Value with
+        | Some cl -> cl
+        | None -> failwith "No ChangeLog.md found in project root"
 
 
-let private assemblyProjects = lazy (   let projects = PMsBuild.GetProjectFiles(buildDefinition.GetSolutionPath())
-                                        projects
-                                        |> Seq.map PMsBuild.LoadProject
-                                        |> Seq.map(fun proj -> proj.Assembly, proj.Location)
-                                        |> dict
-                                    )
+    let private assemblyProjects = lazy (   let projects = PMsBuild.GetProjectFiles(buildDefinition.GetSolutionPath())
+                                            projects
+                                            |> Seq.map PMsBuild.LoadProject
+                                            |> Seq.map(fun proj -> proj.Assembly, proj.Location)
+                                            |> dict
+                                        )
 
-/// Returns a dictionary mapping assembly names to their project files based on the project solution
-let getAssemblyProjectMap() =
-    assemblyProjects.Value
+    /// Returns a dictionary mapping assembly names to their project files based on the project solution
+    let getAssemblyProjectMap() =
+        assemblyProjects.Value
 
-module PZip =
-    let private getReleaseName() =
-        let release = getChangeLog()
-        sprintf "%s-%s" projectName release.NugetVersion
+    module PZip =
+        let private getReleaseName() =
+            let release = getChangeLog()
+            sprintf "%s-%s" projectName release.NugetVersion
 
-    let GetReleaseFile () =
-        outputPath </> ".." </> (sprintf "%s.zip" (getReleaseName()))
+        let GetReleaseFile () =
+            outputPath </> ".." </> (sprintf "%s.zip" (getReleaseName()))
 
-    /// Creates a zip from all content of the OutputPath with current version backed in
-    let PackRelease() = 
-        let zip = GetReleaseFile()
-        let releaseName = getReleaseName()
+        /// Creates a zip from all content of the OutputPath with current version backed in
+        let PackRelease() = 
+            let zip = GetReleaseFile()
+            let releaseName = getReleaseName()
 
-        !! ( outputPath </> "**/*.*" )
-        |> Zip.zip outputPath zip
+            !! ( outputPath </> "**/*.*" )
+            |> Zip.zip outputPath zip
 
 module PNuGet =
     open Fake.DotNet.NuGet
@@ -395,3 +396,44 @@ module Targets =
         let script = getPackagingScript()    
         runScript script buildDefinition.PublishPackageArguments
     )
+
+module Runtime =
+    open Fake.Core.TargetOperators
+
+    let ScriptRun() =
+        Target.create "All" Targets.All
+
+        Target.create "Clean" Targets.Clean
+
+        Target.create "Build" Targets.Build
+
+        Target.create "RunTests" Targets.RunTests
+
+        Target.create "GenerateApiDoc" Targets.GenerateApiDoc
+
+        Target.create "Commit" Targets.Commit
+
+        Target.create "Push" Targets.Push
+
+        Target.create "AssemblyInfo" Targets.AssemblyInfo
+
+        Target.create "CreatePackage" Targets.CreatePackage
+
+        Target.create "DeployPackage" Targets.DeployPackage
+
+        Target.create "PublishPackage" Targets.PublishPackage
+
+        "Clean"
+            =?> ("AssemblyInfo", changeLogFile |> File.Exists)
+            ==> "Build"
+            =?> ("GenerateApiDoc", buildDefinition.GenerateAPIDoc)
+            =?> ("RunTests", buildDefinition.RunTests)
+            =?> ("Commit", buildDefinition.CheckIn)
+            =?> ("Push", buildDefinition.Push)
+            =?> ("CreatePackage", buildDefinition.CreatePackage)
+            =?> ("DeployPackage", buildDefinition.DeployPackage)
+            =?> ("PublishPackage", buildDefinition.PublishPackage)
+            ==> "All"
+            |> ignore
+    
+        Target.runOrDefault "All"

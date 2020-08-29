@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Plainion.CI.Core\Plainion.CI.COre.csproj" />
+    <ProjectReference Include="..\Plainion.CI.Tasks\Plainion.CI.Tasks.fsproj" />
   </ItemGroup>
 
 </Project>

@@ -2,21 +2,12 @@
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Threading.Tasks;
-using Plainion.CI.Services.SourceControl;
 
 namespace Plainion.CI.Services
 {
     [Export]
     class BuildService : IDisposable
     {
-        private ISourceControl mySourceControl;
-
-        [ImportingConstructor]
-        public BuildService(ISourceControl sourceControl)
-        {
-            mySourceControl = sourceControl;
-        }
-
         public void Dispose()
         {
             if (BuildDefinition != null && BuildDefinition.RepositoryRoot != null)
@@ -55,14 +46,7 @@ namespace Plainion.CI.Services
             {
                 try
                 {
-                    var script = Path.Combine(toolsHome, "bits", "Workflow.fsx");
-
-                    if (!Path.IsPathRooted(script))
-                    {
-                        script = Path.Combine(repositoryRoot, script);
-                    }
-
-                    var interpreter = Path.Combine(toolsHome, "FAKE", "fake.exe");
+                    var interpreter = Path.Combine(toolsHome, "Plainion.CI.BuildHost.exe");
 
                     var process = new UiShellCommand(interpreter, progress);
 
@@ -79,16 +63,7 @@ namespace Plainion.CI.Services
                     process.Environment["ProjectRoot"] = repositoryRoot;
                     process.Environment["outputPath "] = outputPath;
 
-                    var compiledArguments = new[] {
-                        script,
-                        "All",
-                        "--fsiargs \"--define:FAKE\"",
-                        "--removeLegacyFakeWarning",
-                    };
-
-                    //progress.Report($"fake.exe {string.Join(" ", compiledArguments)}");
-
-                    process.Execute(compiledArguments);
+                    process.Execute();
 
                     var success = process.ExitCode == 0;
 
