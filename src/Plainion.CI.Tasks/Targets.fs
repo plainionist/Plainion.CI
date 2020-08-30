@@ -78,107 +78,15 @@ module Common =
             |> Zip.zip outputPath zip
 
 module PNuGet =
-    open Fake.DotNet.NuGet
-
-    /// Creates a NuGet package with the given files and NuSpec at the packageOut folder.
-    /// Version is taken from changelog.md
-    let Pack nuspec packageOut files =
-        let release = getChangeLog()
-        
-        Directory.create packageOut
-        Shell.cleanDir packageOut
-
-        let assemblies = 
-            files 
-            |> Seq.map(fun (source,_,_) -> source)
-            |> Seq.collect(fun pattern -> !! (outputPath </> pattern))
-            |> Seq.map Path.GetFileName
-            |> List.ofSeq
-
-        assemblies
-        |> Seq.iter( fun a -> Trace.trace (sprintf "Adding file %s to package" a))
-
-        let dependencies =
-            let getDependencies (projectFile:string) =
-                let packagesConfig = projectFile |> Path.GetDirectoryName </> "packages.config"
-
-                if packagesConfig |> File.exists then
-                    packagesConfig 
-                    |> Fake.DotNet.NuGet.NuGet.getDependencies
-                    |> List.map(fun d -> d.Id,d.Version.AsString)
-                else
-                    //     <PackageReference Include="System.ComponentModel" Version="4.3.0" />
-                    projectFile 
-                    |> PMsBuild.GetPackageReferences
-
-            getAssemblyProjectMap()
-            |> Seq.filter(fun e -> assemblies |> List.exists ((=)e.Key))
-            |> Seq.collect(fun e -> e.Value |> getDependencies)
-            |> Seq.distinct
-            |> List.ofSeq
-
-        dependencies
-        |> Seq.iter( fun d -> Trace.trace (sprintf "Package dependency detected: %A" d))
-
-        nuspec 
-        |>  NuGet.NuGet (fun p ->  {p with OutputPath = packageOut
-                                           WorkingDir = outputPath
-                                           Project = projectName
-                                           Dependencies = dependencies 
-                                           Version = release.AssemblyVersion
-                                           ReleaseNotes = release.Notes 
-                                                          |> String.concat Environment.NewLine
-                                           Files = files }) 
-    
-    /// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
-    /// to NuGet (https://www.nuget.org/api/v2/package)              
-    let PublishPackage packageName packageOut =
-        let release = getChangeLog()
-
-        NuGet.NuGetPublish (fun p -> {p with OutputPath = packageOut
-                                             WorkingDir = projectRoot
-                                             Project = packageName
-                                             Version = release.AssemblyVersion
-                                             PublishUrl = "https://www.nuget.org/api/v2/package"
-                                             Publish = true }) 
+    let Pack = PNuGet.Pack getChangeLog getAssemblyProjectMap projectName outputPath
+    let PublishPackage = PNuGet.PublishPackage getChangeLog projectRoot
 
     /// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
     /// to NuGet (https://www.nuget.org/api/v2/package)              
-    let Publish packageOut =
-        PublishPackage projectName packageOut
+    let Publish = PublishPackage projectName 
 
 module PGitHub =
-    open Plainion.CI.Tasks
-    open Fake.Tools.Git
-
-    /// Publishes a new release to GitHub with the current version of ChangeLog.md and
-    /// the given files
-    let Release files =
-        if buildDefinition.User.Password = null then
-            failwith "!! NO PASSWORD PROVIDED !!"
-    
-        let release = getChangeLog()
-
-        let user = buildDefinition.User.Login
-        let pwd = buildDefinition.User.Password.ToUnsecureString()
-
-        try
-            Branches.deleteTag "" release.NugetVersion
-        with | _ -> ()
-        
-        Branches.tag "" release.NugetVersion
-        PGit.Push projectRoot (user, pwd)
-    
-        // release on GitHub
-        
-        let releaseNotes =  release.Notes 
-                            |> List.ofSeq
-
-        PGitHub.createDraft user pwd projectName release.NugetVersion (release.SemVer.PreRelease <> None) releaseNotes 
-        |> PGitHub.uploadFiles files  
-        |> PGitHub.releaseDraft
-        |> Async.RunSynchronously
-
+    let Release files = PGitHub.Release getChangeLog buildDefinition projectRoot projectName files
 
 module Targets =
     let All = (fun _ ->
