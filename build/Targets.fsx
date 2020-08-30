@@ -1,12 +1,14 @@
 // load dependencies from source folder to allow bootstrapping
-#r "../bin/Debug/FAKE/FakeLib.dll"
-#load "../bin/Debug/bits/PlainionCI.fsx"
+#r "../bin/Debug/Fake.Core.Target.dll"
+#r "../bin/Debug/Fake.IO.FileSystem.dll"
+#r "../bin/Debug/Fake.IO.Zip.dll"
+#r "../bin/Debug/Plainion.CI.Tasks.dll"
 
 open Fake.Core
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
-open PlainionCI
+open Plainion.CI
 
 Target.create "CreatePackage" (fun _ ->
     !! ( outputPath </> "*.*Tests.*" )
@@ -21,10 +23,10 @@ Target.create "CreatePackage" (fun _ ->
     PZip.PackRelease()
 
     // create a dummy nuget package for testing
-//    [
-//        ("Plainion.CI*", Some "lib", None)
-//    ]
-//    |> PNuGet.Pack (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
+    [
+        ("Plainion.CI*", Some "lib", None)
+    ]
+    |> PNuGet.Pack (projectRoot </> "build" </> "Dummy.nuspec") (projectRoot </> "pkg")
 )
 
 Target.create "Deploy" (fun _ ->

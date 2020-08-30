@@ -9,9 +9,9 @@ let main argv =
     // Hint: we currently need this reference to "Plainion.CI.Tasks" here to not get:
     // "System.PlatformNotSupportedException: Windows Data Protection API (DPAPI) is not supported on this platform"
     // reason unclear :(
-    Plainion.CI.Common.projectName |> printfn "Building project: %s"
+    Plainion.CI.Common.projectName |> printfn "Preparing build workflow for '%s' ..."
 
-    printfn "Preparing build workflow ..."
+    // disable unnecessary warning
     Environment.setEnvironVar "FAKE_ALLOW_NO_DEPENDENCIES" "true"
 
     let home = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
@@ -32,7 +32,7 @@ let main argv =
 
     let prepared = FakeRuntime.prepareFakeScript config
 
-    printfn "Executing build workflow ..."
+    printfn "Executing ..."
     let runResult, cache, context = FakeRuntime.runScript prepared
 
     match runResult with
