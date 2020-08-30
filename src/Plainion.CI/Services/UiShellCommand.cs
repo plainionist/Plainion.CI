@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Plainion.CI
+namespace Plainion.CI.Services
 {
-    public class UiShellCommand : AbstractShellProcess
+    class UiShellCommand : AbstractShellProcess
     {
         private IProgress<string> myProgress;
 

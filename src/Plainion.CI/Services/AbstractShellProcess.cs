@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Plainion.CI
+namespace Plainion.CI.Services
 {
+    // TODO: move to Plainion.Core.dll
     public abstract class AbstractShellProcess : IDisposable
     {
         private Process myProcess;

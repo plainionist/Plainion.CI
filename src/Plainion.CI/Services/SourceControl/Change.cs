@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 namespace Plainion.CI.Services.SourceControl
 {

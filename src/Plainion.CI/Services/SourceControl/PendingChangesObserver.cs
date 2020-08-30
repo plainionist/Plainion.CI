@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace Plainion.CI.Services.SourceControl
 {
@@ -75,7 +74,7 @@ namespace Plainion.CI.Services.SourceControl
                        }
                        else
                        {
-                           Application.Current.Dispatcher.BeginInvoke(new Action(() => PropagatePendingChnages(t.Result)));
+                           Application.Current.Dispatcher.BeginInvoke(new Action(() => PropagatePendingChanges(t.Result)));
                        }
                    })
                 .ContinueWith(t =>
@@ -89,14 +88,14 @@ namespace Plainion.CI.Services.SourceControl
                    });
         }
 
-        private void PropagatePendingChnages(IReadOnlyCollection<Change> changes)
+        private void PropagatePendingChanges(IReadOnlyCollection<Change> changes)
         {
             if (myCurrentPendingChanges.SetEquals(changes))
             {
                 return;
             }
 
-            Debug.WriteLine("PropagatePendingChnages");
+            Debug.WriteLine("PropagatePendingChanges");
 
             myCurrentPendingChanges = new HashSet<Change>(changes);
 

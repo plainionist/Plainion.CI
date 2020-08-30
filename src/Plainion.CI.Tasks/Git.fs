@@ -4,6 +4,7 @@ open System
 open System.IO
 open LibGit2Sharp
 open Plainion.CI
+open Fake.Core
 
 /// Commits the given files to git repository
 let Commit workspaceRoot ((files:string list), comment, name, email) =
@@ -40,10 +41,14 @@ let Push workspaceRoot (name, password) =
         builder.UserName <- name
         builder.Password <- password
         
-        let cmd = new RedirectShellCommand(exe, workspaceRoot)
-        cmd.Execute [| "push"; builder.Uri.ToString() |]
+        let ret =
+            { Program = exe
+              Args = []
+              WorkingDir = workspaceRoot
+              CommandLine = (sprintf "%s %s" "push" (builder.Uri.ToString())) }
+            |> Process.shellExec 
 
-        if cmd.ExitCode <> 0 then
+        if ret <> 0 then
             failwith "Failed to push using command line git.exe"
     | None ->
         let options = new PushOptions()
