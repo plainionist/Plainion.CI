@@ -16,3 +16,4 @@
 /build/.fake
 /pkg
 /packages/Octokit.*
+/build/*.lock

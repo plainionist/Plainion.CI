@@ -78,12 +78,12 @@ module Common =
             |> Zip.zip outputPath zip
 
 module PNuGet =
-    let Pack = PNuGet.Pack getChangeLog getAssemblyProjectMap projectName outputPath
-    let PublishPackage = PNuGet.PublishPackage getChangeLog projectRoot
+    let Pack nuspec packageOut files = PNuGet.Pack getChangeLog getAssemblyProjectMap projectName outputPath nuspec packageOut files
+    let PublishPackage packageName packageOut = PNuGet.PublishPackage getChangeLog projectRoot packageName packageOut
 
     /// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
     /// to NuGet (https://www.nuget.org/api/v2/package)              
-    let Publish = PublishPackage projectName 
+    let Publish packageOut = PublishPackage projectName packageOut
 
 module PGitHub =
     let Release files = PGitHub.Release getChangeLog buildDefinition projectRoot projectName files
