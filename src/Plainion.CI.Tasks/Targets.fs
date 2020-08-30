@@ -80,53 +80,11 @@ module Targets =
     )
 
     let Build = (fun _ ->
-
-        let setParams (defaults:MSBuildParams) =
-            { defaults with
-                ToolPath = PMsBuild.msBuildExe
-                Properties = [ "OutputPath", outputPath
-                               "Configuration", buildDefinition.Configuration
-                               "Platform", buildDefinition.Platform ] }
-
-        MSBuild.build setParams (buildDefinition.GetSolutionPath())
+        PMsBuild.Build buildDefinition outputPath
     )
 
-    let private testAssemblyIncludes () =     
-        if buildDefinition.TestAssemblyPattern |> String.IsNullOrEmpty then
-            failwith "!! NO TEST ASSEMBLY PATTERN PROVIDED !!"
-
-        let testAssemblyPatterns = 
-            buildDefinition.TestAssemblyPattern.Split(';')
-            |> Seq.map ((</>) outputPath)
-
-        testAssemblyPatterns
-        |> Seq.skip 1
-        |> Seq.fold (++) (!! (testAssemblyPatterns |> Seq.head))
-
     let RunTests = (fun _ ->
-        let toolPath = Path.GetDirectoryName( buildDefinition.TestRunnerExecutable )
-
-        if File.Exists ( toolPath </> "nunit-console.exe" ) then
-            testAssemblyIncludes()
-            // "parallel" version does not show test output
-            |> NUnit.Sequential.run (fun p -> 
-                { p with
-                    ToolPath = toolPath
-                    DisableShadowCopy = true })
-        elif File.Exists ( toolPath </> "nunit3-console.exe" ) then
-            testAssemblyIncludes()
-            |> NUnit3.run (fun p -> 
-                { p with
-                    ToolPath = toolPath </> "nunit3-console.exe"
-                    ShadowCopy = false })
-        else // e.g. "dotnet test"
-            let ret = 
-                Process.shellExec { Program = buildDefinition.TestRunnerExecutable
-                                    Args = []
-                                    WorkingDir =  projectRoot
-                                    CommandLine = buildDefinition.TestAssemblyPattern }
-            if ret <> 0 then
-                failwith "Test execution failed"
+        PNUnit.RunTests buildDefinition projectRoot outputPath
     )
 
     let GenerateApiDoc = (fun _ ->
@@ -137,7 +95,7 @@ module Targets =
 
         let genApiDoc assembly =
             let assemblyFile = outputPath </> assembly
-            if testAssemblyIncludes() |> Seq.exists ((=) assemblyFile) then
+            if PNUnit.getTestAssemblyIncludes buildDefinition outputPath |> Seq.exists ((=) assemblyFile) then
                 Trace.trace (sprintf "Ignoring test assembly: %s" assembly)
                 0
             else

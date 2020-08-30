@@ -4,6 +4,7 @@ open System
 open System.IO
 open System.Xml.Linq
 open Plainion.CI
+open Fake.DotNet
 
 let private xn n = XName.Get(n,"http://schemas.microsoft.com/developer/msbuild/2003")
 
@@ -68,3 +69,13 @@ let getAssemblyProjectMap (buildDefinition:BuildDefinition) =
     |> Seq.map LoadProject
     |> Seq.map(fun proj -> proj.Assembly, proj.Location)
     |> dict
+
+let Build (buildDefinition:BuildDefinition) outputPath =
+    let setParams (defaults:MSBuildParams) =
+        { defaults with
+            ToolPath = msBuildExe
+            Properties = [ "OutputPath", outputPath
+                           "Configuration", buildDefinition.Configuration
+                           "Platform", buildDefinition.Platform ] }
+
+    MSBuild.build setParams (buildDefinition.GetSolutionPath())
