@@ -28,6 +28,7 @@
     <PackageReference Include="Fake.DotNet.NuGet" Version="5.20.3" />
     <PackageReference Include="Fake.DotNet.Testing.NUnit" Version="5.20.3" />
     <PackageReference Include="Fake.IO.Zip" Version="5.20.3" />
+    <PackageReference Include="Fake.Runtime" Version="5.20.3" />
     <PackageReference Include="Fake.Tools.Git" Version="5.20.3" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
     <PackageReference Include="Octokit" Version="0.48.0" />

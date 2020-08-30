@@ -12,14 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="bits\Workflow.fsx">
+    <Content Include="Workflow.fsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
-  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="Fake.Runtime" Version="5.20.3" />

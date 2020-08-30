@@ -21,3 +21,7 @@ with
 
 and add all references you need.
 You can add further references with "#r packet:" syntax. Checkout Paket and FAKE documentation for further details.
+
+## Passing targets to FAKE scripts
+
+Instead of just passing the target name you now need to use "--target (target name)".
