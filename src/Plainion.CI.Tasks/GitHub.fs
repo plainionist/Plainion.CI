@@ -30,7 +30,7 @@ let Release (getChangeLog:GetChangeLog) (buildDefinition:BuildDefinition) projec
     with | _ -> ()
         
     Branches.tag "" release.NugetVersion
-    PGit.Push projectRoot (user, pwd)
+    PGit.Push buildDefinition projectRoot 
     
     // release on GitHub
         

@@ -10,7 +10,6 @@ open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.DotNet
-open Fake.DotNet.Testing
 
 [<AutoOpen>]
 module Common =
@@ -88,63 +87,15 @@ module Targets =
     )
 
     let GenerateApiDoc = (fun _ ->
-        if File.Exists buildDefinition.ApiDocGenExecutable |> not then
-            failwithf "!! ApiDocGenExecutable not found: %s !!" buildDefinition.ApiDocGenExecutable
-
-        let assemblyProjectMap = getAssemblyProjectMap()
-
-        let genApiDoc assembly =
-            let assemblyFile = outputPath </> assembly
-            if PNUnit.getTestAssemblyIncludes buildDefinition outputPath |> Seq.exists ((=) assemblyFile) then
-                Trace.trace (sprintf "Ignoring test assembly: %s" assembly)
-                0
-            else
-                let args = 
-                    buildDefinition.ApiDocGenArguments
-                    |> replace "%1"  assemblyFile
-                    |> replace "%2" (Path.GetDirectoryName(assemblyProjectMap.[assembly]))
-
-                printfn "Running %s with %s" buildDefinition.ApiDocGenExecutable args
-
-                Process.shellExec { Program = buildDefinition.ApiDocGenExecutable
-                                    Args = []
-                                    WorkingDir =  projectRoot
-                                    CommandLine = args }
-        
-        let ret = 
-            assemblyProjectMap.Keys
-            |> Seq.map genApiDoc
-            |> Seq.forall(fun x -> x = 0)
-
-        match ret with
-        | true -> ()
-        | false -> failwith "ApiDoc generation failed"
+        PApiDoc.GenerateApiDoc getAssemblyProjectMap buildDefinition projectRoot outputPath
     )
 
     let Commit = (fun _ ->
-        if buildRequest.CheckInComment |> String.IsNullOrEmpty then
-            failwith "!! NO CHECKIN COMMENT PROVIDED !!"
-    
-        let isExcluded file =
-            buildRequest.FilesExcludedFromCheckIn
-            |> Seq.exists ((=) file)
-
-        let files =
-            PGit.PendingChanges projectRoot
-            |> Seq.filter (isExcluded >> not)
-            |> List.ofSeq
-
-        files
-        |> Seq.iter (sprintf "Committing file %s" >> Trace.trace)
-
-        PGit.Commit projectRoot (files, buildRequest.CheckInComment, buildDefinition.User.Login, buildDefinition.User.EMail)
+        PGit.Commit buildDefinition projectRoot buildRequest
     )
 
     let Push = (fun _ ->
-        if buildDefinition.User.Password = null then
-            failwith "!! NO PASSWORD PROVIDED !!"
-    
-        PGit.Push projectRoot (buildDefinition.User.Login, buildDefinition.User.Password.ToUnsecureString())
+        PGit.Push buildDefinition projectRoot 
     )
 
     let AssemblyInfo = (fun _ ->
