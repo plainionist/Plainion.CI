@@ -51,10 +51,8 @@ namespace Plainion.CI.Services
                     var process = new UiShellCommand(interpreter, progress);
 
                     // extend PATH so that FAKE targets can find the tools
-                    process.Environment["PATH"] = Path.Combine(toolsHome, "FAKE")
+                    process.Environment["PATH"] = Path.Combine(toolsHome)
                         + Path.PathSeparator + Path.Combine(toolsHome, "NuGet")
-                        + Path.PathSeparator + @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin"
-                        + Path.PathSeparator + @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\Current\Bin"
                         + Path.PathSeparator + Environment.GetEnvironmentVariable("PATH");
 
                     process.Environment["VisualStudioVersion"] = "16.0";

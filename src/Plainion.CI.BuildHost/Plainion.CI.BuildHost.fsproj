@@ -21,6 +21,15 @@
 
   <ItemGroup>
     <PackageReference Include="Fake.Runtime" Version="5.20.3" />
+    <PackageReference Include="NuGet.CommandLine" Version="5.7.0"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- http://stackoverflow.com/questions/19478775/add-native-files-from-nuget-package-to-project-output-directory -->
+    <None Include="C:\Users\$(USERNAME)\.nuget\packages\nuget.commandline\5.7.0\tools\*.*">
+      <Link>NuGet\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

@@ -2,9 +2,10 @@
 
 - Migrated to .Net Core
 - GitHub.fsx moved to Tasks library
-- Migrated to FAKE 5 (.Net core): read [docs/Migration-to-v3.md]
+- Migrated to FAKE 5 (.Net core)
   - Plainion.CI.Redist removed
   - PlainionCI.fsx removed 
+  - read [docs/Migration-to-v3.md] for more details
 
 ## 2.1 - 2020-08-25
 

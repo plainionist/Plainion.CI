@@ -358,7 +358,6 @@ module Targets =
     )
 
     let runFakeScript scriptFile args =
-        printfn "ARGS: %A" args
         let config = FakeRuntime.createConfigSimple VerboseLevel.Normal [] scriptFile args true false
 
         // unfort. FAKE 5 currently only supports Paket references so we have to hack here to 
