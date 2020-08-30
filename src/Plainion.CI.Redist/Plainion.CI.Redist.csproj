@@ -22,14 +22,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="bits\Workflow.fsx" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="bits\Workflow.fsx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>
