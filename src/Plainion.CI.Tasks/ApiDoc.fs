@@ -7,7 +7,7 @@ open Fake.Core
 open Fake.IO
 open Fake.IO.FileSystemOperators
 
-let GenerateApiDoc (getAssemblyProjectMap:GetAssemblyProjectMap) (buildDefinition:BuildDefinition) projectRoot outputPath =
+let Generate (getAssemblyProjectMap:GetAssemblyProjectMap) (buildDefinition:BuildDefinition) projectRoot outputPath =
     if File.Exists buildDefinition.ApiDocGenExecutable |> not then
         failwithf "!! ApiDocGenExecutable not found: %s !!" buildDefinition.ApiDocGenExecutable
 

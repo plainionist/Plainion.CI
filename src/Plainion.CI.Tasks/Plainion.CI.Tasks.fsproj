@@ -19,6 +19,7 @@
     <Compile Include="NUnit.fs" />
     <Compile Include="NuGet.fs" />
     <Compile Include="ApiDoc.fs" />
+    <Compile Include="AssemblyInfoFile.fs" />
     <Compile Include="Git.fs" />
     <Compile Include="GitHub.fs" />
     <Compile Include="Targets.fs" />
