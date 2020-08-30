@@ -11,9 +11,6 @@ open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.DotNet
 open Fake.DotNet.Testing
-open Fake.Runtime
-open Fake.Runtime.Trace
-open System.Reflection
 
 [<AutoOpen>]
 module Common =
@@ -357,52 +354,14 @@ module Targets =
             )
     )
 
-    let runFakeScript scriptFile args =
-        let config = FakeRuntime.createConfigSimple VerboseLevel.Normal [] scriptFile args true false
-
-        // unfort. FAKE 5 currently only supports Paket references so we have to hack here to 
-        // get our local references loaded
-        do
-            let localReferences =
-                [
-                    Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.dll")
-                    Directory.GetFiles(Path.GetDirectoryName(scriptFile), "*.dll")
-                ]
-                |> Seq.concat
-                |> Seq.map Runners.AssemblyInfo.ofLocation
-                |> List.ofSeq
-
-            let t = config.RuntimeOptions.GetType()
-            let f = t.GetField("_RuntimeDependencies@", BindingFlags.NonPublic ||| BindingFlags.Instance)
-            f.SetValue(config.RuntimeOptions, localReferences)
-
-        let prepared = FakeRuntime.prepareFakeScript config
-
-        let runResult, cache, context = FakeRuntime.runScript prepared
-
-        match runResult with
-        | Runners.RunResult.SuccessRun warnings ->
-            if warnings <> "" then
-                traceFAKE "%O" warnings
-            0
-        | Runners.RunResult.CompilationError err ->
-            let indentString num (str:string) =
-                let indentString = String('\t', num)
-                let splitMsg = str.Split([|"\r\n"; "\n"|], StringSplitOptions.None)
-                indentString + String.Join(sprintf "%s%s" Environment.NewLine indentString, splitMsg)
-
-            printfn "Script is not valid:"
-            printfn "%s" err.FormattedErrors
-            1
-        | Runners.RunResult.RuntimeError err ->
-            printfn "Script reported an error:"
-            printfn "%A" err
-            1
-
     let runScript (script:string) (args:string) =
         let ret = 
             if script.EndsWith(".fsx", StringComparison.OrdinalIgnoreCase) then
-                runFakeScript script (args.Split( [| ' ' |] ) |> List.ofArray)
+                { Program = @"Plainion.CI.BuildHost.exe"
+                  Args = []
+                  WorkingDir = projectRoot
+                  CommandLine = (sprintf "%s %s" script args) }
+                |> Process.shellExec 
             elif script.EndsWith(".msbuild", StringComparison.OrdinalIgnoreCase) || script.EndsWith(".targets", StringComparison.OrdinalIgnoreCase) then
                 { Program = @"C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
                   Args = []
