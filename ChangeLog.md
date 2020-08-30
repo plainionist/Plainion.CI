@@ -2,6 +2,7 @@
 
 - Migrated to .Net Core
 - GitHub.fsx moved to Tasks library
+- Migrated to FAKE 5 (.Net Core edition)
 
 ## 2.1 - 2020-08-25
 

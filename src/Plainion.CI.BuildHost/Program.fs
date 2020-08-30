@@ -6,13 +6,17 @@ open System.Reflection
 
 [<EntryPoint>]
 let main argv =
-    // trick to ensure Plainion.CI.Tasks is loaded
+    // Hint: we currently need this reference to "Plainion.CI.Tasks" here to not get:
+    // "System.PlatformNotSupportedException: Windows Data Protection API (DPAPI) is not supported on this platform"
+    // reason unclear :(
     Plainion.CI.Common.projectName |> printfn "Building project: %s"
 
-    printfn "### config ###"
+    printfn "Preparing build workflow ..."
+    Environment.setEnvironVar "FAKE_ALLOW_NO_DEPENDENCIES" "true"
+
     let home = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
     let scriptFile = Path.Combine(home, "bits", "Workflow.fsx");
-    let config = FakeRuntime.createConfigSimple VerboseLevel.Verbose [] scriptFile [] true false
+    let config = FakeRuntime.createConfigSimple VerboseLevel.Normal [] scriptFile [] true false
 
     // unfort. FAKE 5 currently only supports Paket references so we have to hack here to 
     // get our local references loaded
@@ -26,10 +30,9 @@ let main argv =
         let f = t.GetField("_RuntimeDependencies@", BindingFlags.NonPublic ||| BindingFlags.Instance)
         f.SetValue(config.RuntimeOptions, localReferences)
 
-    printfn "### prepare ###"
     let prepared = FakeRuntime.prepareFakeScript config
 
-    printfn "### run ###"
+    printfn "Executing build workflow ..."
     let runResult, cache, context = FakeRuntime.runScript prepared
 
     match runResult with
