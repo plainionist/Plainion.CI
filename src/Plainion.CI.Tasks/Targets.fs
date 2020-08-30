@@ -49,33 +49,15 @@ module Common =
         | Some cl -> cl
         | None -> failwith "No ChangeLog.md found in project root"
 
-
-    let private assemblyProjects = lazy (   let projects = PMsBuild.GetProjectFiles(buildDefinition.GetSolutionPath())
-                                            projects
-                                            |> Seq.map PMsBuild.LoadProject
-                                            |> Seq.map(fun proj -> proj.Assembly, proj.Location)
-                                            |> dict
-                                        )
+    let private assemblyProjects = lazy (PMsBuild.getAssemblyProjectMap buildDefinition)
 
     /// Returns a dictionary mapping assembly names to their project files based on the project solution
     let getAssemblyProjectMap() =
         assemblyProjects.Value
 
     module PZip =
-        let private getReleaseName() =
-            let release = getChangeLog()
-            sprintf "%s-%s" projectName release.NugetVersion
-
-        let GetReleaseFile () =
-            outputPath </> ".." </> (sprintf "%s.zip" (getReleaseName()))
-
-        /// Creates a zip from all content of the OutputPath with current version backed in
-        let PackRelease() = 
-            let zip = GetReleaseFile()
-            let releaseName = getReleaseName()
-
-            !! ( outputPath </> "**/*.*" )
-            |> Zip.zip outputPath zip
+        let GetReleaseFile() = PZip.GetReleaseFile getChangeLog projectName outputPath
+        let PackRelease() = PZip.PackRelease getChangeLog projectName outputPath
 
 module PNuGet =
     let Pack nuspec packageOut files = PNuGet.Pack getChangeLog getAssemblyProjectMap projectName outputPath nuspec packageOut files

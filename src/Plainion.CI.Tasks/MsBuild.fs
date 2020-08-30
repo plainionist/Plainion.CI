@@ -3,6 +3,7 @@
 open System
 open System.IO
 open System.Xml.Linq
+open Plainion.CI
 
 let private xn n = XName.Get(n,"http://schemas.microsoft.com/developer/msbuild/2003")
 
@@ -61,3 +62,9 @@ let GetPackageReferences(projectFile:string) =
     |> Seq.filter(fun e -> e.Name = XName.Get("PackageReference"))
     |> Seq.map(fun e -> e.Attribute(XName.Get("Include")).Value, e.Attribute(XName.Get("Version")).Value)
     |> List.ofSeq
+
+let getAssemblyProjectMap (buildDefinition:BuildDefinition) =
+    GetProjectFiles(buildDefinition.GetSolutionPath())
+    |> Seq.map LoadProject
+    |> Seq.map(fun proj -> proj.Assembly, proj.Location)
+    |> dict
