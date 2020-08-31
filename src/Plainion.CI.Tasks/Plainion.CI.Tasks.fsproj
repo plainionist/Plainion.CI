@@ -22,6 +22,7 @@
     <Compile Include="AssemblyInfoFile.fs" />
     <Compile Include="Git.fs" />
     <Compile Include="GitHub.fs" />
+    <Compile Include="Packaging.fs" />
     <Compile Include="Targets.fs" />
   </ItemGroup>
 
