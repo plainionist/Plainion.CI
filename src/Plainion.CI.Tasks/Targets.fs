@@ -67,76 +67,53 @@ module PNuGet =
 module PGitHub =
     let Release files = PGitHub.Release getChangeLog buildDefinition projectRoot projectName files
 
-module Targets =
-    let All = (fun _ ->
-        Trace.trace "--- Plainion.CI - DONE ---"
-    )
-
-    let Clean = (fun _ ->
-        Shell.cleanDir outputPath
-    )
-
-    let Build = (fun _ ->
-        PMsBuild.Build buildDefinition outputPath
-    )
-
-    let RunTests = (fun _ ->
-        PNUnit.RunTests buildDefinition projectRoot outputPath
-    )
-
-    let GenerateApiDoc = (fun _ ->
-        PApiDoc.Generate getAssemblyProjectMap buildDefinition projectRoot outputPath
-    )
-
-    let Commit = (fun _ ->
-        PGit.Commit buildDefinition projectRoot buildRequest
-    )
-
-    let Push = (fun _ ->
-        PGit.Push buildDefinition projectRoot 
-    )
-
-    let AssemblyInfo = (fun _ ->
-        PAssemblyInfoFile.Generate getChangeLog projectRoot projectName
-    )
-
-    let CreatePackage = (fun _ ->
-        PPackaging.CreatePackage buildDefinition projectRoot outputPath
-    )
-
-    let DeployPackage = (fun _ ->
-        PPackaging.DeployPackage buildDefinition projectRoot outputPath
-    )
-
-    let PublishPackage = (fun _ ->
-        PPackaging.PublishPackage buildDefinition projectRoot outputPath
-    )
-
 module Runtime =
     open Fake.Core.TargetOperators
 
     let ScriptRun() =
-        Target.create "All" Targets.All
+        Target.create "All" (fun _ ->
+            Trace.trace "--- Plainion.CI - DONE ---"
+        )
 
-        Target.create "Clean" Targets.Clean
+        Target.create "Clean" (fun _ ->
+            Shell.cleanDir outputPath
+        )
 
-        Target.create "Build" Targets.Build
+        Target.create "Build" (fun _ ->
+            PMsBuild.Build buildDefinition outputPath
+        )
 
-        Target.create "RunTests" Targets.RunTests
+        Target.create "RunTests" (fun _ ->
+            PNUnit.RunTests buildDefinition projectRoot outputPath
+        )
 
-        Target.create "GenerateApiDoc" Targets.GenerateApiDoc
+        Target.create "GenerateApiDoc" (fun _ ->
+            PApiDoc.Generate getAssemblyProjectMap buildDefinition projectRoot outputPath
+        )
 
-        Target.create "Commit" Targets.Commit
+        Target.create "Commit" (fun _ ->
+            PGit.Commit buildDefinition projectRoot buildRequest
+        )
 
-        Target.create "Push" Targets.Push
+        Target.create "Push" (fun _ ->
+            PGit.Push buildDefinition projectRoot 
+        )
 
-        Target.create "AssemblyInfo" Targets.AssemblyInfo
+        Target.create "AssemblyInfo" (fun _ ->
+            PAssemblyInfoFile.Generate getChangeLog projectRoot projectName
+        )
 
-        Target.create "CreatePackage" Targets.CreatePackage
+        Target.create "CreatePackage" (fun _ ->
+            PPackaging.CreatePackage buildDefinition projectRoot outputPath
+        )
 
-        Target.create "DeployPackage" Targets.DeployPackage
+        Target.create "DeployPackage" (fun _ ->
+            PPackaging.DeployPackage buildDefinition projectRoot outputPath
+        )
 
-        Target.create "PublishPackage" Targets.PublishPackage
+        Target.create "PublishPackage" (fun _ ->
+            PPackaging.PublishPackage buildDefinition projectRoot outputPath
+        )
 
         "Clean"
             =?> ("AssemblyInfo", changeLogFile |> File.Exists)
