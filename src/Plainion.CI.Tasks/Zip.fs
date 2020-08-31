@@ -5,8 +5,10 @@ open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 
 let private getReleaseName (getChangeLog:GetChangeLog) projectName =
-    let release = getChangeLog()
-    sprintf "%s-%s" projectName release.NugetVersion
+    let createName version = sprintf "%s-%s" projectName version
+    getChangeLog()
+    |> Option.map(fun release -> createName release.NugetVersion)
+    |> Option.defaultValue (createName defaultAssemblyVersion)
 
 let GetReleaseFile (getChangeLog:GetChangeLog) projectName outputPath =
     let releaseName = getReleaseName getChangeLog projectName

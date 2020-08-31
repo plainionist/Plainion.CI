@@ -25,3 +25,15 @@ You can add further references with "#r packet:" syntax. Checkout Paket and FAKE
 ## Passing targets to FAKE scripts
 
 Instead of just passing the target name you now need to use "--target (target name)".
+
+
+## API changes
+
+With Fake 5 now all methods should be used with module qualified name.
+
+- use "Target.create" instead of "Target"
+- use "File.deleteAll" instead of "DeleteFiles"
+- use "Shell.cleanDir" instead of "CleanDir"
+
+and similar.
+

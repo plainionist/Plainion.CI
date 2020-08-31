@@ -10,5 +10,9 @@ let replace (oldValue:string) (newValue:string) (str:string) =
 let contains (substring:string) (str:string) =
     str.IndexOf(substring, StringComparison.OrdinalIgnoreCase) <> -1
 
-type GetChangeLog = unit -> Fake.Core.ReleaseNotes.ReleaseNotes
+type GetChangeLog = unit -> Fake.Core.ReleaseNotes.ReleaseNotes option
 type GetAssemblyProjectMap = unit -> IDictionary<string,string>
+
+let (|?) = defaultArg
+
+let defaultAssemblyVersion = "1.0.0"

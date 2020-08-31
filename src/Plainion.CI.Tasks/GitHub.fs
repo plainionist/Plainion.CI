@@ -25,19 +25,22 @@ let Release (getChangeLog:GetChangeLog) (buildDefinition:BuildDefinition) projec
     let user = buildDefinition.User.Login
     let pwd = buildDefinition.User.Password.ToUnsecureString()
 
+    let version = release |> Option.map(fun x -> x.AssemblyVersion) |? defaultAssemblyVersion
+
     try
-        Branches.deleteTag "" release.NugetVersion
+        Branches.deleteTag "" version
     with | _ -> ()
         
-    Branches.tag "" release.NugetVersion
+    Branches.tag "" version
     PGit.Push buildDefinition projectRoot 
     
     // release on GitHub
         
-    let releaseNotes =  release.Notes 
-                        |> List.ofSeq
+    let releaseNotes =  release
+                        |> Option.map(fun x -> x.Notes)
+                        |? []
 
-    createDraft user pwd projectName release.NugetVersion (release.SemVer.PreRelease <> None) releaseNotes 
+    createDraft user pwd projectName version (release |> Option.map(fun x -> x.SemVer.PreRelease) |> Option.isSome) releaseNotes 
     |> uploadFiles files  
     |> releaseDraft
     |> Async.RunSynchronously

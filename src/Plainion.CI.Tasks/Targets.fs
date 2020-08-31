@@ -31,17 +31,11 @@ module Common =
 
 [<AutoOpen>]
 module Impl = 
-    let changeLogFile = projectRoot </> "ChangeLog.md"
+    let private changeLog = lazy ( match projectRoot </> "ChangeLog.md" |> File.exists with
+                                   | true -> projectRoot </> "ChangeLog.md" |> ReleaseNotes.load |> Some
+                                   | false -> None )
 
-    let private changeLog = lazy ( match File.exists changeLogFile with
-                                   | true -> changeLogFile |> ReleaseNotes.load |> Some
-                                   | false -> None
-                                 )
-
-    let getChangeLog() = 
-        match changeLog.Value with
-        | Some cl -> cl
-        | None -> failwith "No ChangeLog.md found in project root"
+    let getChangeLog() = changeLog.Value
 
     let private assemblyProjects = lazy (PMsBuild.getAssemblyProjectMap buildDefinition)
 
@@ -95,7 +89,7 @@ module Runtime =
             PGit.Push buildDefinition projectRoot 
         )
 
-        Target.create "AssemblyInfo" (fun _ ->
+        Target.create "UpdateAssemblyInfo" (fun _ ->
             PAssemblyInfoFile.Generate getChangeLog projectRoot projectName
         )
 
@@ -112,7 +106,7 @@ module Runtime =
         )
 
         "Clean"
-            =?> ("AssemblyInfo", changeLogFile |> File.Exists)
+            ==> ("UpdateAssemblyInfo")
             ==> "Build"
             =?> ("GenerateApiDoc", buildDefinition.GenerateAPIDoc)
             =?> ("RunTests", buildDefinition.RunTests)

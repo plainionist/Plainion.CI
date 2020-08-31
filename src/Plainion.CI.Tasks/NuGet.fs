@@ -53,9 +53,8 @@ let Pack (getChangeLog:GetChangeLog) (getAssemblyProjectMap:GetAssemblyProjectMa
                                        WorkingDir = outputPath
                                        Project = projectName
                                        Dependencies = dependencies 
-                                       Version = release.AssemblyVersion
-                                       ReleaseNotes = release.Notes 
-                                                      |> String.concat Environment.NewLine
+                                       Version = release |> Option.map(fun x -> x.AssemblyVersion) |? defaultAssemblyVersion
+                                       ReleaseNotes = release |> Option.map(fun x -> x.Notes |> String.concat Environment.NewLine) |? ""
                                        Files = files }) 
 
 /// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
@@ -66,6 +65,6 @@ let PublishPackage (getChangeLog:GetChangeLog) projectRoot packageName packageOu
     NuGet.NuGetPublish (fun p -> {p with OutputPath = packageOut
                                          WorkingDir = projectRoot
                                          Project = packageName
-                                         Version = release.AssemblyVersion
+                                         Version = release |> Option.map(fun x -> x.AssemblyVersion) |? defaultAssemblyVersion
                                          PublishUrl = "https://www.nuget.org/api/v2/package"
                                          Publish = true }) 
