@@ -1,4 +1,4 @@
-## 3.0 - 2020-08-
+## 3.0 - 2020-09-
 
 - Migrated to .Net Core
 - GitHub.fsx moved to Tasks library
@@ -6,6 +6,11 @@
   - Plainion.CI.Redist removed
   - PlainionCI.fsx removed 
   - read [docs/Migration-to-v3.md] for more details
+- APIs removed
+  - getPropertyAndTrace
+  - changeLogFile
+  - getChangeLog
+  - getAssemblyProjectMap
 
 ## 2.1 - 2020-08-25
 

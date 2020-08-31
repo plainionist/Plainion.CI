@@ -16,11 +16,6 @@ module Common =
         | Some x -> x
         | None -> failwithf "Property not found: %s" name
 
-    let getPropertyAndTrace name =
-        let value = getProperty name
-        name + "=" + value |> Trace.trace 
-        value
-
     /// get environment variable given by Plainion.CI engine
     let (!%) = getProperty
 
@@ -33,6 +28,9 @@ module Common =
     let outputPath = buildDefinition.GetOutputPath()
 
     let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
+
+[<AutoOpen>]
+module Impl = 
     let changeLogFile = projectRoot </> "ChangeLog.md"
 
     let private changeLog = lazy ( match File.exists changeLogFile with
@@ -40,21 +38,19 @@ module Common =
                                    | false -> None
                                  )
 
-    /// Returns the parsed ChangeLog.md if exists
-    let getChangeLog () = 
+    let getChangeLog() = 
         match changeLog.Value with
         | Some cl -> cl
         | None -> failwith "No ChangeLog.md found in project root"
 
     let private assemblyProjects = lazy (PMsBuild.getAssemblyProjectMap buildDefinition)
 
-    /// Returns a dictionary mapping assembly names to their project files based on the project solution
     let getAssemblyProjectMap() =
         assemblyProjects.Value
 
-    module PZip =
-        let GetReleaseFile() = PZip.GetReleaseFile getChangeLog projectName outputPath
-        let PackRelease() = PZip.PackRelease getChangeLog projectName outputPath
+module PZip =
+    let GetReleaseFile() = PZip.GetReleaseFile getChangeLog projectName outputPath
+    let PackRelease() = PZip.PackRelease getChangeLog projectName outputPath
 
 module PNuGet =
     let Pack nuspec packageOut files = PNuGet.Pack getChangeLog getAssemblyProjectMap projectName outputPath nuspec packageOut files
