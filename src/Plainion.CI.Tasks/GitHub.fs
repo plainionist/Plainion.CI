@@ -16,11 +16,11 @@ module private Impl =
 
 /// Publishes a new release to GitHub with the current version of ChangeLog.md and
 /// the given files
-let Release (getChangeLog:GetChangeLog) (buildDefinition:BuildDefinition) projectRoot projectName files =
+let Release (buildDefinition:BuildDefinition) projectRoot projectName files =
     if buildDefinition.User.Password = null then
         failwith "!! NO PASSWORD PROVIDED !!"
     
-    let release = getChangeLog()
+    let release = projectRoot |> GetChangeLog 
 
     let user = buildDefinition.User.Login
     let pwd = buildDefinition.User.Password.ToUnsecureString()

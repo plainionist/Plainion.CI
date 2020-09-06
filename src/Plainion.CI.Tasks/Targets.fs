@@ -5,7 +5,6 @@ open Plainion.CI
 open Plainion.CI.Tasks
 open Fake.Core
 open Fake.IO
-open Fake.IO.FileSystemOperators
 
 [<AutoOpen>]
 module API =
@@ -29,30 +28,23 @@ module Common =
 
     let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
 
-[<AutoOpen>]
-module Impl = 
-    // TODO:
-    // - Create "request" objects for each task so that each task has same signature: deps via context and request object
-    // - no task gets entire build definition or build request because those might be removed soon
-    // - NO dependencies just values!
+// TODO:
+// - Create "request" objects for each task so that each task has same signature: deps via context and request object
+// - no task gets entire build definition or build request because those might be removed soon
+// - NO dependencies just values!
 
-    let private changeLog = lazy ( match projectRoot </> "ChangeLog.md" |> File.exists with
-                                   | true -> projectRoot </> "ChangeLog.md" |> ReleaseNotes.load |> Some
-                                   | false -> None )
-
-    let getChangeLog() = changeLog.Value
 
 module PZip =
-    let GetReleaseFile() = PZip.GetReleaseFile getChangeLog projectName outputPath
-    let PackRelease() = PZip.PackRelease getChangeLog projectName outputPath
+    let GetReleaseFile() = PPackaging.GetReleaseFile projectRoot projectName outputPath
+    let PackRelease() = PPackaging.PackRelease projectRoot projectName outputPath
 
 module PNuGet =
-    let Pack nuspec packageOut files = PNuGet.Pack getChangeLog (buildDefinition.GetSolutionPath()) projectName outputPath nuspec packageOut files
-    let PublishPackage packageName packageOut = PNuGet.PublishPackage getChangeLog projectRoot packageName packageOut
+    let Pack nuspec packageOut files = PNuGet.Pack projectRoot (buildDefinition.GetSolutionPath()) projectName outputPath nuspec packageOut files
+    let PublishPackage packageName packageOut = PNuGet.PublishPackage projectRoot packageName packageOut
     let Publish packageOut = PublishPackage projectName packageOut
 
 module PGitHub =
-    let Release files = PGitHub.Release getChangeLog buildDefinition projectRoot projectName files
+    let Release files = PGitHub.Release buildDefinition projectRoot projectName files
 
 module Runtime =
     open Fake.Core.TargetOperators
@@ -87,7 +79,7 @@ module Runtime =
         )
 
         Target.create "UpdateAssemblyInfo" (fun _ ->
-            PAssemblyInfoFile.Generate getChangeLog projectRoot projectName
+            PAssemblyInfoFile.Generate projectRoot projectName
         )
 
         Target.create "CreatePackage" (fun _ ->

@@ -8,8 +8,9 @@ open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.DotNet
 
-let Generate (getChangeLog:GetChangeLog) projectRoot projectName =
-    getChangeLog()
+let Generate projectRoot projectName =
+    projectRoot
+    |> GetChangeLog
     |> Option.iter (fun release ->
         let getAssemblyInfoAttributes vsProjName =
             [ AssemblyInfo.Title (vsProjName)

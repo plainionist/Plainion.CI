@@ -11,8 +11,8 @@ open PMsBuild
 
 /// Creates a NuGet package with the given files and NuSpec at the packageOut folder.
 /// Version is taken from changelog.md
-let Pack (getChangeLog:GetChangeLog) solutionPath projectName outputPath nuspec packageOut files =
-    let release = getChangeLog()
+let Pack projectRoot solutionPath projectName outputPath nuspec packageOut files =
+    let release = projectRoot |> GetChangeLog 
         
     Directory.create packageOut
     Shell.cleanDir packageOut
@@ -60,8 +60,8 @@ let Pack (getChangeLog:GetChangeLog) solutionPath projectName outputPath nuspec 
 
 /// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
 /// to NuGet (https://www.nuget.org/api/v2/package)              
-let PublishPackage (getChangeLog:GetChangeLog) projectRoot packageName packageOut =
-    let release = getChangeLog()
+let PublishPackage projectRoot packageName packageOut =
+    let release = projectRoot |> GetChangeLog 
 
     NuGet.NuGetPublish (fun p -> {p with OutputPath = packageOut
                                          WorkingDir = projectRoot
