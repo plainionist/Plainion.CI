@@ -72,15 +72,16 @@ module private Impl =
           Assembly = (sprintf "%s.%s" assembly assemblyExtension)
           PackageReferences = doc |> getPackageReferences }
 
-let GetProjects =
-    let mutable projects : VsProject list = []
-    fun (solution:string) ->
-        if projects.IsEmpty then
-            projects <-  
-                solution
-                |> getProjectFiles
-                |> List.map loadProject
-        projects
+module API =          
+    let GetProjects =
+        let mutable projects : VsProject list = []
+        fun (solution:string) ->
+            if projects.IsEmpty then
+                projects <-  
+                    solution
+                    |> getProjectFiles
+                    |> List.map loadProject
+            projects
 
 type BuildRequest = {
     SolutionPath : string

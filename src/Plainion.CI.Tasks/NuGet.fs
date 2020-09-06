@@ -40,7 +40,7 @@ let Pack projectRoot solutionPath projectName outputPath nuspec packageOut files
                 |> List.map(fun d -> d.Name,d.Version)
 
         solutionPath
-        |> PMsBuild.GetProjects
+        |> PMsBuild.API.GetProjects
         |> Seq.filter(fun e -> assemblies |> List.exists ((=)e.Assembly))
         |> Seq.collect getDependencies
         |> Seq.distinct

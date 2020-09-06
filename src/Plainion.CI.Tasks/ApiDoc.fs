@@ -32,7 +32,7 @@ let Generate (buildDefinition:BuildDefinition) projectRoot outputPath =
         
     let ret = 
         buildDefinition.GetSolutionPath()
-        |> PMsBuild.GetProjects
+        |> PMsBuild.API.GetProjects
         |> Seq.map genApiDoc
         |> Seq.forall(fun x -> x = 0)
 
