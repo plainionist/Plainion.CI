@@ -7,15 +7,26 @@ open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.DotNet
+open Plainion.CI
 
-let Generate projectRoot projectName =
-    projectRoot
+type AssemblyInfoFileRequest = {
+    ProjectRoot : string
+    ProjectName : string
+} with 
+    static member Create (def:BuildDefinition) =
+        {
+            ProjectRoot = def.RepositoryRoot
+            ProjectName = def.GetProjectName()
+        }
+
+let Generate request =
+    request.ProjectRoot
     |> GetChangeLog
     |> Option.iter (fun release ->
         let getAssemblyInfoAttributes vsProjName =
             [ AssemblyInfo.Title (vsProjName)
-              AssemblyInfo.Product projectName
-              AssemblyInfo.Description projectName
+              AssemblyInfo.Product request.ProjectName
+              AssemblyInfo.Description request.ProjectName
               AssemblyInfo.Copyright (sprintf "Copyright @ %i" DateTime.UtcNow.Year)
               AssemblyInfo.Version release.AssemblyVersion
               AssemblyInfo.FileVersion release.AssemblyVersion ]
@@ -51,7 +62,7 @@ let Generate projectRoot projectName =
                 if assemblyInfoIsIncluded |> not then 
                     failwithf "AssemblyInfo file NOT included in project %s" projectFile
 
-        !! ( projectRoot </> "src/**/*.??proj" )
+        !! ( request.ProjectRoot </> "src/**/*.??proj" )
         |> Seq.map getProjectDetails
         |> Seq.iter (fun (projFileName, _, folderName, attributes) ->
             match projFileName with

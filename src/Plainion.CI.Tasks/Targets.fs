@@ -90,7 +90,7 @@ module Runtime =
         )
 
         Target.create "UpdateAssemblyInfo" (fun _ ->
-            PAssemblyInfoFile.Generate projectRoot projectName
+            buildDefinition |> PAssemblyInfoFile.AssemblyInfoFileRequest.Create |> PAssemblyInfoFile.Generate 
         )
 
         Target.create "CreatePackage" (fun _ ->
