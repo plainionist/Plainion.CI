@@ -8,30 +8,48 @@ open Fake.IO
 open Fake.IO.FileSystemOperators
 open PMsBuild
 
-let Generate (buildDefinition:BuildDefinition) projectRoot outputPath =
-    if File.Exists buildDefinition.ApiDocGenExecutable |> not then
-        failwithf "!! ApiDocGenExecutable not found: %s !!" buildDefinition.ApiDocGenExecutable
+type ApiDocRequest = {
+    ProjectRoot : string
+    OutputPath : string
+    ApiDocGenExecutable : string
+    ApiDocGenArguments : string
+    TestAssemblyPattern : string
+    SolutionPath : string
+} with 
+    static member Create (def:BuildDefinition) =
+        {
+            ProjectRoot = def.RepositoryRoot
+            OutputPath = def.GetOutputPath()
+            ApiDocGenExecutable = def.ApiDocGenExecutable
+            ApiDocGenArguments = def.ApiDocGenArguments
+            TestAssemblyPattern = def.TestAssemblyPattern
+            SolutionPath = def.GetSolutionPath()
+        }
+
+let Generate request =
+    if File.Exists request.ApiDocGenExecutable |> not then
+        failwithf "!! ApiDocGenExecutable not found: %s !!" request.ApiDocGenExecutable
 
     let genApiDoc (project:VsProject) =
-        let assemblyFile = outputPath </> project.Assembly
-        if PNUnit.API.GetTestAssemblyIncludes buildDefinition.TestAssemblyPattern outputPath |> Seq.exists ((=) assemblyFile) then
+        let assemblyFile = request.OutputPath </> project.Assembly
+        if PNUnit.API.GetTestAssemblyIncludes request.TestAssemblyPattern request.OutputPath |> Seq.exists ((=) assemblyFile) then
             Trace.trace (sprintf "Ignoring test assembly: %s" project.Assembly)
             0
         else
             let args = 
-                buildDefinition.ApiDocGenArguments
+                request.ApiDocGenArguments
                 |> replace "%1"  assemblyFile
                 |> replace "%2" (Path.GetDirectoryName(project.Location))
 
-            printfn "Running %s with %s" buildDefinition.ApiDocGenExecutable args
+            printfn "Running %s with %s" request.ApiDocGenExecutable args
 
-            Process.shellExec { Program = buildDefinition.ApiDocGenExecutable
+            Process.shellExec { Program = request.ApiDocGenExecutable
                                 Args = []
-                                WorkingDir =  projectRoot
+                                WorkingDir =  request.ProjectRoot
                                 CommandLine = args }
         
     let ret = 
-        buildDefinition.GetSolutionPath()
+        request.SolutionPath
         |> PMsBuild.API.GetProjects
         |> Seq.map genApiDoc
         |> Seq.forall(fun x -> x = 0)

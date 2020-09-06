@@ -78,7 +78,7 @@ module Runtime =
         )
 
         Target.create "GenerateApiDoc" (fun _ ->
-            PApiDoc.Generate buildDefinition projectRoot outputPath
+            buildDefinition |> PApiDoc.ApiDocRequest.Create |> PApiDoc.Generate
         )
 
         Target.create "Commit" (fun _ ->
