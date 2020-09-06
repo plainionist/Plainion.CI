@@ -6,23 +6,22 @@ open Plainion.CI.Tasks
 open Fake.Core
 open Fake.IO
 open Fake.IO.FileSystemOperators
+open PMsBuild
 
-let Generate (getAssemblyProjectMap:GetAssemblyProjectMap) (buildDefinition:BuildDefinition) projectRoot outputPath =
+let Generate (buildDefinition:BuildDefinition) projectRoot outputPath =
     if File.Exists buildDefinition.ApiDocGenExecutable |> not then
         failwithf "!! ApiDocGenExecutable not found: %s !!" buildDefinition.ApiDocGenExecutable
 
-    let assemblyProjectMap = getAssemblyProjectMap()
-
-    let genApiDoc assembly =
-        let assemblyFile = outputPath </> assembly
+    let genApiDoc (project:VsProject) =
+        let assemblyFile = outputPath </> project.Assembly
         if PNUnit.getTestAssemblyIncludes buildDefinition outputPath |> Seq.exists ((=) assemblyFile) then
-            Trace.trace (sprintf "Ignoring test assembly: %s" assembly)
+            Trace.trace (sprintf "Ignoring test assembly: %s" project.Assembly)
             0
         else
             let args = 
                 buildDefinition.ApiDocGenArguments
                 |> replace "%1"  assemblyFile
-                |> replace "%2" (Path.GetDirectoryName(assemblyProjectMap.[assembly]))
+                |> replace "%2" (Path.GetDirectoryName(project.Location))
 
             printfn "Running %s with %s" buildDefinition.ApiDocGenExecutable args
 
@@ -32,7 +31,8 @@ let Generate (getAssemblyProjectMap:GetAssemblyProjectMap) (buildDefinition:Buil
                                 CommandLine = args }
         
     let ret = 
-        assemblyProjectMap.Keys
+        buildDefinition.GetSolutionPath()
+        |> PMsBuild.GetProjects
         |> Seq.map genApiDoc
         |> Seq.forall(fun x -> x = 0)
 

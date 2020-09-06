@@ -31,27 +31,24 @@ module Common =
 
 [<AutoOpen>]
 module Impl = 
+    // TODO:
+    // - Create "request" objects for each task so that each task has same signature: deps via context and request object
+    // - no task gets entire build definition or build request because those might be removed soon
+    // - NO dependencies just values!
+
     let private changeLog = lazy ( match projectRoot </> "ChangeLog.md" |> File.exists with
                                    | true -> projectRoot </> "ChangeLog.md" |> ReleaseNotes.load |> Some
                                    | false -> None )
 
     let getChangeLog() = changeLog.Value
 
-    let private assemblyProjects = lazy (PMsBuild.getAssemblyProjectMap buildDefinition)
-
-    let getAssemblyProjectMap() =
-        assemblyProjects.Value
-
 module PZip =
     let GetReleaseFile() = PZip.GetReleaseFile getChangeLog projectName outputPath
     let PackRelease() = PZip.PackRelease getChangeLog projectName outputPath
 
 module PNuGet =
-    let Pack nuspec packageOut files = PNuGet.Pack getChangeLog getAssemblyProjectMap projectName outputPath nuspec packageOut files
+    let Pack nuspec packageOut files = PNuGet.Pack getChangeLog (buildDefinition.GetSolutionPath()) projectName outputPath nuspec packageOut files
     let PublishPackage packageName packageOut = PNuGet.PublishPackage getChangeLog projectRoot packageName packageOut
-
-    /// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
-    /// to NuGet (https://www.nuget.org/api/v2/package)              
     let Publish packageOut = PublishPackage projectName packageOut
 
 module PGitHub =
@@ -78,7 +75,7 @@ module Runtime =
         )
 
         Target.create "GenerateApiDoc" (fun _ ->
-            PApiDoc.Generate getAssemblyProjectMap buildDefinition projectRoot outputPath
+            PApiDoc.Generate buildDefinition projectRoot outputPath
         )
 
         Target.create "Commit" (fun _ ->

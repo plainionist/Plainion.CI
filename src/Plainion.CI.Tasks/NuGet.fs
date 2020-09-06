@@ -7,10 +7,11 @@ open Fake.DotNet.NuGet
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
+open PMsBuild
 
 /// Creates a NuGet package with the given files and NuSpec at the packageOut folder.
 /// Version is taken from changelog.md
-let Pack (getChangeLog:GetChangeLog) (getAssemblyProjectMap:GetAssemblyProjectMap) projectName outputPath nuspec packageOut files =
+let Pack (getChangeLog:GetChangeLog) solutionPath projectName outputPath nuspec packageOut files =
     let release = getChangeLog()
         
     Directory.create packageOut
@@ -27,21 +28,21 @@ let Pack (getChangeLog:GetChangeLog) (getAssemblyProjectMap:GetAssemblyProjectMa
     |> Seq.iter( fun a -> Trace.trace (sprintf "Adding file %s to package" a))
 
     let dependencies =
-        let getDependencies (projectFile:string) =
-            let packagesConfig = projectFile |> Path.GetDirectoryName </> "packages.config"
+        let getDependencies (project:VsProject) =
+            let packagesConfig = project.Location |> Path.GetDirectoryName </> "packages.config"
 
             if packagesConfig |> File.exists then
                 packagesConfig 
                 |> Fake.DotNet.NuGet.NuGet.getDependencies
                 |> List.map(fun d -> d.Id,d.Version.AsString)
             else
-                //     <PackageReference Include="System.ComponentModel" Version="4.3.0" />
-                projectFile 
-                |> PMsBuild.GetPackageReferences
+                project.PackageReferences
+                |> List.map(fun d -> d.Name,d.Version)
 
-        getAssemblyProjectMap()
-        |> Seq.filter(fun e -> assemblies |> List.exists ((=)e.Key))
-        |> Seq.collect(fun e -> e.Value |> getDependencies)
+        solutionPath
+        |> PMsBuild.GetProjects
+        |> Seq.filter(fun e -> assemblies |> List.exists ((=)e.Assembly))
+        |> Seq.collect getDependencies
         |> Seq.distinct
         |> List.ofSeq
 
