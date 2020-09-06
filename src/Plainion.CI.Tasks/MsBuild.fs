@@ -82,12 +82,26 @@ let GetProjects =
                 |> List.map loadProject
         projects
 
-let Build (buildDefinition:BuildDefinition) outputPath =
+type BuildRequest = {
+    SolutionPath : string
+    OutputPath : string
+    Configuration : string
+    Platform : string
+} with
+    static member Create (buildDefinition:BuildDefinition) =
+        {
+            SolutionPath = buildDefinition.GetSolutionPath()
+            OutputPath = buildDefinition.GetOutputPath()
+            Configuration = buildDefinition.Configuration
+            Platform = buildDefinition.Platform
+        }
+
+let Build request =
     let setParams (defaults:MSBuildParams) =
         { defaults with
             ToolPath = msBuildExe
-            Properties = [ "OutputPath", outputPath
-                           "Configuration", buildDefinition.Configuration
-                           "Platform", buildDefinition.Platform ] }
+            Properties = [ "OutputPath", request.OutputPath
+                           "Configuration", request.Configuration
+                           "Platform", request.Platform ] }
 
-    MSBuild.build setParams (buildDefinition.GetSolutionPath())
+    MSBuild.build setParams request.SolutionPath

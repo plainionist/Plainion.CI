@@ -59,7 +59,7 @@ module Runtime =
         )
 
         Target.create "Build" (fun _ ->
-            PMsBuild.Build buildDefinition outputPath
+            buildDefinition |> PMsBuild.BuildRequest.Create |> PMsBuild.Build
         )
 
         Target.create "RunTests" (fun _ ->
