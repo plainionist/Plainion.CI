@@ -32,7 +32,9 @@ let Release (buildDefinition:BuildDefinition) projectRoot projectName files =
     with | _ -> ()
         
     Branches.tag "" version
-    PGit.Push buildDefinition projectRoot 
+    buildDefinition
+    |> PGit.GitPushRequest.Create
+    |> PGit.Push 
     
     // release on GitHub
         

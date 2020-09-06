@@ -82,11 +82,11 @@ module Runtime =
         )
 
         Target.create "Commit" (fun _ ->
-            PGit.Commit buildDefinition projectRoot buildRequest
+            (buildDefinition,buildRequest) |> PGit.GitCommitRequest.Create |> PGit.Commit 
         )
 
         Target.create "Push" (fun _ ->
-            PGit.Push buildDefinition projectRoot 
+            buildDefinition |> PGit.GitPushRequest.Create |> PGit.Push 
         )
 
         Target.create "UpdateAssemblyInfo" (fun _ ->

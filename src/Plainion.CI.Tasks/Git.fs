@@ -7,9 +7,29 @@ open Plainion.CI
 open Fake.Core
 open Fake.IO
 
+module API = 
+    /// Returns all non-ignored pending changes
+    let GetPendingChanges projectRoot =
+        use repo = new Repository( projectRoot )
+
+        repo.RetrieveStatus()
+        |> Seq.filter(fun e -> e.State.HasFlag( FileStatus.Ignored ) |> not )
+        |> Seq.map(fun e -> e.FilePath)
+        |> List.ofSeq
+
+type GitPushRequest = {
+    ProjectRoot : string
+    User : User
+} with 
+    static member Create (def:BuildDefinition) =
+        {
+            ProjectRoot = def.RepositoryRoot
+            User = def.User
+        }
+
 /// Pushes the local repository to the default remote one
-let Push (buildDefinition:BuildDefinition) projectRoot =
-    if buildDefinition.User.Password = null then
+let Push request =
+    if request.User.Password = null then
         failwith "!! NO PASSWORD PROVIDED !!"
 
     // there are currently 2 blocking issues open with libgit2sharp and push related to windows and network:
@@ -22,7 +42,7 @@ let Push (buildDefinition:BuildDefinition) projectRoot =
         |> Seq.map(fun path -> Path.Combine(path, "git.exe"))
         |> Seq.tryFind File.Exists
 
-    use repo = new Repository( projectRoot )
+    use repo = new Repository( request.ProjectRoot )
     let origin = repo.Network.Remotes.[ "origin" ]
 
     match cmdLineGit with
@@ -31,13 +51,13 @@ let Push (buildDefinition:BuildDefinition) projectRoot =
         // https://stackoverflow.com/questions/29776439/username-and-password-in-command-for-git-push
         let uri = new Uri(origin.Url)
         let builder = new UriBuilder(uri)
-        builder.UserName <- buildDefinition.User.Login
-        builder.Password <- buildDefinition.User.Password.ToUnsecureString()
+        builder.UserName <- request.User.Login
+        builder.Password <- request.User.Password.ToUnsecureString()
         
         let ret =
             { Program = exe
               Args = []
-              WorkingDir = projectRoot
+              WorkingDir = request.ProjectRoot
               CommandLine = (sprintf "%s %s" "push" (builder.Uri.ToString())) }
             |> Process.shellExec 
 
@@ -46,42 +66,48 @@ let Push (buildDefinition:BuildDefinition) projectRoot =
     | None ->
         let options = new PushOptions()
         options.CredentialsProvider <- (fun url usernameFromUrl types -> let credentials = new UsernamePasswordCredentials()
-                                                                         credentials.Username <- buildDefinition.User.Login
-                                                                         credentials.Password <- buildDefinition.User.Password.ToUnsecureString()
+                                                                         credentials.Username <- request.User.Login
+                                                                         credentials.Password <- request.User.Password.ToUnsecureString()
                                                                          credentials :> Credentials)
 
         repo.Network.Push( origin, @"refs/heads/master", options )
     
-/// Returns all non-ignored pending changes
-let PendingChanges workspaceRoot =
-    use repo = new Repository( workspaceRoot )
+type GitCommitRequest = {
+    ProjectRoot : string
+    User : User
+    CheckInComment : string
+    FilesExcludedFromCheckIn : string []
+} with 
+    static member Create (def:BuildDefinition, req:BuildRequest) =
+        {
+            ProjectRoot = def.RepositoryRoot
+            User = def.User
+            CheckInComment = req.CheckInComment
+            FilesExcludedFromCheckIn = req.FilesExcludedFromCheckIn
+        }
 
-    repo.RetrieveStatus()
-    |> Seq.filter(fun e -> e.State.HasFlag( FileStatus.Ignored ) |> not )
-    |> Seq.map(fun e -> e.FilePath)
-    |> List.ofSeq
-
-let Commit (buildDefinition:BuildDefinition) projectRoot (buildRequest:BuildRequest) = 
-    if buildRequest.CheckInComment |> String.IsNullOrEmpty then
+let Commit request = 
+    if request.CheckInComment |> String.IsNullOrEmpty then
         failwith "!! NO CHECKIN COMMENT PROVIDED !!"
     
     let isExcluded file =
-        buildRequest.FilesExcludedFromCheckIn
+        request.FilesExcludedFromCheckIn
         |> Seq.exists ((=) file)
 
     let files =
-        PendingChanges projectRoot
+        request.ProjectRoot
+        |> API.GetPendingChanges
         |> Seq.filter (isExcluded >> not)
         |> List.ofSeq
 
     files
     |> Seq.iter (sprintf "Committing file %s" >> Trace.trace)
 
-    use repo = new Repository(projectRoot) 
+    use repo = new Repository(request.ProjectRoot) 
 
     files
     |> Seq.iter(fun file -> Commands.Stage(repo, file))
 
-    let author = new Signature(buildDefinition.User.Login, buildDefinition.User.EMail, DateTimeOffset.Now)
+    let author = new Signature(request.User.Login, request.User.EMail, DateTimeOffset.Now)
 
-    repo.Commit(buildRequest.CheckInComment, author, author) |> ignore
+    repo.Commit(request.CheckInComment, author, author) |> ignore
