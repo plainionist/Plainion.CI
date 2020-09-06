@@ -28,19 +28,30 @@ module Common =
 
     let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
 
-// TODO:
-// - Create "request" objects for each task so that each task has same signature: deps via context and request object
-// - no task gets entire build definition or build request because those might be removed soon
-// - NO dependencies just values!
-
-
 module PZip =
     let GetReleaseFile() = PPackaging.GetReleaseFile projectRoot projectName outputPath
     let PackRelease() = PPackaging.PackRelease projectRoot projectName outputPath
 
 module PNuGet =
-    let Pack nuspec packageOut files = PNuGet.Pack projectRoot (buildDefinition.GetSolutionPath()) projectName outputPath nuspec packageOut files
-    let PublishPackage packageName packageOut = PNuGet.PublishPackage projectRoot packageName packageOut
+    let Pack nuspec packageOut files = 
+        buildDefinition 
+        |> PNuGet.NuGetPackRequest.Create
+        |> fun x -> 
+            { x with
+                NuSpecPath = nuspec
+                PackageOutputPath = packageOut
+                Files = files
+            }
+        |> PNuGet.Pack 
+    let PublishPackage packageName packageOut = 
+        buildDefinition 
+        |> PNuGet.NuGetPublishRequest.Create
+        |> fun x -> 
+            { x with
+                PackageName = packageName
+                PackageOutputPath = packageOut
+            }
+        |> PNuGet.PublishPackage
     let Publish packageOut = PublishPackage projectName packageOut
 
 module PGitHub =

@@ -8,19 +8,40 @@ open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open PMsBuild
+open Plainion.CI
+
+type NuGetPackRequest = {
+    ProjectRoot : string
+    SolutionPath : string
+    ProjectName : string
+    OutputPath : string
+    NuSpecPath : string
+    PackageOutputPath : string
+    Files : (string * string option * string option) list
+} with 
+    static member Create (def:BuildDefinition) =
+        {
+            ProjectRoot = def.RepositoryRoot
+            SolutionPath = def.GetSolutionPath()
+            ProjectName = def.GetProjectName()
+            OutputPath = def.GetOutputPath()
+            NuSpecPath = def.RepositoryRoot </> "build" </> (def.GetProjectName() |> sprintf "%s.nuspec")
+            PackageOutputPath = def.RepositoryRoot </> "pkg"
+            Files = []
+        }
 
 /// Creates a NuGet package with the given files and NuSpec at the packageOut folder.
 /// Version is taken from changelog.md
-let Pack projectRoot solutionPath projectName outputPath nuspec packageOut files =
-    let release = projectRoot |> GetChangeLog 
+let Pack request =
+    let release = request.ProjectRoot |> GetChangeLog 
         
-    Directory.create packageOut
-    Shell.cleanDir packageOut
+    Directory.create request.PackageOutputPath
+    Shell.cleanDir request.PackageOutputPath
 
     let assemblies = 
-        files 
+        request.Files 
         |> Seq.map(fun (source,_,_) -> source)
-        |> Seq.collect(fun pattern -> !! (outputPath </> pattern))
+        |> Seq.collect(fun pattern -> !! (request.OutputPath </> pattern))
         |> Seq.map Path.GetFileName
         |> List.ofSeq
 
@@ -39,7 +60,7 @@ let Pack projectRoot solutionPath projectName outputPath nuspec packageOut files
                 project.PackageReferences
                 |> List.map(fun d -> d.Name,d.Version)
 
-        solutionPath
+        request.SolutionPath
         |> PMsBuild.API.GetProjects
         |> Seq.filter(fun e -> assemblies |> List.exists ((=)e.Assembly))
         |> Seq.collect getDependencies
@@ -49,23 +70,33 @@ let Pack projectRoot solutionPath projectName outputPath nuspec packageOut files
     dependencies
     |> Seq.iter( fun d -> Trace.trace (sprintf "Package dependency detected: %A" d))
 
-    nuspec 
-    |>  NuGet.NuGet (fun p ->  {p with OutputPath = packageOut
-                                       WorkingDir = outputPath
-                                       Project = projectName
+    request.NuSpecPath 
+    |>  NuGet.NuGet (fun p ->  {p with OutputPath = request.PackageOutputPath
+                                       WorkingDir = request.OutputPath
+                                       Project = request.ProjectName
                                        Dependencies = dependencies 
                                        Version = release |> Option.map(fun x -> x.AssemblyVersion) |? defaultAssemblyVersion
                                        ReleaseNotes = release |> Option.map(fun x -> x.Notes |> String.concat Environment.NewLine) |? ""
-                                       Files = files }) 
+                                       Files = request.Files }) 
 
-/// Publishes the NuGet package specified by packageOut, projectName and current version of ChangeLog.md
-/// to NuGet (https://www.nuget.org/api/v2/package)              
-let PublishPackage projectRoot packageName packageOut =
-    let release = projectRoot |> GetChangeLog 
+type NuGetPublishRequest = {
+    ProjectRoot : string
+    PackageName : string
+    PackageOutputPath : string
+} with 
+    static member Create (def:BuildDefinition) =
+        {
+            ProjectRoot = def.RepositoryRoot
+            PackageName = def.GetProjectName()
+            PackageOutputPath = def.RepositoryRoot </> "pkg"
+        }
 
-    NuGet.NuGetPublish (fun p -> {p with OutputPath = packageOut
-                                         WorkingDir = projectRoot
-                                         Project = packageName
+let PublishPackage request =
+    let release = request.ProjectRoot |> GetChangeLog 
+
+    NuGet.NuGetPublish (fun p -> {p with OutputPath = request.PackageOutputPath
+                                         WorkingDir = request.ProjectRoot
+                                         Project = request.PackageName
                                          Version = release |> Option.map(fun x -> x.AssemblyVersion) |? defaultAssemblyVersion
                                          PublishUrl = "https://www.nuget.org/api/v2/package"
                                          Publish = true }) 
