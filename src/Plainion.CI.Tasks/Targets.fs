@@ -1,7 +1,5 @@
-﻿// TODO: temporary solution to migrate to FAKE 5 (.net core)
-namespace Plainion.CI
+﻿namespace Plainion.CI
 
-open System
 open System.IO
 open Plainion.CI
 open Plainion.CI.Tasks
@@ -10,12 +8,14 @@ open Fake.IO
 open Fake.IO.FileSystemOperators
 
 [<AutoOpen>]
-module Common =
+module API =
     let getProperty name =
         match name |> Environment.environVarOrNone with
         | Some x -> x
         | None -> failwithf "Property not found: %s" name
 
+[<AutoOpen>]
+module Common =
     /// get environment variable given by Plainion.CI engine
     let (!%) = getProperty
 

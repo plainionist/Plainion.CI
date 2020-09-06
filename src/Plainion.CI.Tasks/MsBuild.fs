@@ -9,7 +9,7 @@ open Fake.DotNet
 let private xn n = XName.Get(n,"http://schemas.microsoft.com/developer/msbuild/2003")
 
 //let msBuildExe = Fake.DotNet.MSBuildParams.Create().ToolPath
-let msBuildExe = FromFake.MsBuild.msBuildExe
+let private msBuildExe = FromFake.MsBuild.msBuildExe
 
 /// Retruns all project files referenced by the given solution
 let GetProjectFiles (solution:string) =
