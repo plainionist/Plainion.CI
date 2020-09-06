@@ -88,12 +88,12 @@ type BuildRequest = {
     Configuration : string
     Platform : string
 } with
-    static member Create (buildDefinition:BuildDefinition) =
+    static member Create (def:BuildDefinition) =
         {
-            SolutionPath = buildDefinition.GetSolutionPath()
-            OutputPath = buildDefinition.GetOutputPath()
-            Configuration = buildDefinition.Configuration
-            Platform = buildDefinition.Platform
+            SolutionPath = def.GetSolutionPath()
+            OutputPath = def.GetOutputPath()
+            Configuration = def.Configuration
+            Platform = def.Platform
         }
 
 let Build request =

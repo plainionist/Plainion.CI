@@ -9,39 +9,55 @@ open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.DotNet.Testing
 
-let getTestAssemblyIncludes (buildDefinition:BuildDefinition) outputPath =     
-    if buildDefinition.TestAssemblyPattern |> String.IsNullOrEmpty then
-        failwith "!! NO TEST ASSEMBLY PATTERN PROVIDED !!"
+// API provided to write custom tasks
+module API =
+    let GetTestAssemblyIncludes testAssemblyPattern outputPath =     
+        if testAssemblyPattern |> String.IsNullOrEmpty then
+            failwith "!! NO TEST ASSEMBLY PATTERN PROVIDED !!"
 
-    let testAssemblyPatterns = 
-        buildDefinition.TestAssemblyPattern.Split(';')
-        |> Seq.map ((</>) outputPath)
+        let testAssemblyPatterns = 
+            testAssemblyPattern.Split(';')
+            |> Seq.map ((</>) outputPath)
 
-    testAssemblyPatterns
-    |> Seq.skip 1
-    |> Seq.fold (++) (!! (testAssemblyPatterns |> Seq.head))
+        testAssemblyPatterns
+        |> Seq.skip 1
+        |> Seq.fold (++) (!! (testAssemblyPatterns |> Seq.head))
 
-let RunTests (buildDefinition:BuildDefinition) projectRoot outputPath = 
-    let toolPath = Path.GetDirectoryName( buildDefinition.TestRunnerExecutable )
+type RunTestsRequest = {
+    TestRunnerExecutable : string
+    TestAssemblyPattern : string
+    ProjectRoot : string
+    OutputPath : string
+} with 
+    static member Create (def: BuildDefinition) =
+        {
+            TestRunnerExecutable = def.TestRunnerExecutable
+            TestAssemblyPattern = def.TestAssemblyPattern
+            ProjectRoot = def.RepositoryRoot
+            OutputPath = def.GetOutputPath()
+        }
+
+let RunTests request = 
+    let toolPath = Path.GetDirectoryName( request.TestRunnerExecutable )
 
     if File.Exists ( toolPath </> "nunit-console.exe" ) then
-        getTestAssemblyIncludes buildDefinition outputPath
+        API.GetTestAssemblyIncludes request.TestAssemblyPattern request.OutputPath
         // "parallel" version does not show test output
         |> NUnit.Sequential.run (fun p -> 
             { p with
                 ToolPath = toolPath
                 DisableShadowCopy = true })
     elif File.Exists ( toolPath </> "nunit3-console.exe" ) then
-        getTestAssemblyIncludes buildDefinition outputPath
+        API.GetTestAssemblyIncludes request.TestAssemblyPattern request.OutputPath
         |> NUnit3.run (fun p -> 
             { p with
                 ToolPath = toolPath </> "nunit3-console.exe"
                 ShadowCopy = false })
     else // e.g. "dotnet test"
         let ret = 
-            Process.shellExec { Program = buildDefinition.TestRunnerExecutable
+            Process.shellExec { Program = request.TestRunnerExecutable
                                 Args = []
-                                WorkingDir =  projectRoot
-                                CommandLine = buildDefinition.TestAssemblyPattern }
+                                WorkingDir =  request.ProjectRoot
+                                CommandLine = request.TestAssemblyPattern }
         if ret <> 0 then
             failwith "Test execution failed"

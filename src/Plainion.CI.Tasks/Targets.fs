@@ -63,7 +63,7 @@ module Runtime =
         )
 
         Target.create "RunTests" (fun _ ->
-            PNUnit.RunTests buildDefinition projectRoot outputPath
+            buildDefinition |> PNUnit.RunTestsRequest.Create |> PNUnit.RunTests
         )
 
         Target.create "GenerateApiDoc" (fun _ ->

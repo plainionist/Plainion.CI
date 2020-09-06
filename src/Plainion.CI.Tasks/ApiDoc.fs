@@ -14,7 +14,7 @@ let Generate (buildDefinition:BuildDefinition) projectRoot outputPath =
 
     let genApiDoc (project:VsProject) =
         let assemblyFile = outputPath </> project.Assembly
-        if PNUnit.getTestAssemblyIncludes buildDefinition outputPath |> Seq.exists ((=) assemblyFile) then
+        if PNUnit.API.GetTestAssemblyIncludes buildDefinition.TestAssemblyPattern outputPath |> Seq.exists ((=) assemblyFile) then
             Trace.trace (sprintf "Ignoring test assembly: %s" project.Assembly)
             0
         else
