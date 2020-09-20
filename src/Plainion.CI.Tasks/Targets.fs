@@ -25,8 +25,7 @@ module Common =
 
     let projectRoot = buildDefinition.RepositoryRoot
     let outputPath = buildDefinition.GetOutputPath()
-
-    let projectName = Path.GetFileNameWithoutExtension(buildDefinition.GetSolutionPath())
+    let projectName = buildDefinition.GetProjectName()
 
 module PZip =
     let GetReleaseFile() = PPackaging.GetReleaseFile projectRoot projectName outputPath
@@ -55,7 +54,7 @@ module PNuGet =
     let Publish packageOut = PublishPackage projectName packageOut
 
 module PGitHub =
-    let Release files = PGitHub.Release buildDefinition projectRoot projectName files
+    let Release files = (buildDefinition, files) |> PGitHub.GitHubReleaseRequest.Create |> PGitHub.Release
 
 module Runtime =
     open Fake.Core.TargetOperators
