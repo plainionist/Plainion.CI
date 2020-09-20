@@ -28,8 +28,8 @@ module Common =
     let projectName = buildDefinition.GetProjectName()
 
 module PZip =
-    let GetReleaseFile() = PPackaging.GetReleaseFile projectRoot projectName outputPath
-    let PackRelease() = PPackaging.PackRelease projectRoot projectName outputPath
+    let GetReleaseFile() = PPackaging.API.GetReleaseFile projectRoot projectName outputPath
+    let PackRelease() = buildDefinition |> PPackaging.PackReleaseRequest.Create |> PPackaging.PackRelease
 
 module PNuGet =
     let Pack nuspec packageOut files = 

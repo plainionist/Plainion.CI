@@ -45,16 +45,29 @@ module private Impl =
         |> Option.map(fun release -> createName release.NugetVersion)
         |> Option.defaultValue (createName defaultAssemblyVersion)
 
-let GetReleaseFile projectRoot projectName outputPath =
-    let releaseName = getReleaseName projectRoot projectName
-    outputPath </> ".." </> (sprintf "%s.zip" releaseName)
+module API =
+    let GetReleaseFile projectRoot projectName outputPath =
+        let releaseName = getReleaseName projectRoot projectName
+        outputPath </> ".." </> (sprintf "%s.zip" releaseName)
+
+type PackReleaseRequest = {
+    ProjectRoot : string
+    ProjectName : string
+    OutputPath : string
+} with 
+    static member Create (def:BuildDefinition) =
+        {
+            ProjectRoot = def.RepositoryRoot
+            ProjectName = def.GetProjectName()
+            OutputPath = def.GetOutputPath()
+        }
 
 /// Creates a zip from all content of the OutputPath with current version backed in
-let PackRelease projectRoot projectName outputPath = 
-    let zip = GetReleaseFile projectRoot projectName outputPath
+let PackRelease request = 
+    let zip = API.GetReleaseFile request.ProjectRoot request.ProjectName request.OutputPath
 
-    !! ( outputPath </> "**/*.*" )
-    |> Zip.zip outputPath zip
+    !! ( request.OutputPath </> "**/*.*" )
+    |> Zip.zip request.OutputPath zip
 
 let CreatePackage buildDefinition projectRoot outputPath = 
     let script = getPackagingScript buildDefinition projectRoot    
