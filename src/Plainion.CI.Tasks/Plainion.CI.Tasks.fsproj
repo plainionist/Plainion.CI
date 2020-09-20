@@ -22,6 +22,7 @@
     <Compile Include="Git.fs" />
     <Compile Include="GitHub.fs" />
     <Compile Include="Packaging.fs" />
+    <Compile Include="Extensions.fs" />
     <Compile Include="Targets.fs" />
   </ItemGroup>
 

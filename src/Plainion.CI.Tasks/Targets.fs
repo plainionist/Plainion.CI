@@ -93,15 +93,18 @@ module Runtime =
         )
 
         Target.create "CreatePackage" (fun _ ->
-            PPackaging.CreatePackage buildDefinition projectRoot outputPath
+            (buildDefinition, buildDefinition.PackagingScript, buildDefinition.CreatePackageArguments)
+            |> Extensions.ExecExtensionRequest.Create |> Extensions.Exec
         )
 
         Target.create "DeployPackage" (fun _ ->
-            PPackaging.DeployPackage buildDefinition projectRoot outputPath
+            (buildDefinition, buildDefinition.PackagingScript, buildDefinition.DeployPackageArguments)
+            |> Extensions.ExecExtensionRequest.Create |> Extensions.Exec
         )
 
         Target.create "PublishPackage" (fun _ ->
-            PPackaging.PublishPackage buildDefinition projectRoot outputPath
+            (buildDefinition, buildDefinition.PackagingScript, buildDefinition.PublishPackageArguments)
+            |> Extensions.ExecExtensionRequest.Create |> Extensions.Exec
         )
 
         "Clean"
