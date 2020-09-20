@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Node Id="cac2ee39-766e-43e8-a429-3a943b100a23" Created="636551727782508675" LastModified="636551746449931034">
-  <Caption><![CDATA[Open Issues]]></Caption>
-  <Content><![CDATA[- proxy does not work since 0.26
-  - https://github.com/libgit2/libgit2sharp/issues/1429
-  ==> solved with 0.29?
-- push stopped working
-  - https://github.com/libgit2/libgit2/issues/4546]]></Content>
-</Node>
