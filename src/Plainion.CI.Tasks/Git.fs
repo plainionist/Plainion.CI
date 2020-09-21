@@ -20,12 +20,7 @@ module API =
 type GitPushRequest = {
     ProjectRoot : string
     User : User
-} with 
-    static member Create (def:BuildDefinition) =
-        {
-            ProjectRoot = def.RepositoryRoot
-            User = def.User
-        }
+}
 
 /// Pushes the local repository to the default remote one
 let Push request =
@@ -77,14 +72,7 @@ type GitCommitRequest = {
     User : User
     CheckInComment : string
     FilesExcludedFromCheckIn : string []
-} with 
-    static member Create (def:BuildDefinition, req:BuildRequest) =
-        {
-            ProjectRoot = def.RepositoryRoot
-            User = def.User
-            CheckInComment = req.CheckInComment
-            FilesExcludedFromCheckIn = req.FilesExcludedFromCheckIn
-        }
+} 
 
 let Commit request = 
     if request.CheckInComment |> String.IsNullOrEmpty then

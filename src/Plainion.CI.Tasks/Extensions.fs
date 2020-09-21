@@ -2,7 +2,6 @@
 
 open System
 open System.IO
-open Plainion.CI
 open Fake.Core
 open Fake.IO
 open Fake.IO.FileSystemOperators
@@ -12,14 +11,7 @@ type ExecExtensionRequest = {
     OutputPath : string
     ExtensionPath : string
     ExtensionArguments : string
-} with 
-    static member Create (def:BuildDefinition, extensionPath, extensionArgs) =
-        {
-            ProjectRoot = def.RepositoryRoot
-            OutputPath = def.GetOutputPath()
-            ExtensionPath = extensionPath
-            ExtensionArguments = extensionArgs
-        }
+} 
 
 let Exec request = 
     let script = request.ProjectRoot </> request.ExtensionPath

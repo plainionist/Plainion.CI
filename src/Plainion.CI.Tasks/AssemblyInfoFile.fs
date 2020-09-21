@@ -7,17 +7,11 @@ open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.DotNet
-open Plainion.CI
 
 type AssemblyInfoFileRequest = {
     ProjectRoot : string
     ProjectName : string
-} with 
-    static member Create (def:BuildDefinition) =
-        {
-            ProjectRoot = def.RepositoryRoot
-            ProjectName = def.GetProjectName()
-        }
+}
 
 let Generate request =
     request.ProjectRoot

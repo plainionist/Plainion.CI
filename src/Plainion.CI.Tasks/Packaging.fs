@@ -1,6 +1,5 @@
 ﻿module Plainion.CI.Tasks.PPackaging
 
-open Plainion.CI
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
@@ -23,13 +22,7 @@ type PackReleaseRequest = {
     ProjectRoot : string
     ProjectName : string
     OutputPath : string
-} with 
-    static member Create (def:BuildDefinition) =
-        {
-            ProjectRoot = def.RepositoryRoot
-            ProjectName = def.GetProjectName()
-            OutputPath = def.GetOutputPath()
-        }
+} 
 
 /// Creates a zip from all content of the OutputPath with current version backed in
 let PackRelease request = 

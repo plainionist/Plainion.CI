@@ -55,7 +55,7 @@ let main argv =
         // Hint: we currently need this reference to "Plainion.CI.Tasks" here to not get:
         // "System.PlatformNotSupportedException: Windows Data Protection API (DPAPI) is not supported on this platform"
         // reason unclear :(
-        Plainion.CI.Common.projectName |> printfn "Preparing build workflow for '%s' ..."
+        Plainion.CI.Variables.projectName |> printfn "Preparing build workflow for '%s' ..."
 
         // disable unnecessary warning
         Environment.setEnvironVar "FAKE_ALLOW_NO_DEPENDENCIES" "true"

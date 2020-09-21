@@ -1,22 +1,21 @@
 ﻿namespace Plainion.CI
 
-open System.IO
-open Plainion.CI
-open Plainion.CI.Tasks
 open Fake.Core
 open Fake.IO
+open Plainion.CI
+open Plainion.CI.Tasks
 
 [<AutoOpen>]
-module API =
+module Common =
     let getProperty name =
         match name |> Environment.environVarOrNone with
         | Some x -> x
         | None -> failwithf "Property not found: %s" name
+    let (!%) = getProperty
 
 [<AutoOpen>]
-module Common =
-    /// get environment variable given by Plainion.CI engine
-    let (!%) = getProperty
+module Variables =
+    open Fake.IO.FileSystemOperators
 
     let toolsHome = getProperty "ToolsHome"
 
@@ -27,14 +26,118 @@ module Common =
     let outputPath = buildDefinition.GetOutputPath()
     let projectName = buildDefinition.GetProjectName()
 
+    open PMsBuild
+    type MsBuildRequest with
+        static member Default =
+            {
+                MsBuildRequest.SolutionPath = buildDefinition.GetSolutionPath()
+                OutputPath = buildDefinition.GetOutputPath()
+                Configuration = buildDefinition.Configuration
+                Platform = buildDefinition.Platform
+            }
+
+    open PNUnit
+    type RunTestsRequest with 
+        static member Default =
+            {
+                TestRunnerExecutable = buildDefinition.TestRunnerExecutable
+                TestAssemblyPattern = buildDefinition.TestAssemblyPattern
+                ProjectRoot = buildDefinition.RepositoryRoot
+                OutputPath = buildDefinition.GetOutputPath()
+            }
+
+    open PNuGet
+    type NuGetPackRequest with
+        static member Default =
+            {
+                ProjectRoot = buildDefinition.RepositoryRoot
+                SolutionPath = buildDefinition.GetSolutionPath()
+                ProjectName = buildDefinition.GetProjectName()
+                OutputPath = buildDefinition.GetOutputPath()
+                NuSpecPath = buildDefinition.RepositoryRoot </> "build" </> (buildDefinition.GetProjectName() |> sprintf "%s.nuspec")
+                PackageOutputPath = buildDefinition.RepositoryRoot </> "pkg"
+                Files = []
+            }
+    type NuGetPublishRequest with 
+        static member Default =
+            {
+                ProjectRoot = buildDefinition.RepositoryRoot
+                PackageName = buildDefinition.GetProjectName()
+                PackageOutputPath = buildDefinition.RepositoryRoot </> "pkg"
+            }
+
+    open PApiDoc
+    type ApiDocRequest with 
+        static member Default =
+            {
+                ProjectRoot = buildDefinition.RepositoryRoot
+                OutputPath = buildDefinition.GetOutputPath()
+                ApiDocGenExecutable = buildDefinition.ApiDocGenExecutable
+                ApiDocGenArguments = buildDefinition.ApiDocGenArguments
+                TestAssemblyPattern = buildDefinition.TestAssemblyPattern
+                SolutionPath = buildDefinition.GetSolutionPath()
+            }
+
+    open PAssemblyInfoFile
+    type AssemblyInfoFileRequest with 
+        static member Default =
+            {
+                ProjectRoot = buildDefinition.RepositoryRoot
+                ProjectName = buildDefinition.GetProjectName()
+            }
+
+    open PGit
+    type GitPushRequest with 
+        static member Default =
+            {
+                ProjectRoot = buildDefinition.RepositoryRoot
+                User = buildDefinition.User
+            }
+    type GitCommitRequest with 
+        static member Default =
+            {
+                ProjectRoot = buildDefinition.RepositoryRoot
+                User = buildDefinition.User
+                CheckInComment = buildRequest.CheckInComment
+                FilesExcludedFromCheckIn = buildRequest.FilesExcludedFromCheckIn
+            }
+    
+    open PGitHub
+    type GitHubReleaseRequest with 
+        static member Default =
+            {
+                ProjectRoot = buildDefinition.RepositoryRoot
+                User = buildDefinition.User
+                ProjectName = buildDefinition.GetProjectName()
+                Files = []
+            }
+
+    open PPackaging
+    type PackReleaseRequest with 
+        static member Default =
+            {
+                ProjectRoot = buildDefinition.RepositoryRoot
+                ProjectName = buildDefinition.GetProjectName()
+                OutputPath = buildDefinition.GetOutputPath()
+            }
+
+    open Extensions
+    type ExecExtensionRequest with 
+        static member Default =
+            {
+                ProjectRoot = buildDefinition.RepositoryRoot
+                OutputPath = buildDefinition.GetOutputPath()
+                ExtensionPath = ""
+                ExtensionArguments = ""
+            }
+
 module PZip =
     let GetReleaseFile() = PPackaging.API.GetReleaseFile projectRoot projectName outputPath
-    let PackRelease() = buildDefinition |> PPackaging.PackReleaseRequest.Create |> PPackaging.PackRelease
+    let PackRelease() = PPackaging.PackReleaseRequest.Default |> PPackaging.PackRelease
 
 module PNuGet =
     let Pack nuspec packageOut files = 
-        buildDefinition 
-        |> PNuGet.NuGetPackRequest.Create
+        PNuGet.NuGetPackRequest.Default
         |> fun x -> 
             { x with
                 NuSpecPath = nuspec
@@ -43,8 +146,7 @@ module PNuGet =
             }
         |> PNuGet.Pack 
     let PublishPackage packageName packageOut = 
-        buildDefinition 
-        |> PNuGet.NuGetPublishRequest.Create
+        PNuGet.NuGetPublishRequest.Default
         |> fun x -> 
             { x with
                 PackageName = packageName
@@ -54,7 +156,7 @@ module PNuGet =
     let Publish packageOut = PublishPackage projectName packageOut
 
 module PGitHub =
-    let Release files = (buildDefinition, files) |> PGitHub.GitHubReleaseRequest.Create |> PGitHub.Release
+    let Release files = { PGitHub.GitHubReleaseRequest.Default with Files = files }|> PGitHub.Release
 
 module Runtime =
     open Fake.Core.TargetOperators
@@ -69,42 +171,45 @@ module Runtime =
         )
 
         Target.create "Build" (fun _ ->
-            buildDefinition |> PMsBuild.BuildRequest.Create |> PMsBuild.Build
+            PMsBuild.MsBuildRequest.Default |> PMsBuild.Build
         )
 
         Target.create "RunTests" (fun _ ->
-            buildDefinition |> PNUnit.RunTestsRequest.Create |> PNUnit.RunTests
+            PNUnit.RunTestsRequest.Default |> PNUnit.RunTests
         )
 
         Target.create "GenerateApiDoc" (fun _ ->
-            buildDefinition |> PApiDoc.ApiDocRequest.Create |> PApiDoc.Generate
+            PApiDoc.ApiDocRequest.Default |> PApiDoc.Generate
         )
 
         Target.create "Commit" (fun _ ->
-            (buildDefinition,buildRequest) |> PGit.GitCommitRequest.Create |> PGit.Commit 
+            PGit.GitCommitRequest.Default |> PGit.Commit 
         )
 
         Target.create "Push" (fun _ ->
-            buildDefinition |> PGit.GitPushRequest.Create |> PGit.Push 
+            PGit.GitPushRequest.Default |> PGit.Push 
         )
 
         Target.create "UpdateAssemblyInfo" (fun _ ->
-            buildDefinition |> PAssemblyInfoFile.AssemblyInfoFileRequest.Create |> PAssemblyInfoFile.Generate 
+            PAssemblyInfoFile.AssemblyInfoFileRequest.Default |> PAssemblyInfoFile.Generate 
         )
 
         Target.create "CreatePackage" (fun _ ->
-            (buildDefinition, buildDefinition.PackagingScript, buildDefinition.CreatePackageArguments)
-            |> Extensions.ExecExtensionRequest.Create |> Extensions.Exec
+            { Extensions.ExecExtensionRequest.Default with
+                ExtensionPath = buildDefinition.PackagingScript
+                ExtensionArguments = buildDefinition.CreatePackageArguments } |> Extensions.Exec
         )
 
         Target.create "DeployPackage" (fun _ ->
-            (buildDefinition, buildDefinition.PackagingScript, buildDefinition.DeployPackageArguments)
-            |> Extensions.ExecExtensionRequest.Create |> Extensions.Exec
+            { Extensions.ExecExtensionRequest.Default with
+                ExtensionPath = buildDefinition.PackagingScript
+                ExtensionArguments = buildDefinition.DeployPackageArguments } |> Extensions.Exec
         )
 
         Target.create "PublishPackage" (fun _ ->
-            (buildDefinition, buildDefinition.PackagingScript, buildDefinition.PublishPackageArguments)
-            |> Extensions.ExecExtensionRequest.Create |> Extensions.Exec
+            { Extensions.ExecExtensionRequest.Default with
+                ExtensionPath = buildDefinition.PackagingScript
+                ExtensionArguments = buildDefinition.PublishPackageArguments } |> Extensions.Exec
         )
 
         "Clean"

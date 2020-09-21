@@ -1,7 +1,6 @@
 ﻿module Plainion.CI.Tasks.PApiDoc
 
 open System.IO
-open Plainion.CI
 open Plainion.CI.Tasks
 open Fake.Core
 open Fake.IO
@@ -15,16 +14,7 @@ type ApiDocRequest = {
     ApiDocGenArguments : string
     TestAssemblyPattern : string
     SolutionPath : string
-} with 
-    static member Create (def:BuildDefinition) =
-        {
-            ProjectRoot = def.RepositoryRoot
-            OutputPath = def.GetOutputPath()
-            ApiDocGenExecutable = def.ApiDocGenExecutable
-            ApiDocGenArguments = def.ApiDocGenArguments
-            TestAssemblyPattern = def.TestAssemblyPattern
-            SolutionPath = def.GetSolutionPath()
-        }
+}
 
 let Generate request =
     if File.Exists request.ApiDocGenExecutable |> not then

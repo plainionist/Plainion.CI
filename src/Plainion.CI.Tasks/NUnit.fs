@@ -2,7 +2,6 @@
 
 open System
 open System.IO
-open Plainion.CI
 open Fake.Core
 open Fake.IO
 open Fake.IO.FileSystemOperators
@@ -28,14 +27,7 @@ type RunTestsRequest = {
     TestAssemblyPattern : string
     ProjectRoot : string
     OutputPath : string
-} with 
-    static member Create (def: BuildDefinition) =
-        {
-            TestRunnerExecutable = def.TestRunnerExecutable
-            TestAssemblyPattern = def.TestAssemblyPattern
-            ProjectRoot = def.RepositoryRoot
-            OutputPath = def.GetOutputPath()
-        }
+}
 
 let RunTests request = 
     let toolPath = Path.GetDirectoryName( request.TestRunnerExecutable )

@@ -8,7 +8,6 @@ open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open PMsBuild
-open Plainion.CI
 
 type NuGetPackRequest = {
     ProjectRoot : string
@@ -18,17 +17,7 @@ type NuGetPackRequest = {
     NuSpecPath : string
     PackageOutputPath : string
     Files : (string * string option * string option) list
-} with 
-    static member Create (def:BuildDefinition) =
-        {
-            ProjectRoot = def.RepositoryRoot
-            SolutionPath = def.GetSolutionPath()
-            ProjectName = def.GetProjectName()
-            OutputPath = def.GetOutputPath()
-            NuSpecPath = def.RepositoryRoot </> "build" </> (def.GetProjectName() |> sprintf "%s.nuspec")
-            PackageOutputPath = def.RepositoryRoot </> "pkg"
-            Files = []
-        }
+} 
 
 /// Creates a NuGet package with the given files and NuSpec at the packageOut folder.
 /// Version is taken from changelog.md
@@ -83,13 +72,7 @@ type NuGetPublishRequest = {
     ProjectRoot : string
     PackageName : string
     PackageOutputPath : string
-} with 
-    static member Create (def:BuildDefinition) =
-        {
-            ProjectRoot = def.RepositoryRoot
-            PackageName = def.GetProjectName()
-            PackageOutputPath = def.RepositoryRoot </> "pkg"
-        }
+}
 
 let PublishPackage request =
     let release = request.ProjectRoot |> GetChangeLog 

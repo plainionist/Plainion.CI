@@ -2,7 +2,6 @@
 
 open System.IO
 open System.Xml.Linq
-open Plainion.CI
 open Fake.DotNet
 
 type PackageReference = {
@@ -83,23 +82,16 @@ module API =
                     |> List.map loadProject
             projects
 
-type BuildRequest = {
+type MsBuildRequest = {
     SolutionPath : string
     OutputPath : string
     Configuration : string
     Platform : string
-} with
-    static member Create (def:BuildDefinition) =
-        {
-            SolutionPath = def.GetSolutionPath()
-            OutputPath = def.GetOutputPath()
-            Configuration = def.Configuration
-            Platform = def.Platform
-        }
+}
 
 let Build request =
-    let setParams (defaults:MSBuildParams) =
-        { defaults with
+    let setParams (p:MSBuildParams) =
+        { p with
             ToolPath = msBuildExe
             Properties = [ "OutputPath", request.OutputPath
                            "Configuration", request.Configuration

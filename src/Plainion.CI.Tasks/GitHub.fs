@@ -18,15 +18,8 @@ type GitHubReleaseRequest = {
     ProjectRoot : string
     User : User
     ProjectName : string
-    Files : string []
-} with 
-    static member Create (def:BuildDefinition, files) =
-        {
-            ProjectRoot = def.RepositoryRoot
-            User = def.User
-            ProjectName = def.GetProjectName()
-            Files = files
-        }
+    Files : string list
+} 
 
 /// Publishes a new release to GitHub with the current version of ChangeLog.md and
 /// the given files

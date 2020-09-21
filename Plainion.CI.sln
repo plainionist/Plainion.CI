@@ -5,6 +5,7 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "@Solution Items", "@Solution Items", "{EC1701D9-D349-4B12-BCAE-B0C7B66B5FAE}"
 	ProjectSection(SolutionItems) = preProject
+		docs\Backlog.md = docs\Backlog.md
 		ChangeLog.md = ChangeLog.md
 		build\Dummy.nuspec = build\Dummy.nuspec
 		build\Globals.msbuild = build\Globals.msbuild
@@ -20,7 +21,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Plainion.CI.Tasks", "src\Pl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plainion.CI.Core", "src\Plainion.CI.Core\Plainion.CI.Core.csproj", "{14BD8184-FAE7-408E-BF97-2EA3DCF3ACEC}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Plainion.CI.BuildHost", "src\Plainion.CI.BuildHost\Plainion.CI.BuildHost.fsproj", "{B93C3507-B8F0-41E7-90A8-6993E17D5C9A}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Plainion.CI.BuildHost", "src\Plainion.CI.BuildHost\Plainion.CI.BuildHost.fsproj", "{B93C3507-B8F0-41E7-90A8-6993E17D5C9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
