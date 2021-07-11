@@ -188,6 +188,7 @@ module Octokit =
 
     let makeRelease draft owner project version prerelease (notes:seq<string>) (client : Async<GitHubClient>) =
         retryWithArg 5 client <| fun client' -> async {
+            printfn "Creating release id ..."
             let data = new NewRelease(version)
             data.Name <- version
             data.Body <- String.Join(Environment.NewLine, notes)
@@ -195,7 +196,7 @@ module Octokit =
             data.Prerelease <- prerelease
             let! draft = Async.AwaitTask <| client'.Repository.Release.Create(owner, project, data)
             let draftWord = if data.Draft then " draft" else ""
-            printfn "Created%s release id %d" draftWord draft.Id
+            printfn "Created %s release id %d" draftWord draft.Id
             return {
                 Client = client'
                 Owner = owner
@@ -222,6 +223,7 @@ module Octokit =
 
     let releaseDraft (draft : Async<Draft>) =
         retryWithArg 5 draft <| fun draft' -> async {
+            printfn "Releasing draft ..."
             let update = draft'.DraftRelease.ToUpdate()
             update.Draft <- Nullable<bool>(false)
             let! released = Async.AwaitTask <| draft'.Client.Repository.Release.Edit(draft'.Owner, draft'.Project, draft'.DraftRelease.Id, update)

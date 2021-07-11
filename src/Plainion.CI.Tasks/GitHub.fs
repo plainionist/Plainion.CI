@@ -44,7 +44,7 @@ let Release request =
 
     let prerelease = (release |> Option.map(fun x -> x.SemVer.PreRelease) |> Option.isSome)
 
-    FromFake.Octokit.createClient user pwd
+    FromFake.Octokit.createClient user pwd 
     |> FromFake.Octokit.makeRelease true user request.ProjectName version prerelease releaseNotes
     |> FromFake.Octokit.uploadFiles request.Files  
     |> FromFake.Octokit.releaseDraft
