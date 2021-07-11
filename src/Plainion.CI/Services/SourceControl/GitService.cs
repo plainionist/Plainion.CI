@@ -17,15 +17,13 @@ namespace Plainion.CI.Services.SourceControl
     {
         public Task<IReadOnlyCollection<Change>> GetPendingChangesAsync(string workspaceRoot)
         {
-            return Task<IReadOnlyCollection<Change>>.Run(() =>
+            return Task.Run(() =>
             {
-                using(var repo = new Repository(workspaceRoot))
-                {
-                    return (IReadOnlyCollection<Change>)repo.RetrieveStatus()
-                        .Where(e => (e.State & FileStatus.Ignored) == 0)
-                        .Select(e => new Change(e.FilePath, GetChangeType(e.State)))
-                        .ToList();
-                }
+                using var repo = new Repository(workspaceRoot);
+                return (IReadOnlyCollection<Change>)repo.RetrieveStatus()
+                    .Where(e => (e.State & FileStatus.Ignored) == 0)
+                    .Select(e => new Change(e.FilePath, GetChangeType(e.State)))
+                    .ToList();
             });
         }
 
