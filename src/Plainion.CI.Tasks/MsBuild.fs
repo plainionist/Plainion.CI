@@ -39,7 +39,7 @@ module private Impl =
         |> Seq.collect(fun e -> e.Elements())   
         |> Seq.filter(fun e -> e.Name = XName.Get("PackageReference"))
         |> Seq.map(fun e -> {
-            Name = e.Attribute(XName.Get("Include")).Value
+            Name = if XName.Get("Include") <> null then e.Attribute(XName.Get("Include")).Value else e.Attribute(XName.Get("Update")).Value
             Version = e.Attribute(XName.Get("Version")).Value 
             })
         |> List.ofSeq

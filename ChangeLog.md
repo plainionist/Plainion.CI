@@ -1,11 +1,6 @@
-## 4.0 - 2021-07-11
+## 3.0 - 2021-07-11
 
 - Migrated to .Net 5
-- FAKE and git dependencies updated
-
-## 3.0 - 2020-09-01
-
-- Migrated to .Net Core
 - GitHub.fsx moved to Tasks library
 - Migrated to FAKE 5 (.Net core)
   - Plainion.CI.Redist removed
