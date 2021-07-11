@@ -20,8 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fake.Runtime" Version="5.20.3" />
-    <PackageReference Include="NuGet.CommandLine" Version="5.7.0"/>
+    <PackageReference Include="Fake.Runtime" Version="5.20.4" />
+    <PackageReference Include="NuGet.CommandLine" Version="5.9.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +37,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Plainion.CI.Tasks\Plainion.CI.Tasks.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="5.0.2" />
   </ItemGroup>
 
 </Project>

@@ -27,20 +27,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fake.Core.ReleaseNotes" Version="5.20.3" />
-    <PackageReference Include="Fake.Core.Target" Version="5.20.3" />
-    <PackageReference Include="Fake.DotNet.AssemblyInfoFile" Version="5.20.3" />
-    <PackageReference Include="Fake.DotNet.MSBuild" Version="5.20.3" />
-    <PackageReference Include="Fake.DotNet.NuGet" Version="5.20.3" />
-    <PackageReference Include="Fake.DotNet.Testing.NUnit" Version="5.20.3" />
-    <PackageReference Include="Fake.IO.Zip" Version="5.20.3" />
-    <PackageReference Include="Fake.Tools.Git" Version="5.20.3" />
+    <PackageReference Include="Fake.Core.ReleaseNotes" Version="5.20.4" />
+    <PackageReference Include="Fake.Core.Target" Version="5.20.4" />
+    <PackageReference Include="Fake.DotNet.AssemblyInfoFile" Version="5.20.4" />
+    <PackageReference Include="Fake.DotNet.MSBuild" Version="5.20.4" />
+    <PackageReference Include="Fake.DotNet.NuGet" Version="5.20.4" />
+    <PackageReference Include="Fake.DotNet.Testing.NUnit" Version="5.20.4" />
+    <PackageReference Include="Fake.IO.Zip" Version="5.20.4" />
+    <PackageReference Include="Fake.Tools.Git" Version="5.20.4" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
-    <PackageReference Include="Octokit" Version="0.48.0" />
+    <PackageReference Include="Octokit" Version="0.50.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Plainion.CI.Core\Plainion.CI.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="5.0.2" />
   </ItemGroup>
 
 </Project>
