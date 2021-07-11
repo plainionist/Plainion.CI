@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Fake.Api.GitHub" Version="5.20.4" />
     <PackageReference Include="Fake.Core.ReleaseNotes" Version="5.20.4" />
     <PackageReference Include="Fake.Core.Target" Version="5.20.4" />
     <PackageReference Include="Fake.DotNet.AssemblyInfoFile" Version="5.20.4" />

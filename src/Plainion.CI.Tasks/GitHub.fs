@@ -2,6 +2,7 @@
 
 open Plainion.CI
 open Fake.Tools.Git
+open Fake.Api
 open PGit
 
 type GitHubReleaseRequest = {
@@ -44,10 +45,10 @@ let Release request =
 
     let prerelease = (release |> Option.map(fun x -> x.SemVer.PreRelease) |> Option.isSome)
 
-    FromFake.Octokit.createClient user pwd 
-    |> FromFake.Octokit.makeRelease true user request.ProjectName version prerelease releaseNotes
-    |> FromFake.Octokit.uploadFiles request.Files  
-    |> FromFake.Octokit.releaseDraft
+    GitHub.createClient user pwd 
+    |> GitHub.draftNewRelease user request.ProjectName version prerelease releaseNotes
+    |> GitHub.uploadFiles request.Files  
+    |> GitHub.publishDraft
     |> Async.RunSynchronously
 
 
