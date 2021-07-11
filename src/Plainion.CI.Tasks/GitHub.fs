@@ -4,16 +4,6 @@ open Plainion.CI
 open Fake.Tools.Git
 open PGit
 
-[<AutoOpen>]
-module private Impl =
-    let createDraft owner pwd project version prerelease notes = 
-        FromFake.Octokit.createClient owner pwd
-        |> FromFake.Octokit.makeRelease true owner project version prerelease notes
-
-    let releaseDraft = FromFake.Octokit.releaseDraft
-
-    let uploadFiles = FromFake.Octokit.uploadFiles
-
 type GitHubReleaseRequest = {
     ProjectRoot : string
     User : User
@@ -52,8 +42,12 @@ let Release request =
                         |> Option.map(fun x -> x.Notes)
                         |? []
 
-    createDraft user pwd request.ProjectName version (release |> Option.map(fun x -> x.SemVer.PreRelease) |> Option.isSome) releaseNotes 
-    |> uploadFiles request.Files  
-    |> releaseDraft
+    let prerelease = (release |> Option.map(fun x -> x.SemVer.PreRelease) |> Option.isSome)
+
+    FromFake.Octokit.createClient user pwd
+    |> FromFake.Octokit.makeRelease true user request.ProjectName version prerelease releaseNotes
+    |> FromFake.Octokit.uploadFiles request.Files  
+    |> FromFake.Octokit.releaseDraft
     |> Async.RunSynchronously
+
 

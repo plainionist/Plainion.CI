@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "@Solution Items", "@Solutio
 	ProjectSection(SolutionItems) = preProject
 		docs\Backlog.md = docs\Backlog.md
 		ChangeLog.md = ChangeLog.md
+		docs\DeveloperManual.md = docs\DeveloperManual.md
 		build\Dummy.nuspec = build\Dummy.nuspec
 		build\Globals.msbuild = build\Globals.msbuild
 		README.md = README.md
