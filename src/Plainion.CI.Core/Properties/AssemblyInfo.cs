@@ -6,15 +6,15 @@ using System.Reflection;
 [assembly: AssemblyProduct("Plainion.CI")]
 [assembly: AssemblyDescription("Plainion.CI")]
 [assembly: AssemblyCopyright("Copyright @ 2021")]
-[assembly: AssemblyVersion("3.0")]
-[assembly: AssemblyFileVersion("3.0")]
+[assembly: AssemblyVersion("4.0")]
+[assembly: AssemblyFileVersion("4.0")]
 namespace System {
     internal static class AssemblyVersionInformation {
         internal const System.String AssemblyTitle = "Plainion.CI.Core";
         internal const System.String AssemblyProduct = "Plainion.CI";
         internal const System.String AssemblyDescription = "Plainion.CI";
         internal const System.String AssemblyCopyright = "Copyright @ 2021";
-        internal const System.String AssemblyVersion = "3.0";
-        internal const System.String AssemblyFileVersion = "3.0";
+        internal const System.String AssemblyVersion = "4.0";
+        internal const System.String AssemblyFileVersion = "4.0";
     }
 }
