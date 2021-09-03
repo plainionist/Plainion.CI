@@ -38,7 +38,8 @@
     <PackageReference Include="Fake.Tools.Git" Version="5.20.4" />
     <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0102" />
     <PackageReference Include="MSBuild.StructuredLogger" Version="2.1.507" />
-    <PackageReference Include="Octokit" Version="0.50.0" />
+    <!-- https://github.com/fsharp/FAKE/issues/2601 -->
+    <PackageReference Include="Octokit" Version="0.48.0" />
   </ItemGroup>
 
   <ItemGroup>
