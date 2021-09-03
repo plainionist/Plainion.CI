@@ -37,16 +37,13 @@ let Push request =
     use repo = new Repository( request.ProjectRoot )
     let origin = repo.Network.Remotes.[ "origin" ]
 
-    //          https://github.com/plainionist/Plainion.CI.git
-    // git push https://<GITHUB_ACCESS_TOKEN>@github.com/<GITHUB_USERNAME>/<REPOSITORY_NAME>.git
-
     match cmdLineGit with
     | Some exe -> 
         let uri =
             if request.User.PAT <> null then
+                // git push https://<GITHUB_ACCESS_TOKEN>@github.com/<GITHUB_USERNAME>/<REPOSITORY_NAME>.git
                 let uri = new Uri(origin.Url)
                 let builder = new UriBuilder(uri)
-                builder.UserName <- request.User.Login
                 builder.Password <- Environment.ExpandEnvironmentVariables(request.User.PAT)
                 builder.Uri.ToString()
             elif request.User.Password <> null then
