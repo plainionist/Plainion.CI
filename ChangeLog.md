@@ -2,6 +2,8 @@
 
 - Git: if no password is given we assume a PAT is stored globally and try to push
   without any explicit credentials
+- Git: if PAT is given we use this to push the changes to remote origin
+- GitHub: support for PAT for creating releases added
 
 ## 3.0 - 2021-07-11
 

@@ -1,5 +1,6 @@
 ﻿module Plainion.CI.Tasks.PGitHub
 
+open System
 open Plainion.CI
 open Fake.Tools.Git
 open Fake.Api
@@ -15,13 +16,10 @@ type GitHubReleaseRequest = {
 /// Publishes a new release to GitHub with the current version of ChangeLog.md and
 /// the given files
 let Release request =
-    if request.User.Password = null then
-        failwith "!! NO PASSWORD PROVIDED !!"
+    if request.User.Password = null && request.User.PAT = null then
+        failwith "!! NEITHER PASSWORD NOR PAT PROVIDED !!"
     
     let release = request.ProjectRoot |> GetChangeLog 
-
-    let user = request.User.Login
-    let pwd = request.User.Password.ToUnsecureString()
 
     let version = release |> Option.map(fun x -> x.AssemblyVersion) |? defaultAssemblyVersion
 
@@ -47,7 +45,15 @@ let Release request =
 
     // see: https://fake.build/apidocs/v5/fake-api-github.html
 
-    GitHub.createClient user pwd 
+    let user = request.User.Login
+
+    if request.User.Password <> null then
+        let pwd = request.User.Password.ToUnsecureString()
+
+        GitHub.createClient user pwd 
+    else
+        Environment.ExpandEnvironmentVariables(request.User.PAT)
+        |> GitHub.createClientWithToken
     |> GitHub.draftNewRelease user request.ProjectName version prerelease releaseNotes
     |> GitHub.uploadFiles request.Files  
     |> GitHub.publishDraft

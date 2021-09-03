@@ -37,20 +37,27 @@ let Push request =
     use repo = new Repository( request.ProjectRoot )
     let origin = repo.Network.Remotes.[ "origin" ]
 
+    //          https://github.com/plainionist/Plainion.CI.git
+    // git push https://<GITHUB_ACCESS_TOKEN>@github.com/<GITHUB_USERNAME>/<REPOSITORY_NAME>.git
+
     match cmdLineGit with
     | Some exe -> 
         let uri =
-            if request.User.Password = null then
-                // we assume we work with Private Access Token (PAT) instead of password
-                origin.Url
-            else
-                // "https://github.com/plainionist/Plainion.CI.git"
-                // https://stackoverflow.com/questions/29776439/username-and-password-in-command-for-git-push
+            if request.User.PAT <> null then
+                let uri = new Uri(origin.Url)
+                let builder = new UriBuilder(uri)
+                builder.UserName <- request.User.Login
+                builder.Password <- Environment.ExpandEnvironmentVariables(request.User.PAT)
+                builder.Uri.ToString()
+            elif request.User.Password <> null then
                 let uri = new Uri(origin.Url)
                 let builder = new UriBuilder(uri)
                 builder.UserName <- request.User.Login
                 builder.Password <- request.User.Password.ToUnsecureString()
                 builder.Uri.ToString()
+            else
+                // we assume we work with cached Private Access Token (PAT) instead of password
+                origin.Url
 
         let ret =
             { Program = exe

@@ -8,29 +8,37 @@ using Plainion.Serialization;
 namespace Plainion.CI
 {
     [Serializable]
-    [DataContract( Namespace = "http://github.com/ronin4net/plainion/GatedCheckIn", Name = "User" )]
+    [DataContract(Namespace = "http://github.com/ronin4net/plainion/GatedCheckIn", Name = "User")]
     public class User : SerializableBindableBase
     {
         private string myLogin;
         private string myEMail;
+        private string myPAT;
         [NonSerialized]
         private SecureString myPassword;
 
-        [DataMember( Name = "Password" )]
+        [DataMember(Name = "Password")]
         private byte[] mySerializablePassword;
 
         [DataMember]
         public string Login
         {
             get { return myLogin; }
-            set { SetProperty( ref myLogin, value ); }
+            set { SetProperty(ref myLogin, value); }
         }
 
         [DataMember]
         public string EMail
         {
             get { return myEMail; }
-            set { SetProperty( ref myEMail, value ); }
+            set { SetProperty(ref myEMail, value); }
+        }
+
+        [DataMember]
+        public string PAT
+        {
+            get { return myPAT; }
+            set { SetProperty(ref myPAT, value); }
         }
 
         public SecureString Password
@@ -38,31 +46,31 @@ namespace Plainion.CI
             get { return myPassword; }
             set
             {
-                if( SetProperty( ref myPassword, value ) )
+                if (SetProperty(ref myPassword, value))
                 {
                     // we do serialization as "update-on-write" because we also want to support cloning at any time
-                    if( myPassword == null )
+                    if (myPassword == null)
                     {
                         mySerializablePassword = null;
                     }
                     else
                     {
-                        var bytes = Encoding.UTF8.GetBytes( myPassword.ToUnsecureString() );
+                        var bytes = Encoding.UTF8.GetBytes(myPassword.ToUnsecureString());
 
-                        mySerializablePassword = ProtectedData.Protect( bytes, null, DataProtectionScope.CurrentUser );
+                        mySerializablePassword = ProtectedData.Protect(bytes, null, DataProtectionScope.CurrentUser);
                     }
                 }
             }
         }
 
         [OnDeserialized]
-        private void OnDeserialized( StreamingContext context )
+        private void OnDeserialized(StreamingContext context)
         {
-            if( mySerializablePassword != null )
+            if (mySerializablePassword != null)
             {
-                var bytes = ProtectedData.Unprotect( mySerializablePassword, null, DataProtectionScope.CurrentUser );
+                var bytes = ProtectedData.Unprotect(mySerializablePassword, null, DataProtectionScope.CurrentUser);
 
-                myPassword = Encoding.UTF8.GetString( bytes ).ToSecureString();
+                myPassword = Encoding.UTF8.GetString(bytes).ToSecureString();
             }
         }
     }

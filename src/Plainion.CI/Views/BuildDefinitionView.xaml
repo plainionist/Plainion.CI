@@ -139,6 +139,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" VerticalAlignment="Center"/>
@@ -150,6 +151,10 @@
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Password" VerticalAlignment="Center"/>
                             <PasswordBox Grid.Row="2" Grid.Column="1" Margin="5,2,0,0" Width="200" HorizontalAlignment="Left" 
                                  l:PasswordBinder.Attach="True" l:PasswordBinder.Password="{Binding BuildDefinition.User.Password, Mode=TwoWay}" Tag="UserPassword"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Private Access Token (PAT)" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="3" Grid.Column="1" Margin="5,2,0,0" Text="{Binding BuildDefinition.User.PAT}" Width="200" HorizontalAlignment="Left" 
+                                     Tag="UserPAT" ToolTip="This value will NOT be encrypted! Use environment variable here pointing to the actual token instead of the token itself."/>
                         </Grid>
                     </GroupBox>
 
