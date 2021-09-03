@@ -44,6 +44,7 @@ let Push request =
                 // git push https://<GITHUB_ACCESS_TOKEN>@github.com/<GITHUB_USERNAME>/<REPOSITORY_NAME>.git
                 let uri = new Uri(origin.Url)
                 let builder = new UriBuilder(uri)
+                builder.UserName <- request.User.Login
                 builder.Password <- Environment.ExpandEnvironmentVariables(request.User.PAT)
                 builder.Uri.ToString()
             elif request.User.Password <> null then
