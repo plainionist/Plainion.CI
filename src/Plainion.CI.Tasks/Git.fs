@@ -24,9 +24,6 @@ type GitPushRequest = {
 
 /// Pushes the local repository to the default remote one
 let Push request =
-    if request.User.Password = null then
-        failwith "!! NO PASSWORD PROVIDED !!"
-
     // there are currently 2 blocking issues open with libgit2sharp and push related to windows and network:
     // - https://github.com/libgit2/libgit2sharp/issues/1429
     // - https://github.com/libgit2/libgit2/issues/4546
@@ -42,18 +39,24 @@ let Push request =
 
     match cmdLineGit with
     | Some exe -> 
-        // "https://github.com/plainionist/Plainion.CI.git"
-        // https://stackoverflow.com/questions/29776439/username-and-password-in-command-for-git-push
-        let uri = new Uri(origin.Url)
-        let builder = new UriBuilder(uri)
-        builder.UserName <- request.User.Login
-        builder.Password <- request.User.Password.ToUnsecureString()
-        
+        let uri =
+            if request.User.Password = null then
+                // we assume we work with Private Access Token (PAT) instead of password
+                origin.Url
+            else
+                // "https://github.com/plainionist/Plainion.CI.git"
+                // https://stackoverflow.com/questions/29776439/username-and-password-in-command-for-git-push
+                let uri = new Uri(origin.Url)
+                let builder = new UriBuilder(uri)
+                builder.UserName <- request.User.Login
+                builder.Password <- request.User.Password.ToUnsecureString()
+                builder.Uri.ToString()
+
         let ret =
             { Program = exe
               Args = []
               WorkingDir = request.ProjectRoot
-              CommandLine = (sprintf "%s %s" "push" (builder.Uri.ToString())) }
+              CommandLine = sprintf "%s %s" "push" uri }
             |> Process.shellExec 
 
         if ret <> 0 then

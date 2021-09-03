@@ -45,6 +45,8 @@ let Release request =
 
     let prerelease = (release |> Option.map(fun x -> x.SemVer.PreRelease) |> Option.isSome)
 
+    // see: https://fake.build/apidocs/v5/fake-api-github.html
+
     GitHub.createClient user pwd 
     |> GitHub.draftNewRelease user request.ProjectName version prerelease releaseNotes
     |> GitHub.uploadFiles request.Files  

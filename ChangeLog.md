@@ -1,3 +1,8 @@
+## 3.1 - 2021-09-03
+
+- Git: if no password is given we assume a PAT is stored globally and try to push
+  without any explicit credentials
+
 ## 3.0 - 2021-07-11
 
 - Migrated to .Net 5
