@@ -14,6 +14,7 @@ namespace Plainion.CI
         private string myLogin;
         private string myEMail;
         private string myPAT;
+
         [NonSerialized]
         private SecureString myPassword;
 
@@ -38,7 +39,14 @@ namespace Plainion.CI
         public string PAT
         {
             get { return myPAT; }
-            set { SetProperty(ref myPAT, value); }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    value = null;
+                }
+                SetProperty(ref myPAT, value);
+            }
         }
 
         public SecureString Password
@@ -46,6 +54,11 @@ namespace Plainion.CI
             get { return myPassword; }
             set
             {
+                if (value != null && value.Length == 0)
+                {
+                    value = null;
+                }
+
                 if (SetProperty(ref myPassword, value))
                 {
                     // we do serialization as "update-on-write" because we also want to support cloning at any time
@@ -70,7 +83,7 @@ namespace Plainion.CI
             {
                 var bytes = ProtectedData.Unprotect(mySerializablePassword, null, DataProtectionScope.CurrentUser);
 
-                myPassword = Encoding.UTF8.GetString(bytes).ToSecureString();
+                myPassword = bytes.Length == 0 ? null : Encoding.UTF8.GetString(bytes).ToSecureString();
             }
         }
     }

@@ -56,7 +56,7 @@ let Push request =
             else
                 // we assume we work with cached Private Access Token (PAT) instead of password
                 origin.Url
-
+    
         let ret =
             { Program = exe
               Args = []

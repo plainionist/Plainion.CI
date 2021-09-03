@@ -49,7 +49,6 @@ let Release request =
 
     if request.User.Password <> null then
         let pwd = request.User.Password.ToUnsecureString()
-
         GitHub.createClient user pwd 
     else
         Environment.ExpandEnvironmentVariables(request.User.PAT)
