@@ -41,7 +41,7 @@ let Release request =
                         |> Option.map(fun x -> x.Notes)
                         |? []
 
-    let prerelease = (release |> Option.map(fun x -> x.SemVer.PreRelease) |> Option.isSome)
+    let prerelease = release |> Option.bind(fun x -> x.SemVer.PreRelease) |> Option.isSome
 
     // see: https://fake.build/apidocs/v5/fake-api-github.html
 

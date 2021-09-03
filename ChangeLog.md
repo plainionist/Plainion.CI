@@ -4,6 +4,7 @@
   without any explicit credentials
 - Git: if PAT is given we use this to push the changes to remote origin
 - GitHub: support for PAT for creating releases added
+- GitHub: prerelease handling fixed
 
 ## 3.0 - 2021-07-11
 
