@@ -7,10 +7,9 @@ navigation_weight: 2
 
 The concrete deployment steps are usually project specific so you have to define them.
 
-Plainion.CI supports [FAKE](https://fake.build/) and MsBuild scripts but strongly recommends FAKE due to its power.
+Plainion.CI uses [FAKE](https://fake.build/) to support customization of the build process.
 
 Plainion.CI provides various helpers for GitHub and NuGet out of the box.
-
 
 ## Deploying with FAKE
 
@@ -18,24 +17,30 @@ FAKE deployment scripts have to end with ".fsx".
 To get started copy the following into your deployment script, e.g. "build\Targets.fsx":
 
 ```F#
-#r "/bin/Plainion.CI/FAKE/FakeLib.dll"
-#load "/bin/Plainion.CI/bits/PlainionCI.fsx"
+#r "/bin/Plainion.CI/Fake.Core.Target.dll"
+#r "/bin/Plainion.CI/Fake.Core.Trace.dll"
+#r "/bin/Plainion.CI/Fake.IO.FileSystem.dll"
+#r "/bin/Plainion.CI/Fake.IO.Zip.dll"
+#r "/bin/Plainion.CI/Plainion.CI.Tasks.dll"
 
-open Fake
-open PlainionCI
+open Fake.Core
+open Fake.IO
+open Fake.IO.FileSystemOperators
+open Fake.IO.Globbing.Operators
+open Plainion.CI
 
-Target "CreatePackage" (fun _ ->
+Target.create "CreatePackage" (fun _ ->
     !! ( outputPath </> "*.*Tests.*" )
     ++ ( outputPath </> "*nunit*" )
     ++ ( outputPath </> "*Moq*" )
     ++ ( outputPath </> "TestResult.xml" )
     ++ ( outputPath </> "**/*.pdb" )
-    |> DeleteFiles
+    |> File.deleteAll
 
     PZip.PackRelease()
 )
 
-Target "Deploy" (fun _ ->
+Target.create "Deploy" (fun _ ->
     let releaseDir = @"\bin\MyCoolProject"
 
     CleanDir releaseDir
@@ -44,7 +49,7 @@ Target "Deploy" (fun _ ->
     Unzip releaseDir zip
 )
 
-RunTarget()
+Target.runOrDefault ""
 ```
 
 *Hint:* Don't forget to adjust the path in the first two lines to your Plainion.CI installation.
@@ -58,7 +63,7 @@ then create a ZIP file under your "bin" folder.
 In order to create a new release on GitHub add the following code
 
 ```F#
-Target "Publish" (fun _ ->
+Target.create "Publish" (fun _ ->
     let zip = PZip.GetReleaseFile()
     PGitHub.Release [ zip ]
 )
@@ -67,7 +72,7 @@ Target "Publish" (fun _ ->
 above
 
 ```F#
-RunTarget()
+Target.runOrDefault ""
 ```
 
 ### Publishing to NuGet
@@ -75,13 +80,13 @@ RunTarget()
 In order to create a new release on NuGet change the "CreatePackage" target to
 
 ```F#
-Target "CreatePackage" (fun _ ->
+Target.Create "CreatePackage" (fun _ ->
     !! ( outputPath </> "*.*Tests.*" )
     ++ ( outputPath </> "*nunit*" )
     ++ ( outputPath </> "*Moq*" )
     ++ ( outputPath </> "TestResult.xml" )
     ++ ( outputPath </> "**/*.pdb" )
-    |> DeleteFiles
+    |> File.deleteAll
 
     [
         ( projectName + ".*", Some "lib/NET45", None)
@@ -121,7 +126,7 @@ copy the following template under "build/<projectname>.nuspec" and adjust it acc
 Then add the following code
 
 ```F#
-Target "Publish" (fun _ ->
+Target.Create "Publish" (fun _ ->
     PNuGet.PublishPackage projectName (projectRoot </> "pkg")
 )
 ```
@@ -129,7 +134,7 @@ Target "Publish" (fun _ ->
 above
 
 ```F#
-RunTarget()
+Target.runOrDefault ""
 ```
 
 *Hint:* Publishing NuGet packages currently only works if you once followed the instructions [here](https://docs.nuget.org/ndocs/create-packages/publish-a-package) 
@@ -139,8 +144,8 @@ regarding APIKey and have stored your APIKey with "setApiKey":
 NuGet.exe setapikey <your api key> -source https://www.nuget.org/api/v2/package
 ```
 
-## Deployming with MsBuild
+## Configuring the custom targets
 
-MsBuild deployment scripts have to end with ".msbuild".
+Configure the created custom targets in the following way:
 
-Plainion.CI does no provide MsBuild specific tasks out of the box. 
+![](./ConfigureTargets.png)
