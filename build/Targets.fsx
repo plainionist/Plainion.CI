@@ -12,7 +12,7 @@ open Plainion.CI
 
 Target.create "CreatePackage" (fun _ ->
     !! ( outputPath </> "*.*Tests.*" )
-    ++ ( outputPath </> "*nunit*" )
+    ++ ( outputPath </> "nunit*" )
     ++ ( outputPath </> "TestResult.xml" )
     |> File.deleteAll
 
