@@ -1,3 +1,8 @@
+## 3.2 - 2022-06-06
+
+- Upgraded to .Net 6
+- all NuGet packages updated
+
 ## 3.1 - 2021-09-03
 
 - Git: if no password is given we assume a PAT is stored globally and try to push
