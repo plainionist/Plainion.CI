@@ -14,6 +14,11 @@ module MsBuild =
 
     let knownMsBuildEntries =
         [
+            { Version = "17.0"; Paths = [@"\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin"
+                                         @"\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin"
+                                         @"\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin"
+                                         @"\MSBuild\Current\Bin"
+                                         @"\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin"] }
             { Version = "16.0"; Paths = [@"\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
                                          @"\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin"
                                          @"\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin"
@@ -103,4 +108,6 @@ module MsBuild =
             printfn "Using msbuild of VS2017 (%s), if you encounter build errors make sure you have installed the necessary workflows!" foundExe
         elif foundExe.Contains @"\2019\" then
             printfn "Using msbuild of VS2019 (%s), if you encounter build errors make sure you have installed the necessary workflows!" foundExe        
+        elif foundExe.Contains @"\2022\" then
+            printfn "Using msbuild of VS2022 (%s), if you encounter build errors make sure you have installed the necessary workflows!" foundExe        
         foundExe
