@@ -55,7 +55,6 @@ namespace Plainion.CI.Services
                         + Path.PathSeparator + Path.Combine(toolsHome, "NuGet")
                         + Path.PathSeparator + Environment.GetEnvironmentVariable("PATH");
 
-                    process.Environment["VisualStudioVersion"] = "16.0";
                     process.Environment["ToolsHome"] = toolsHome;
                     process.Environment["BuildDefinitionFile"] = buildDefinitionFile;
                     process.Environment["ProjectRoot"] = repositoryRoot;

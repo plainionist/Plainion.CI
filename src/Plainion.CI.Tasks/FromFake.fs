@@ -86,12 +86,14 @@ module MsBuild =
                 let findOnVSPathsThenSystemPath =
                     let dict = toDict knownMsBuildEntries
 
-                    let getAllKnownPaths =
-                        (knownMsBuildEntries |> List.collect (fun m -> m.Paths)) @ oldMsBuildLocations
+                    let withProgramFiles paths =
+                        (paths |> List.map ((@@) Fake.Core.Environment.ProgramFilesX86))
+                        @ (paths |> List.map ((@@) Fake.Core.Environment.ProgramFiles))
 
                     let vsVersionPaths =
-                        defaultArg (Fake.Core.Environment.environVarOrNone "VisualStudioVersion" |> Option.bind dict.TryFind) getAllKnownPaths
-                        |> List.map ((@@) Fake.Core.Environment.ProgramFilesX86)
+                        match Fake.Core.Environment.environVarOrNone "VisualStudioVersion" |> Option.bind dict.TryFind with
+                        | Some x -> x |> withProgramFiles
+                        | None -> (knownMsBuildEntries |> List.collect(fun x -> x.Paths |> withProgramFiles)) @ oldMsBuildLocations
 
                     tryFindFileInDirsThenPath vsVersionPaths "MSBuild.exe"
 
@@ -101,6 +103,12 @@ module MsBuild =
                     configIgnoreMSBuild
                     findOnVSPathsThenSystemPath
                 ]
+
+                printfn "MsBuild.exe sources:"
+                sources
+                |> Seq.choose id
+                |> Seq.iter (printfn "  %s")
+
                 defaultArg (sources |> List.choose id |> List.tryHead) "MSBuild.exe"
 
         if foundExe.Contains @"\BuildTools\" then

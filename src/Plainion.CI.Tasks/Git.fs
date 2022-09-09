@@ -83,6 +83,12 @@ type GitCommitRequest = {
 } 
 
 let Commit request = 
+    if request.User.Login |> String.IsNullOrEmpty then
+        failwith "!! Authors login not specified in build definition !!"
+
+    if request.User.EMail |> String.IsNullOrEmpty then
+        failwith "!! Authors mail not specified in build definition !!"
+
     if request.CheckInComment |> String.IsNullOrEmpty then
         failwith "!! NO CHECKIN COMMENT PROVIDED !!"
     
