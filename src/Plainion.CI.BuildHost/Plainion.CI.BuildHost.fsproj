@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fake.Runtime" Version="5.20.4" />
+    <PackageReference Include="Fake.Runtime" Version="5.23.0" />
     <PackageReference Include="NuGet.CommandLine" Version="5.9.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
