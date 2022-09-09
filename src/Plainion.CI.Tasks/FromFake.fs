@@ -42,9 +42,6 @@ module MsBuild =
     let toDict items =
         items |> Seq.map (fun f -> f.Version, f.Paths) |> Map.ofSeq
 
-    let getAllKnownPaths =
-        (knownMsBuildEntries |> List.collect (fun m -> m.Paths)) @ oldMsBuildLocations
-
     let monoVersionToUseMSBuildOn = System.Version("5.0")
 
     let msBuildExe =
@@ -88,6 +85,10 @@ module MsBuild =
                 let configIgnoreMSBuild = None
                 let findOnVSPathsThenSystemPath =
                     let dict = toDict knownMsBuildEntries
+
+                    let getAllKnownPaths =
+                        (knownMsBuildEntries |> List.collect (fun m -> m.Paths)) @ oldMsBuildLocations
+
                     let vsVersionPaths =
                         defaultArg (Fake.Core.Environment.environVarOrNone "VisualStudioVersion" |> Option.bind dict.TryFind) getAllKnownPaths
                         |> List.map ((@@) Fake.Core.Environment.ProgramFilesX86)
