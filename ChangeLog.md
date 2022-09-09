@@ -1,3 +1,9 @@
+## 3.3 - 2022-06-06
+
+- all NuGet packages updated
+- support for VS 2022 added 
+- support for VS being installed in "Program Files" instead of "Program Files (x86)" added
+
 ## 3.2 - 2022-06-06
 
 - Upgraded to .Net 6
