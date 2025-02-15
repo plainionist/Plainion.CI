@@ -1,3 +1,8 @@
+## 4.0 - 2025-02-15
+
+- upgrade to .Net8
+- upgrade of NuGet packages
+
 ## 3.3 - 2022-06-06
 
 - all NuGet packages updated
